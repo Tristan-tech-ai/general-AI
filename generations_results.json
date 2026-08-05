@@ -1,0 +1,1262 @@
+{
+ "nes2net_official_fullbg_b16e10_s42": {
+  "threshold": 0.012250794749706974,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.99,
+    "mean_score": 0.20557821102660254
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.8033333333333333,
+    "mean_score": 0.02096090324662833
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9533333333333334,
+    "mean_score": 0.031767793812323364
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8633333333333333,
+    "mean_score": 0.026182433584472163
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9166666666666666,
+    "mean_score": 0.0821394330908596
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.81,
+    "mean_score": 0.12296689063663105
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.16763516551944324
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9666666666666667,
+    "mean_score": 0.2088698450385386
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8866666666666667,
+    "mean_score": 0.13725882568383693
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.18309196215148807
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9666666666666667,
+    "mean_score": 0.24287333218914378
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.89,
+    "mean_score": 0.10838851589282664
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9766666666666667,
+    "mean_score": 0.24565560066852613
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.08841094918749554
+   }
+  }
+ },
+ "nes2net_official_fullbg_b16e10_s1337": {
+  "threshold": 0.07698868028819558,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.92,
+    "mean_score": 0.3853694178474446
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9233333333333333,
+    "mean_score": 0.13944801219532058
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9766666666666667,
+    "mean_score": 0.16562960542738436
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.95,
+    "mean_score": 0.14045367554864951
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8133333333333334,
+    "mean_score": 0.17288876631193692
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.6966666666666667,
+    "mean_score": 0.21079840710671205
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9633333333333334,
+    "mean_score": 0.33482772146455114
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9633333333333334,
+    "mean_score": 0.5169554469196332
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.67,
+    "mean_score": 0.21657271838488262
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.44677243522782295
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9133333333333333,
+    "mean_score": 0.4513425413548894
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9033333333333333,
+    "mean_score": 0.26020564461230405
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9766666666666667,
+    "mean_score": 0.5118656565771541
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.7766666666666666,
+    "mean_score": 0.2064785303066795
+   }
+  }
+ },
+ "nes2net_official_fullbg_b16e10_s2024": {
+  "threshold": 0.020820524264127,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.35327185126642385
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9233333333333333,
+    "mean_score": 0.04512852820697137
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9333333333333333,
+    "mean_score": 0.04496365777604903
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9666666666666667,
+    "mean_score": 0.052886604456903616
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.11284611210615064
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7966666666666666,
+    "mean_score": 0.14176766988438128
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.26095068143991135
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.99,
+    "mean_score": 0.240867745995832
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.77,
+    "mean_score": 0.13873052668107752
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.1944343232818776
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.2615190051467895
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.18049035211818087
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.303960784201562
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9766666666666667,
+    "mean_score": 0.11548461272226025
+   }
+  }
+ },
+ "nes2net_official_soft_b16e10_s42": {
+  "threshold": 0.030969524872489267,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9066666666666666,
+    "mean_score": 0.26764115566154945
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.15666666666666668,
+    "mean_score": 0.023312889514749663
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.16333333333333333,
+    "mean_score": 0.024202451944713377
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.19,
+    "mean_score": 0.025449659048786592
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.5866666666666667,
+    "mean_score": 0.055832791050456264
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.37333333333333335,
+    "mean_score": 0.06818910033066965
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8066666666666666,
+    "mean_score": 0.13562247614841907
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.7033333333333334,
+    "mean_score": 0.10088133269325934
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.41,
+    "mean_score": 0.08017642169595798
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.5333333333333333,
+    "mean_score": 0.06798510038824235
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.7233333333333334,
+    "mean_score": 0.14385636294596932
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.6266666666666667,
+    "mean_score": 0.08060407859868267
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.7666666666666667,
+    "mean_score": 0.14137660229526872
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.45,
+    "mean_score": 0.0578152071030086
+   }
+  }
+ },
+ "nes2net_official_soft_b16e10_s1337": {
+  "threshold": 0.043058997392654404,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.8766666666666667,
+    "mean_score": 0.28728216637863724
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.8933333333333333,
+    "mean_score": 0.12813534432621154
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9566666666666667,
+    "mean_score": 0.1662794253975153
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9,
+    "mean_score": 0.1309787654514528
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.85,
+    "mean_score": 0.17228195911894242
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7166666666666667,
+    "mean_score": 0.18704954966589057
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9066666666666666,
+    "mean_score": 0.30800254815827227
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.422770900599555
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.7533333333333333,
+    "mean_score": 0.22809665272730248
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.95,
+    "mean_score": 0.4215179221933552
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9166666666666666,
+    "mean_score": 0.4164844043562576
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.77,
+    "mean_score": 0.172259053660091
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.98,
+    "mean_score": 0.4677300004956002
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.66,
+    "mean_score": 0.1201570572588308
+   }
+  }
+ },
+ "nes2net_official_soft_b16e10_s2024": {
+  "threshold": 0.01718999873846768,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.3671084310768897
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.027818367845223596
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.94,
+    "mean_score": 0.030968619571067394
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8833333333333333,
+    "mean_score": 0.02728601260783358
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9266666666666666,
+    "mean_score": 0.10078711950194298
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.83,
+    "mean_score": 0.15437056120058212
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.99,
+    "mean_score": 0.25978883395230196
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.3579400427810227
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.86,
+    "mean_score": 0.1765086094774435
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9633333333333334,
+    "mean_score": 0.2576229027099907
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.33930932331752656
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.96,
+    "mean_score": 0.15362091873280911
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9933333333333333,
+    "mean_score": 0.4342779072744048
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.11225559811780438
+   }
+  }
+ },
+ "nes2net_official_full_b16e10_s42": {
+  "threshold": 0.03515814077109097,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.436572999366973
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9033333333333333,
+    "mean_score": 0.07493260820034064
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.10611837829670145
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9366666666666666,
+    "mean_score": 0.08330327011023958
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.2336294619332895
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9,
+    "mean_score": 0.24700297853198008
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.4013709045118755
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.4140940236589975
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9233333333333333,
+    "mean_score": 0.2550357480435115
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.4133311903311147
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9766666666666667,
+    "mean_score": 0.3956556090702199
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9933333333333333,
+    "mean_score": 0.2895845287872685
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.46037341479419014
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.27665695783061284
+   }
+  }
+ },
+ "nes2net_official_full_b16e10_s1337": {
+  "threshold": 0.04453631193609906,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.436353680158241
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9466666666666667,
+    "mean_score": 0.10904836203644258
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9933333333333333,
+    "mean_score": 0.14810937040588923
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9666666666666667,
+    "mean_score": 0.11152633269627889
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.27808610930185146
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8233333333333334,
+    "mean_score": 0.2581620382424444
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.4446759224931399
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9733333333333334,
+    "mean_score": 0.46440636268196006
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8966666666666666,
+    "mean_score": 0.2928422789892647
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.37540692597265457
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.96,
+    "mean_score": 0.4402894997780419
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9833333333333333,
+    "mean_score": 0.27682168731983336
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.5274509633829196
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9633333333333334,
+    "mean_score": 0.2562271795044136
+   }
+  }
+ },
+ "nes2net_official_full_b16e10_s2024": {
+  "threshold": 0.13562818826176226,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9666666666666667,
+    "mean_score": 0.5141224610081149
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.5366666666666666,
+    "mean_score": 0.14844961593444975
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.45666666666666667,
+    "mean_score": 0.13793142281886606
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.6766666666666666,
+    "mean_score": 0.1626990451787909
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7966666666666666,
+    "mean_score": 0.23429242285175453
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7,
+    "mean_score": 0.2820254141136279
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9566666666666667,
+    "mean_score": 0.43285237332599025
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.98,
+    "mean_score": 0.4780585707806879
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.67,
+    "mean_score": 0.28899627682028545
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9066666666666666,
+    "mean_score": 0.410929898119842
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9166666666666666,
+    "mean_score": 0.4451295591435499
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.88,
+    "mean_score": 0.3097218418038554
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9633333333333334,
+    "mean_score": 0.5086398476398447
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.7933333333333333,
+    "mean_score": 0.2757903490298324
+   }
+  }
+ },
+ "nes2net_official_fullrb_b16e10_s42": {
+  "threshold": 0.006102333124727006,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.99,
+    "mean_score": 0.12486390309566761
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.49,
+    "mean_score": 0.007214847884638907
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.8933333333333333,
+    "mean_score": 0.014058099636458791
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.61,
+    "mean_score": 0.00914964543409749
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.9166666666666666,
+    "mean_score": 0.07597561714650915
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7466666666666667,
+    "mean_score": 0.0933101371817328
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.99,
+    "mean_score": 0.15551741520654308
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.20725792962022954
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.7933333333333333,
+    "mean_score": 0.07703331048755799
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.20111697391286726
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9533333333333334,
+    "mean_score": 0.23754962954145914
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.86,
+    "mean_score": 0.06030109365894331
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9933333333333333,
+    "mean_score": 0.20904223350525067
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.8333333333333334,
+    "mean_score": 0.045894873912491474
+   }
+  }
+ },
+ "nes2net_official_fullrb_b16e10_s1337": {
+  "threshold": 0.018560892809182394,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.82,
+    "mean_score": 0.20035659260954666
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.2866666666666667,
+    "mean_score": 0.016115630496464698
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.25666666666666665,
+    "mean_score": 0.015659197194424147
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.35,
+    "mean_score": 0.01812930467228095
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.6733333333333333,
+    "mean_score": 0.06866202685008628
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.5966666666666667,
+    "mean_score": 0.11518396122877196
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.94,
+    "mean_score": 0.18211673441226595
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9566666666666667,
+    "mean_score": 0.2596130680338764
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.48,
+    "mean_score": 0.08399031417202422
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.89,
+    "mean_score": 0.22386272246409641
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9066666666666666,
+    "mean_score": 0.2569747120244524
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.81,
+    "mean_score": 0.10625523510740499
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.93,
+    "mean_score": 0.22359344487234514
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.5633333333333334,
+    "mean_score": 0.07726059382575234
+   }
+  }
+ },
+ "nes2net_official_fullrb_b16e10_s2024": {
+  "threshold": 0.08784604060153152,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.93,
+    "mean_score": 0.3593718546240901
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.8166666666666667,
+    "mean_score": 0.19347366734097401
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9233333333333333,
+    "mean_score": 0.22931017652050487
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8333333333333334,
+    "mean_score": 0.1921014263661992
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.95,
+    "mean_score": 0.3217908067375215
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.8833333333333333,
+    "mean_score": 0.3426693398974991
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.4002560643644797
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.41879706385752397
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.3080169502494391
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.94,
+    "mean_score": 0.3694159210213305
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.96,
+    "mean_score": 0.4361482262137967
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9333333333333333,
+    "mean_score": 0.2816111378423456
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9566666666666667,
+    "mean_score": 0.39105204072237637
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.8166666666666667,
+    "mean_score": 0.20659700276071413
+   }
+  }
+ },
+ "wavlm_official_full_b16e10_s42": {
+  "threshold": 0.04288641576422378,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.97,
+    "mean_score": 0.2745439038542099
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.98,
+    "mean_score": 0.13813694309443236
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.9966666666666667,
+    "mean_score": 0.20195206931688722
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 1.0,
+    "mean_score": 0.13846347252734834
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.1505498173374993
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.67,
+    "mean_score": 0.12818238148433417
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9233333333333333,
+    "mean_score": 0.22019513110009334
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9566666666666667,
+    "mean_score": 0.22774573262056544
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.7166666666666667,
+    "mean_score": 0.14105395566135281
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8366666666666667,
+    "mean_score": 0.20047829941561862
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9333333333333333,
+    "mean_score": 0.25269104864008524
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.8566666666666667,
+    "mean_score": 0.12666492555600903
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.95,
+    "mean_score": 0.33048529151387307
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.5066666666666667,
+    "mean_score": 0.060060324852820486
+   }
+  }
+ },
+ "hubert_official_full_b16e10_s42": {
+  "threshold": 0.1303075902163982,
+  "specificity": 0.95,
+  "tts": {
+   "griffin_lim": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.94,
+    "mean_score": 0.5519893472543399
+   },
+   "tts_models_en_ljspeech_tacotron2-DDC": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.04,
+    "mean_score": 0.06980046824966041
+   },
+   "tts_models_en_ljspeech_speedy-speech": {
+    "era": "2019 (era FoR)",
+    "n": 300,
+    "recall": 0.013333333333333334,
+    "mean_score": 0.06363373660792906
+   },
+   "tts_models_en_ljspeech_vits": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.016666666666666666,
+    "mean_score": 0.05914165385274424
+   },
+   "tts_models_multilingual_multi-dataset_xtts_v2": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.76,
+    "mean_score": 0.29266497722516455
+   },
+   "suno_bark": {
+    "era": "2021-2022",
+    "n": 300,
+    "recall": 0.7566666666666667,
+    "mean_score": 0.34393710681276085
+   },
+   "f5-tts": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9066666666666666,
+    "mean_score": 0.42920332747511564
+   },
+   "kokoro": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.9533333333333334,
+    "mean_score": 0.5878682067224549
+   },
+   "sesame_csm": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8666666666666667,
+    "mean_score": 0.40817014711520944
+   },
+   "orpheus-tts-0.1-finetune": {
+    "era": "2024-2025 open",
+    "n": 300,
+    "recall": 0.8333333333333334,
+    "mean_score": 0.3758269621493916
+   },
+   "ElevenLabs-v3": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.87,
+    "mean_score": 0.4703244398451514
+   },
+   "Chatterbox": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.76,
+    "mean_score": 0.30087118811025804
+   },
+   "OpenAI TTS-1 HD": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.9866666666666667,
+    "mean_score": 0.6123482736792518
+   },
+   "Higgs-Audio-V2": {
+    "era": "2025-2026 komersial",
+    "n": 300,
+    "recall": 0.7666666666666667,
+    "mean_score": 0.32600614848029286
+   }
+  }
+ }
+}

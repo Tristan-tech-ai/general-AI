@@ -1,0 +1,36 @@
+# ---- Dataset & arsip (puluhan GB, tidak boleh masuk repo) ----
+data/
+*.tar.gz
+*.zip
+*.tar
+noise/
+
+# ---- Bobot model ----
+ckpt/
+runs/**/best.pt
+runs_augbug/**/best.pt
+*.pt
+*.pth
+
+# ---- Repo pihak ketiga hasil clone ----
+forks/
+
+# ---- Cache & sementara ----
+__pycache__/
+*.pyc
+.hf_cache/
+tmp_head.txt
+ref13.txt
+ref_for_baselines.txt
+
+# ---- Log mentah (besar & berisik) ----
+*.log
+gdown_log.txt
+proposal_text.txt
+
+# ---- PDF sumber (hak cipta pihak ketiga) ----
+PROPOSAL_TESIS.pdf
+
+# ---- Berkas fitur besar ----
+audit_features.csv
+manifest.csv

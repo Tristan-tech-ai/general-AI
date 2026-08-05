@@ -1,0 +1,244 @@
+"""
+Grafik profesional untuk seluruh hasil eksperimen.
+
+Menghasilkan PNG siap-tesis dari berkas hasil yang sudah ada:
+  runs/*/results.json     -> akurasi & EER per model/augmentasi/seed (FoR-2sec)
+  snr_results.json        -> kurva degradasi vs SNR
+  rerec_results.json      -> lintas kondisi rekaman
+  itw_results.json        -> lintas korpus
+"""
+from __future__ import annotations
+
+import glob
+import json
+import os
+import re
+import sys
+from collections import defaultdict
+
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from forlib.metrics import full_metrics, prior_matched_threshold
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "charts")
+os.makedirs(OUT, exist_ok=True)
+
+# ---- gaya konsisten -------------------------------------------------------
+plt.rcParams.update({
+    "figure.dpi": 130, "savefig.dpi": 200, "font.size": 10,
+    "axes.spines.top": False, "axes.spines.right": False,
+    "axes.grid": True, "grid.alpha": 0.25, "grid.linewidth": 0.6,
+    "axes.axisbelow": True, "legend.frameon": False,
+    "figure.facecolor": "white", "axes.facecolor": "white",
+})
+PAL = {
+    "nes2net": "#0B7285", "nes2net_lastlayer": "#5BA3B0",
+    "wavlm": "#1864AB", "hubert": "#2F9E44", "wav2vec2": "#F08C00",
+    "ast": "#C2255C", "cnn_asp": "#7048E8", "cnnlstm": "#868E96",
+}
+def col(m):
+    return PAL.get(m.split("[")[0], "#495057")
+
+LABEL = {
+    "nes2net": "Nes2Net-X (fork, +layer-weighting)",
+    "nes2net_lastlayer": "Nes2Net-X (rancangan asli)",
+    "wavlm": "WavLM Large", "hubert": "HuBERT Large",
+    "wav2vec2": "Wav2Vec2 Base", "ast": "AST",
+    "cnn_asp": "CNN + ASP", "cnnlstm": "CNN-BiLSTM",
+}
+def lab(m):
+    return LABEL.get(m, m)
+
+
+def save(fig, name):
+    p = os.path.join(OUT, name)
+    fig.tight_layout()
+    fig.savefig(p, bbox_inches="tight")
+    plt.close(fig)
+    print("  ->", os.path.relpath(p, HERE))
+
+
+# ---------------------------------------------------------------- data FoR
+def load_for():
+    """Kumpulkan hasil FoR-2sec dari runs/."""
+    rec = defaultdict(list)
+    for d in sorted(glob.glob(os.path.join(HERE, "runs", "*"))):
+        f = os.path.join(d, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        m = re.match(r"^(.+?)_(official|random|clean_val|wavval)_([a-z]+?)(AV)?"
+                     r"(?:_b\d+e\d+)?_s(\d+)$", os.path.basename(d))
+        if not m:
+            continue
+        y, p, _ = np.load(f)
+        y = y.astype(int)
+        met = full_metrics(y, p, prior_matched_threshold(p, 0.5))
+        rec[(m.group(1), m.group(2), m.group(3))].append(met)
+    return rec
+
+
+def chart_for(rec):
+    """Grafik 1: akurasi per model x augmentasi pada split resmi."""
+    augs = ["none", "codec", "full"]
+    models = sorted({k[0] for k in rec if k[1] == "official"},
+                    key=lambda m: -np.mean([r["accuracy"] for k, v in rec.items()
+                                            if k[0] == m and k[1] == "official"
+                                            for r in v]))
+    fig, ax = plt.subplots(figsize=(11, 5.2))
+    w = 0.26
+    x = np.arange(len(models))
+    hatch = {"none": "///", "codec": "", "full": ".."}
+    for j, a in enumerate(augs):
+        vals, errs = [], []
+        for m in models:
+            v = rec.get((m, "official", a), [])
+            vals.append(np.mean([r["accuracy"] for r in v]) * 100 if v else np.nan)
+            errs.append(np.std([r["accuracy"] for r in v], ddof=1) * 100
+                        if len(v) > 1 else 0)
+        ax.bar(x + (j - 1) * w, vals, w, yerr=errs, capsize=3,
+               color=[col(m) for m in models],
+               alpha={"none": 0.35, "codec": 0.65, "full": 1.0}[a],
+               hatch=hatch[a], edgecolor="white", linewidth=0.6,
+               label=f"augmentasi: {a}")
+    ax.set_xticks(x)
+    ax.set_xticklabels([lab(m) for m in models], rotation=18, ha="right")
+    ax.set_ylabel("Akurasi test (%)")
+    ax.set_ylim(45, 101)
+    ax.axhline(94.7, ls="--", lw=1, color="#E03131")
+    ax.text(len(models) - 0.4, 94.9, "SOTA FoR terpublikasi 94,7%",
+            color="#E03131", fontsize=8, ha="right")
+    ax.set_title("FoR-2sec (split resmi) — akurasi per arsitektur dan strategi augmentasi\n"
+                 "rerata ± simpangan baku atas 3 seed, ambang prior-matched",
+                 loc="left", fontsize=11)
+    ax.legend(ncol=3, loc="lower right")
+    save(fig, "01_for_akurasi.png")
+
+
+def chart_split(rec):
+    """Grafik 2: efek protokol split — temuan metodologis utama."""
+    models = sorted({k[0] for k in rec if k[1] == "random"})
+    if not models:
+        return
+    fig, ax = plt.subplots(figsize=(7.5, 4.6))
+    for i, m in enumerate(models):
+        r = np.mean([x["accuracy"] for x in rec.get((m, "random", "none"), [])] or [np.nan]) * 100
+        o = np.mean([x["accuracy"] for x in rec.get((m, "official", "none"), [])] or [np.nan]) * 100
+        ax.plot([0, 1], [r, o], "-o", color=col(m), lw=2.5, ms=9, label=lab(m))
+        ax.annotate(f"{r:.1f}%", (0, r), textcoords="offset points",
+                    xytext=(-8, 6), ha="right", fontsize=10, color=col(m))
+        ax.annotate(f"{o:.1f}%", (1, o), textcoords="offset points",
+                    xytext=(8, 6), ha="left", fontsize=10, color=col(m))
+        ax.annotate(f"−{r-o:.1f} pp", (0.5, (r + o) / 2), ha="center",
+                    fontsize=11, color="#E03131", fontweight="bold")
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(["Split acak 60/20/20\n(rencana proposal)",
+                        "Partisi resmi FoR\n(lintas-domain)"])
+    ax.set_xlim(-0.35, 1.35)
+    ax.set_ylabel("Akurasi test (%)")
+    ax.set_title("Protokol split menentukan hasil, bukan model\n"
+                 "arsitektur, data, dan hyperparameter identik",
+                 loc="left", fontsize=11)
+    save(fig, "02_efek_split.png")
+
+
+def chart_snr():
+    p = os.path.join(HERE, "snr_results.json")
+    if not os.path.exists(p):
+        return
+    res = json.load(open(p, encoding="utf-8"))
+    g = defaultdict(list)
+    for r in res:
+        g[(r["arch"], r["snr"])].append(r)
+    archs = sorted({r["arch"] for r in res})
+    snrs = [None, 30, 25, 20, 15, 10, 5, 0, -5]
+    xs = list(range(len(snrs)))
+
+    fig = plt.figure(figsize=(12.5, 5))
+    gs = gridspec.GridSpec(1, 2, width_ratios=[1.25, 1], wspace=0.25)
+    ax1, ax2 = fig.add_subplot(gs[0]), fig.add_subplot(gs[1])
+
+    for a in archs:
+        acc = [np.mean([r["acc_pm"] for r in g.get((a, s), [])] or [np.nan]) * 100
+               for s in snrs]
+        eer = [np.mean([r["eer"] for r in g.get((a, s), [])] or [np.nan]) * 100
+               for s in snrs]
+        full = a.endswith("[full]")
+        ax1.plot(xs, acc, "-o" if full else "--s", color=col(a), lw=2.4 if full else 1.4,
+                 ms=5, alpha=1.0 if full else 0.55, label=a)
+        ax2.plot(xs, eer, "-o" if full else "--s", color=col(a), lw=2.4 if full else 1.4,
+                 ms=5, alpha=1.0 if full else 0.55)
+    for ax, yl, t in [(ax1, "Akurasi (%)", "Akurasi vs SNR"),
+                      (ax2, "EER (%)", "EER vs SNR")]:
+        ax.set_xticks(xs)
+        ax.set_xticklabels(["bersih"] + [str(s) for s in snrs[1:]])
+        ax.set_xlabel("SNR (dB) — noise DEMAND, korpus tak terlihat saat latih")
+        ax.set_ylabel(yl)
+        ax.set_title(t, loc="left", fontsize=11)
+    ax1.legend(fontsize=7.5, ncol=2, loc="lower left")
+    fig.suptitle("Ketahanan terhadap noise: garis tebal = dilatih dengan augmentasi noise, "
+                 "garis putus = tanpa", x=0.01, ha="left", fontsize=11)
+    save(fig, "03_kurva_snr.png")
+
+
+def chart_datasets(rec):
+    """Grafik 4: konsistensi model lintas dataset."""
+    src = {}
+    for name, f, key in [("for-rerec", "rerec_results.json", None),
+                         ("In-the-Wild", "itw_results.json", None)]:
+        p = os.path.join(HERE, f)
+        if os.path.exists(p):
+            src[name] = json.load(open(p, encoding="utf-8"))
+    if not src:
+        return
+
+    rows = defaultdict(dict)
+    for m, aug, a in [(k[0], k[2], v) for k, v in rec.items() if k[1] == "official"]:
+        if aug in ("codec", "full"):
+            rows[f"{m}[{aug}]"]["FoR-2sec"] = np.mean([r["eer"] for r in a]) * 100
+    for name, res in src.items():
+        agg = defaultdict(list)
+        for r in res:
+            k = f"{r.get('arch', r.get('model','?'))}[{r.get('aug','codec')}]"
+            agg[k].append(r.get("eer", np.nan))
+        for k, v in agg.items():
+            rows[k][name] = np.nanmean(v) * 100
+
+    keys = [k for k in rows if len(rows[k]) >= 2]
+    if not keys:
+        return
+    cols = ["FoR-2sec", "for-rerec", "In-the-Wild"]
+    keys.sort(key=lambda k: rows[k].get("FoR-2sec", 99))
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.4))
+    xs = np.arange(len(cols))
+    for k in keys:
+        ys = [rows[k].get(c, np.nan) for c in cols]
+        ax.plot(xs, ys, "-o", color=col(k), lw=2, ms=7, label=k, alpha=0.9)
+    ax.set_xticks(xs); ax.set_xticklabels(cols)
+    ax.set_ylabel("EER (%)  — makin rendah makin baik")
+    ax.set_yscale("log")
+    ax.set_title("Konsistensi lintas dataset: unggul di FoR tidak menjamin unggul di korpus lain\n"
+                 "sumbu Y logaritmik", loc="left", fontsize=11)
+    ax.legend(fontsize=8, ncol=2)
+    save(fig, "04_lintas_dataset.png")
+
+
+def main():
+    print("membuat grafik ...")
+    rec = load_for()
+    print(f"  {len(rec)} kombinasi (model x split x augmentasi) dari runs/")
+    chart_for(rec)
+    chart_split(rec)
+    chart_snr()
+    chart_datasets(rec)
+    print(f"\nselesai -> {os.path.relpath(OUT, HERE)}/")
+
+
+if __name__ == "__main__":
+    main()

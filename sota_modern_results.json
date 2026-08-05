@@ -1,0 +1,38 @@
+{
+ "for_2sec": {
+  "acc": 0.08731617647058823,
+  "eer": 0.9108455882352942,
+  "auc": 0.023293887867647058,
+  "recall_spoof@0.5": 0.7757352941176471
+ },
+ "Chatterbox": {
+  "n": 400,
+  "recall@0.5": 0.98,
+  "recall@thr_for": 0.28,
+  "mean_score": 0.91726529167577
+ },
+ "ElevenLabs-v3": {
+  "n": 400,
+  "recall@0.5": 0.9975,
+  "recall@thr_for": 0.5725,
+  "mean_score": 0.9691173189040273
+ },
+ "Higgs-Audio-V2": {
+  "n": 400,
+  "recall@0.5": 1.0,
+  "recall@thr_for": 0.7925,
+  "mean_score": 0.9880964162355909
+ },
+ "OpenAI TTS-1 HD": {
+  "n": 400,
+  "recall@0.5": 0.9925,
+  "recall@thr_for": 0.4575,
+  "mean_score": 0.9501168207645726
+ },
+ "f5-tts": {
+  "n": 400,
+  "recall@0.5": 0.8225,
+  "recall@thr_for": 0.0675,
+  "mean_score": 0.7305012717546197
+ }
+}
