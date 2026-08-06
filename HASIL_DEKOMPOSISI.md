@@ -6,22 +6,22 @@ Matriks 2x2 melaporkan selisih +37,59 poin persentase pada AST dan +43,01 poin p
 
 | Arsitektur | n | A. proposal @ 0,5 | B. proposal @ prior | C. rekayasa @ 0,5 | D. rekayasa @ prior |
 |---|---|---|---|---|---|
-| ast | 1/1 | 51.56 | **83.18** | **65.72** | **89.15** |
-| wavlm | 1/3 | 55.61 | **98.16** | **83.15** | **98.62** |
+| ast | 1/1 | 73.16 | **92.56** | **65.72** | **89.15** |
+| wavlm | 1/3 | 53.31 | **56.99** | **83.15** | **98.62** |
 
 ## Sumbangan tiap sumbu (poin persentase)
 
 | Arsitektur | Ambang saja (B-A) | Pelatihan saja (C-A) | Interaksi | Total (D-A) |
 |---|---|---|---|---|
-| ast | **+31.62** | **+14.15** | -8.18 | +37.59 |
-| wavlm | **+42.56** | **+27.54** | -27.08 | +43.01 |
+| ast | **+19.39** | **-7.44** | +4.04 | +15.99 |
+| wavlm | **+3.68** | **+29.84** | +11.80 | +45.31 |
 
 ## Daya pisah, yang sama sekali tidak bergantung pada ambang
 
 | Arsitektur | AUC proposal | AUC rekayasa | EER proposal | EER rekayasa | Penurunan EER relatif |
 |---|---|---|---|---|---|
-| ast | 0.9099 | **0.9586** | 16.82 | **10.85** | **+35.5 persen** |
-| wavlm | 0.9977 | **0.9992** | 1.84 | **1.41** | **+23.3 persen** |
+| ast | 0.9780 | **0.9586** | 7.44 | **10.85** | **-45.7 persen** |
+| wavlm | 0.6569 | **0.9992** | 43.01 | **1.41** | **+96.7 persen** |
 
 ## Bacaan
 

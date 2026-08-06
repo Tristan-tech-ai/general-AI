@@ -322,6 +322,56 @@ def bangun():
                     "Gambar 1. Akurasi pada dua protokol pembagian data. "
                     "Arsitektur, data, dan hyperparameter identik."))
 
+    BUTA = []
+    for nm, sblm, ssdh in [
+            ("Encoder tidak pernah dilatih karena bug",
+             "ast_official_proposalULRPK_b32e20_s42",
+             "ast_random_proposalULRPK_b32e20_s42"),
+            ("Encoder rusak karena learning rate terlalu tinggi",
+             "wavlm_official_proposalULRPK_b16e20_s42",
+             "wavlm_random_proposalULRPK_b16e20_s42")]:
+        a = _kumpul_ambang(f"runs_pra_perbaikan/{sblm}")
+        b = _kumpul_ambang(f"runs/{sblm}")
+        c = _kumpul_ambang(f"runs_pra_perbaikan/{ssdh}")
+        d = _kumpul_ambang(f"runs/{ssdh}")
+        if all([a, b, c, d]):
+            BUTA.append([nm, f"{b['apm'] - a['apm']:+.2f}",
+                         f"{d['apm'] - c['apm']:+.2f}",
+                         f"{b['auc'] - a['auc']:+.4f}",
+                         f"{d['auc'] - c['auc']:+.4f}"])
+    if BUTA:
+        E.append(P(
+            "Selama penelitian berlangsung, dua kejadian tidak sengaja "
+            "menyediakan uji yang jauh lebih tajam terhadap protokol pembagian "
+            "data. Pada kedua kejadian itu sebuah kerusakan besar menimpa model, "
+            "dan pertanyaannya adalah protokol mana yang mampu mendeteksinya.", "p"))
+        E.append(P(
+            "Kejadian pertama adalah sebuah bug yang menyebabkan encoder tidak "
+            "pernah menerima gradien sama sekali, sehingga sebagian terbesar "
+            "kapasitas model tidak pernah dilatih. Kejadian kedua adalah "
+            "learning rate seragam yang ditetapkan proposal, yang ketika benar "
+            "benar diterapkan pada WavLM Large merusak representasi pra-latihnya "
+            "sampai area under curve turun mendekati tebakan acak. Tabel berikut "
+            "menunjukkan berapa besar perubahan yang tercatat oleh masing-masing "
+            "protokol.", "p"))
+        E.append(tabel(["Kerusakan pada model", "Terdeteksi partisi resmi (pp)",
+                        "Terdeteksi split acak (pp)", "Perubahan AUC resmi",
+                        "Perubahan AUC acak"], BUTA,
+                       [4.6 * cm, 3.2 * cm, 3.0 * cm, 2.6 * cm, 2.4 * cm]))
+        E.append(Spacer(1, 6))
+        E.append(P(
+            "Split acak nyaris tidak bergerak pada kedua kejadian. Model yang "
+            "encodernya tidak pernah dilatih tetap mencatat akurasi di atas 99 "
+            "persen, dan model yang representasinya sudah rusak sampai hampir "
+            "setara tebakan acak pada partisi resmi tetap mencatat 99,52 persen "
+            "dengan AUC 0,9979 pada split acak. Temuan ini lebih keras daripada "
+            "pernyataan bahwa split acak menghasilkan angka yang menggelembung. "
+            "Protokol tersebut ternyata tidak dapat membedakan model yang bekerja "
+            "dari model yang sebagian besar kapasitasnya mati atau rusak. Angka "
+            "yang dihasilkannya karena itu tidak dapat dipakai untuk memilih "
+            "model, membandingkan arsitektur, atau bahkan untuk memastikan bahwa "
+            "pelatihan berjalan sebagaimana mestinya.", "p"))
+
     E.append(P("3.2 Penyebabnya adalah artefak kompresi, dan terukur", "h2"))
     E.append(P(
         "Audit terhadap seluruh berkas menemukan bahwa nama berkas kelas palsu "

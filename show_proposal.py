@@ -17,13 +17,20 @@ def out(s=""):
     print(s); L.append(s)
 
 out("# Replikasi Metodologi Proposal Apa Adanya\n")
+out("Seluruh angka di halaman ini berasal dari run setelah perbaikan bug "
+    "encoder beku yang diuraikan di KOREKSI_REPLIKASI_PROPOSAL.md. Sebelum "
+    "perbaikan itu, encoder tidak pernah menerima gradien meskipun proposal "
+    "menetapkan satu learning rate untuk seluruh model.\n")
 out("Konfigurasi persis seperti tertulis di proposal: split acak 60/20/20, "
     "learning rate 0,001 seragam untuk semua model, 20 epoch tanpa early "
     "stopping, normalisasi peak amplitudo, augmentasi noise SNR 15 sampai 30 dB, "
     "batch 32, ambang keputusan 0,5.\n")
 
+# Hanya split acak. Sejak arm proposal juga dijalankan pada partisi resmi,
+# pola glob lama ikut menarik run partisi resmi ke dalam tabel ini dan membuat
+# dua protokol yang berbeda tampak berada dalam satu kolom.
 rows = []
-for d in sorted(glob.glob(os.path.join(HERE, "runs", "*ULRPK*"))):
+for d in sorted(glob.glob(os.path.join(HERE, "runs", "*_random_*ULRPK*"))):
     fj = os.path.join(d, "results.json")
     fs = os.path.join(d, "test_scores.npy")
     if not (os.path.exists(fj) and os.path.exists(fs)):
@@ -59,6 +66,38 @@ else:
         out("| %s | %d | %d | %d | %d |"
             % (r["model"], r["tp"], r["tn"], r["fp"], r["fn"]))
     out("")
+
+# Konfigurasi proposal yang sama, tetapi diuji pada partisi resmi.
+ofs = []
+for d in sorted(glob.glob(os.path.join(HERE, "runs", "*_official_*ULRPK*"))):
+    fs = os.path.join(d, "test_scores.npy")
+    fj = os.path.join(d, "results.json")
+    if not (os.path.exists(fs) and os.path.exists(fj)):
+        continue
+    r = json.load(open(fj, encoding="utf-8"))
+    y, p, _ = np.load(fs)
+    y = y.astype(int)
+    m05 = full_metrics(y, p, 0.5)
+    mpm = full_metrics(y, p, prior_matched_threshold(p, 0.5))
+    ofs.append((r["args"]["model"], m05, mpm))
+
+if ofs:
+    out("## Konfigurasi proposal yang sama, diuji pada partisi resmi\n")
+    out("Perbedaan dengan tabel di atas hanya pada cara data dibagi. Seluruh "
+        "setelan pelatihan identik.\n")
+    out("| model | akurasi @0,5 | akurasi @prior | AUC | EER |")
+    out("|---|---|---|---|---|")
+    for nm, a, b in sorted(ofs, key=lambda t: -t[2]["accuracy"]):
+        out("| %s | %.2f%% | **%.2f%%** | %.4f | %.2f%% |"
+            % (nm, a["accuracy"] * 100, b["accuracy"] * 100, a["auc"],
+               a["eer"] * 100))
+    out("")
+    out("Selisih antara kedua tabel jauh lebih besar daripada selisih antar "
+        "arsitektur di dalam masing-masing tabel. Pada split acak seluruh model "
+        "berkerumun dalam rentang setengah poin persentase, sedangkan pada "
+        "partisi resmi rentangnya puluhan poin. Pemeringkatan yang dihasilkan "
+        "kedua protokol juga tidak sama, sehingga memilih model berdasarkan "
+        "split acak dapat menghasilkan pilihan yang keliru.\n")
 
 # pembanding: versi diperbaiki pada protokol resmi
 out("## Pembanding: metodologi yang diperbaiki\n")
