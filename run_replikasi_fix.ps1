@@ -15,7 +15,10 @@ $env:PYTHONUNBUFFERED = "1"
 $arsip = Join-Path $PSScriptRoot "runs_pra_perbaikan"
 if (-not (Test-Path $arsip)) { New-Item -ItemType Directory $arsip | Out-Null }
 
-@(Get-ChildItem -Path (Join-Path $PSScriptRoot "runs") -Directory -Filter "*ULR*") |
+# CNN-LSTM dikecualikan. Kelas itu tidak punya atribut frozen sehingga tidak
+# pernah terkena bug encoder beku, dan hasil lamanya tetap sahih.
+@(Get-ChildItem -Path (Join-Path $PSScriptRoot "runs") -Directory -Filter "*ULR*" |
+    Where-Object { $_.Name -notlike "cnnlstm*" }) |
     ForEach-Object {
         $tujuan = Join-Path $arsip $_.Name
         if (Test-Path $tujuan) { Remove-Item -Recurse -Force $tujuan }
@@ -30,7 +33,7 @@ $jobs = @(
     @{m = "ast";      b = 32; split = "random"},
     @{m = "wavlm";    b = 16; split = "official"},
     @{m = "wavlm";    b = 16; split = "random"},
-    @{m = "hubert";   b = 16; split = "random"},
+    @{m = "hubert";   b = 32; split = "random"},
     @{m = "wav2vec2"; b = 32; split = "random"}
 )
 

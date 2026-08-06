@@ -567,6 +567,67 @@ def bangun():
             "Konsistensi antara dua sumbu yang tidak berkaitan ini merupakan bukti "
             "yang lebih kuat daripada masing-masing temuan secara terpisah.", "p"))
 
+    TANGGA = [
+        ("L1", "Konfigurasi proposal apa adanya",
+         "runs/ast_official_proposalULRPK_b32e20_s42"),
+        ("L2", "Normalisasi loudness menggantikan peak",
+         "runs/ast_official_proposalULR_b32e20_s42"),
+        ("L3", "Learning rate per model dan encoder dibekukan",
+         "runs/ast_official_proposal_b32e20_s42"),
+        ("L4", "Early stopping pada equal error rate",
+         "runs/ast_official_proposal_b32e10_s42"),
+        ("L5", "Augmentasi penuh menggantikan noise saja",
+         "runs/ast_official_full_b32e10_s42"),
+    ]
+    tg, prev = [], None
+    for kode, nama, d in TANGGA:
+        m = _kumpul_ambang(d)
+        if m is None:
+            continue
+        tg.append([kode, nama, f"{m['apm']:.2f}",
+                   "" if prev is None else f"{m['apm'] - prev:+.2f}",
+                   f"{m['auc']:.4f}", f"{m['eer']:.2f}"])
+        prev = m["apm"]
+
+    if len(tg) >= 2:
+        E.append(P("3.9 Perbaikan mana yang membeli berapa", "h2"))
+        E.append(P(
+            "Bagian sebelumnya menunjukkan bahwa metodologi yang diperbaiki "
+            "mengungguli konfigurasi proposal, dan bahwa sebagian besar "
+            "selisihnya berasal dari kalibrasi. Yang belum terjawab adalah "
+            "perbaikan mana di dalam paket itu yang benar-benar menyumbang. "
+            "Untuk menjawabnya, perbaikan ditambahkan satu per satu di atas "
+            "konfigurasi proposal, seluruhnya pada AST, partisi resmi, batch 32, "
+            "dan seed 42. Akurasi dilaporkan pada ambang prior-matched untuk "
+            "semua langkah agar sumbu ambang tidak ikut bercampur.", "p"))
+        E.append(tabel(["Langkah", "Perbaikan yang ditambahkan", "Akurasi",
+                        "Selisih (pp)", "AUC", "EER"], tg,
+                       [1.6 * cm, 6.4 * cm, 2.2 * cm, 2.2 * cm, 2.0 * cm,
+                        1.8 * cm]))
+        E.append(Spacer(1, 6))
+        E.extend(gambar("11_tangga_ablasi.png", 15.0 * cm,
+                        "Gambar 6. Sumbangan tiap perbaikan pada AST di partisi "
+                        "resmi. Batang merah menandai perbaikan yang merugikan "
+                        "bila berdiri sendiri."))
+        E.append(P(
+            "Dua hal menonjol dari tangga ini. Pertama, penyumbang terbesar "
+            "bukanlah perubahan arsitektur melainkan early stopping pada equal "
+            "error rate. Melatih 20 epoch tanpa kriteria henti membuat model "
+            "melewati titik terbaiknya, dan memilih bobot menurut equal error "
+            "rate validasi mengembalikan sebagian besar kerugian itu tanpa "
+            "mengubah satu baris pun pada arsitekturnya.", "p"))
+        E.append(P(
+            "Kedua, tidak semua perbaikan berguna bila berdiri sendiri. "
+            "Normalisasi loudness, yang dipilih karena secara teori lebih tepat "
+            "daripada normalisasi puncak, justru menurunkan akurasi ketika "
+            "diterapkan tanpa perbaikan lain, dan penurunannya terlihat pula "
+            "pada area under curve sehingga bukan sekadar pergeseran ambang. "
+            "Langkah itu tetap dipertahankan dalam konfigurasi akhir karena "
+            "bermanfaat dalam kombinasi dengan augmentasi penuh, namun temuan "
+            "negatifnya dilaporkan apa adanya di sini. Melaporkan hanya "
+            "langkah-langkah yang berhasil akan memberi kesan keliru bahwa "
+            "setiap keputusan desain sudah benar sejak awal.", "p"))
+
     E.append(PageBreak())
     # ---------------- 4
     E.append(P("4. Usulan: Augmentasi Band-Gain", "h1"))

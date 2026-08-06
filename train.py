@@ -132,6 +132,10 @@ def main():
     ap.add_argument("--patience", type=int, default=5)
     ap.add_argument("--unfreeze", action="store_true",
                     help="fine-tune encoder SSL (default: beku)")
+    ap.add_argument("--enc-lr", type=float, default=None,
+                    help="timpa learning rate encoder saja, head tetap memakai "
+                         "nilai bawaan per model; berguna untuk memisahkan "
+                         "pengaruh fine-tuning dari pengaruh laju yang dipakai")
     ap.add_argument("--no-layer-weighting", action="store_true")
     ap.add_argument("--label-smoothing", type=float, default=0.05)
     ap.add_argument("--augment-val", action="store_true",
@@ -150,6 +154,10 @@ def main():
            f"{'AV' if args.augment_val else ''}"
            f"{'ULR' if args.uniform_lr is not None else ''}"
            f"{'PK' if args.normalize == 'peak' else ''}"
+           # tanpa penanda ini, run berencoder beku dan berencoder dilatih
+           # memakai tag yang sama dan saling menimpa tanpa peringatan
+           f"{'UF' if args.unfreeze else ''}"
+           f"{('ENC' + str(args.enc_lr)) if args.enc_lr is not None else ''}"
            f"_b{args.batch}e{args.epochs}_s{args.seed}")
     outdir = os.path.join(HERE, args.out, tag)
     os.makedirs(outdir, exist_ok=True)
@@ -195,6 +203,9 @@ def main():
     print(f"parameter: {n_tr/1e6:.2f} M dilatih / {n_all/1e6:.2f} M total")
 
     head_lr, enc_lr = DEFAULT_LR[args.model]
+    if args.enc_lr is not None:
+        enc_lr = args.enc_lr
+        print(f"learning rate encoder ditimpa menjadi {enc_lr}")
     if args.uniform_lr is not None:
         # Proposal hal. 68 menetapkan satu learning rate untuk seluruh model.
         # Untuk model pra-latih ini berarti encoder ikut dilatih pada LR itu,

@@ -78,14 +78,57 @@ dan `frozen=True` adalah perilaku yang benar:
 Dengan kata lain, temuan pokok penelitian ini tidak bergantung pada arm yang
 keliru. Yang perlu diukur ulang adalah pembanding baseline-nya.
 
-## Perkiraan arah perubahan
+## Perkiraan arah perubahan, dicatat sebelum run ulang dijalankan
 
 Melatih encoder transformer pra-latih pada learning rate 0,001 selama 20 epoch
 tanpa early stopping adalah laju yang sangat tinggi untuk fine-tuning. Dugaan
-yang dicatat di muka, sebelum run ulang dijalankan, adalah bahwa hasilnya akan
-lebih buruk daripada versi berencoder beku pada partisi resmi, karena
-representasi pra-latih kemungkinan besar rusak. Bila dugaan ini benar, selisih
-antara proposal dan versi rekayasa akan melebar, bukan menyempit.
+yang dicatat di muka adalah bahwa hasilnya akan lebih buruk daripada versi
+berencoder beku pada partisi resmi, karena representasi pra-latih kemungkinan
+besar rusak. Bila dugaan itu benar, selisih antara proposal dan versi rekayasa
+akan melebar, bukan menyempit.
 
-Dugaan ini ditulis sebelum hasilnya diketahui agar dapat dinilai secara jujur
-setelahnya.
+## Hasil sebenarnya: dugaan itu keliru, dan arahnya berkebalikan
+
+AST pada partisi resmi, seed 42, batch 32, seluruh setelan lain sama:
+
+| | Akurasi @0,5 | Akurasi @prior | EER | AUC | Epoch terbaik |
+|---|---|---|---|---|---|
+| Sebelum perbaikan, encoder tidak pernah dilatih | 51,56 | 83,18 | 16,82 | 0,9099 | 3 |
+| Sesudah perbaikan, encoder benar-benar dilatih | **73,16** | **92,56** | **7,44** | **0,9780** | 16 |
+
+Fine-tuning pada laju 0,001 tidak merusak representasi pra-latih. Equal error
+rate justru turun lebih dari setengah dan AUC naik menjadi 0,9780. Epoch terbaik
+bergeser dari 3 menjadi 16, yang berarti model memang terus belajar sepanjang
+pelatihan dan bukan langsung overfit seperti yang diduga.
+
+## Akibatnya bagi kesimpulan penelitian
+
+Konfigurasi rekayasa pada partisi resmi mencapai 89,15 persen. Konfigurasi
+proposal yang diimplementasikan dengan benar mencapai 92,56 persen. Dengan kata
+lain **konfigurasi rekayasa tertinggal 3,41 poin persentase** dari baseline yang
+seharusnya dikalahkannya. Pada ambang 0,5 selisihnya lebih lebar lagi, yaitu
+65,72 lawan 73,16.
+
+Angka "nilai rekayasa +37,59 poin persentase" yang sempat dilaporkan bukan nilai
+rekayasa. Angka itu artefak dari baseline yang lumpuh karena bug.
+
+Sebab teknisnya dapat ditunjuk dengan jelas. Paket rekayasa membekukan encoder.
+Keputusan itu ternyata membuang lebih banyak daripada yang dibeli oleh early
+stopping, augmentasi penuh, agregasi berbobot antar lapisan, dan normalisasi
+loudness digabung sekalian.
+
+Langkah lanjutan yang jelas adalah menggabungkan sisi terbaik keduanya, yaitu
+encoder yang ikut dilatih seperti pada proposal ditambah early stopping,
+augmentasi penuh, dan agregasi berbobot antar lapisan. Kombinasi itu belum
+pernah dijalankan sama sekali dan dijadwalkan pada `run_unfreeze.ps1`.
+
+## Catatan tentang cara temuan ini muncul
+
+Bug ini tidak ditemukan lewat pemeriksaan kode, melainkan lewat tangga ablasi
+yang kebetulan menempatkan dua konfigurasi berbeda secara berdampingan. Tanpa
+ablasi itu, angka +37,59 poin persentase akan masuk ke naskah akhir sebagai
+temuan utama, dan kesimpulan penelitian akan terbalik dari yang sebenarnya.
+
+Ini juga alasan mengapa dugaan ditulis lebih dahulu. Bila dugaan tidak dicatat
+di muka, sangat mudah menyusun penjelasan setelah melihat hasil dan mengaku
+sudah menduganya sejak awal.
