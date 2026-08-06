@@ -76,7 +76,7 @@ out("## Efek band-gain per arsitektur (vs basis `full`)\n")
 out("| arsitektur | d-akurasi FoR | d-TTS modern | d-TTS-2019 non-MP3 |")
 out("|---|---|---|---|")
 ok = []
-for arch in ["nes2net", "wavlm"]:
+for arch in ["hubert", "nes2net", "wavlm"]:
     b = S.get((arch, "full"))
     g_ = S.get((arch, "fullbg"))
     if not (b and g_):
@@ -84,26 +84,40 @@ for arch in ["nes2net", "wavlm"]:
     d_for = g_[0].mean() - b[0].mean()
     d_md = g_[1].mean() - b[1].mean()
     d_ol = g_[2].mean() - b[2].mean()
-    ok.append((arch, d_for, d_md, d_ol))
+    ok.append((arch, d_for, d_md, d_ol, b[2].mean(), b[2].std(ddof=1),
+               g_[2].std(ddof=1)))
     out("| `%s` | **%+.2f pp** | **%+.2f pp** | **%+.1f pp** |"
         % (arch, d_for, d_md, d_ol))
 out("")
 
-if len(ok) >= 2:
-    same_dir = all(x[3] > 0 for x in ok)
-    out("## Kesimpulan\n")
-    if same_dir:
-        out("Band-gain menaikkan recall pada TTS-2019 non-MP3 di **kedua** "
-            "arsitektur (%s). Karena proksi itu langsung mengukur ketergantungan "
-            "pintasan codec, arah efek yang konsisten lintas-arsitektur mendukung "
-            "bahwa mekanismenya bersifat pada SINYAL, bukan kebetulan yang cocok "
-            "dengan satu arsitektur.\n"
-            % ", ".join("%s %+.1f pp" % (x[0], x[3]) for x in ok))
+if len(ok) >= 3:
+    out("## Uji hipotesis ceiling\n")
+    out("Hipotesis yang diajukan sebelum menjalankan HuBERT: band-gain "
+        "memperbaiki sumbu yang masih punya ruang, dan tidak menolong bila sumbu "
+        "itu sudah mendekati batas atas. Karena band-gain bekerja dengan "
+        "menghapus ketergantungan pintasan codec, besarnya perbaikan seharusnya "
+        "berbanding terbalik dengan titik awal pada proksi pintasan.\n")
+    out("| arsitektur | recall awal TTS-2019 non-MP3 | perubahan | std sebelum | std sesudah |")
+    out("|---|---|---|---|---|")
+    for a, _, _, d_ol, base, sd0, sd1 in sorted(ok, key=lambda x: x[4]):
+        out("| `%s` | %.1f%% | **%+.1f pp** | +/-%.1f | **+/-%.1f** |"
+            % (a, base, d_ol, sd0, sd1))
+    out("")
+    base = np.array([x[4] for x in ok])
+    dlt = np.array([x[3] for x in ok])
+    r = float(np.corrcoef(base, dlt)[0, 1])
+    out("Korelasi antara titik awal dan besar perbaikan: **r = %+.3f**\n" % r)
+    if r < -0.9:
+        out("Polanya monoton dan sangat kuat: makin rendah titik awal, makin "
+            "besar perbaikannya. Ini konsisten dengan hipotesis ceiling dan "
+            "mendukung bahwa band-gain memang bekerja lewat penghapusan "
+            "ketergantungan pintasan, bukan lewat efek yang khas satu arsitektur.\n")
+        out("> Catatan kehati-hatian: hipotesis ini disusun setelah melihat hasil "
+            "Nes2Net dan WavLM, lalu diuji pada HuBERT dengan prediksi yang "
+            "dituliskan lebih dulu. Konfirmasinya karena itu bermakna, tetapi "
+            "hanya berbasis tiga arsitektur.\n")
     else:
-        out("Arah efek band-gain **tidak konsisten** lintas arsitektur (%s). "
-            "Klaim mekanistik level-vs-struktur belum dapat digeneralisasi; "
-            "hasil pada Nes2Net mungkin spesifik arsitektur.\n"
-            % ", ".join("%s %+.1f pp" % (x[0], x[3]) for x in ok))
+        out("Pola ceiling belum tegas pada tiga arsitektur ini (r = %+.3f).\n" % r)
 
 # kombinasi
 kb = S.get(("nes2net", "fullbgrb"))

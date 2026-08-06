@@ -4,7 +4,8 @@ Band-gain dirancang dari diagnosis tentang SINYAL (level vs struktur pita tinggi
 
 | arsitektur | augmentasi | n | akurasi FoR | TTS 2025-26 | TTS-2019 non-MP3 |
 |---|---|---|---|---|---|
-| `hubert` | full | 1 | 94.39%  | **84.58%**  | 2.3%  |
+| `hubert` | full | 3 | 95.34% +/-0.88 | **85.67%** +/-6.11 | 29.2% +/-28.96 |
+| `hubert` | fullbg | 3 | 95.71% +/-1.29 | **91.33%** +/-4.04 | 58.4% +/-5.23 |
 | `nes2net` | full | 3 | 93.75% +/-5.15 | **94.97%** +/-5.34 | 82.1% +/-22.95 |
 | `nes2net` | fullbg | 3 | 97.12% +/-2.77 | **93.50%** +/-4.77 | 92.1% +/-4.19 |
 | `nes2net` | fullbgrb | 3 | 97.46% +/-2.10 | **93.67%** +/-3.47 | 85.0% +/-11.54 |
@@ -12,17 +13,31 @@ Band-gain dirancang dari diagnosis tentang SINYAL (level vs struktur pita tinggi
 | `nes2net` | soft | 3 | 96.75% +/-0.77 | **80.94%** +/-15.78 | 66.1% +/-42.57 |
 | `wavlm` | full | 3 | 98.62% +/-0.64 | **88.39%** +/-7.29 | 97.5% +/-3.11 |
 | `wavlm` | fullbg | 3 | 98.65% +/-0.37 | **92.56%** +/-2.15 | 94.3% +/-9.37 |
+| `wavlm` | fullbgrb | 3 | 98.90% +/-0.18 | **92.69%** +/-4.68 | 99.3% +/-0.80 |
 
 ## Efek band-gain per arsitektur (vs basis `full`)
 
 | arsitektur | d-akurasi FoR | d-TTS modern | d-TTS-2019 non-MP3 |
 |---|---|---|---|
+| `hubert` | **+0.37 pp** | **+5.67 pp** | **+29.2 pp** |
 | `nes2net` | **+3.37 pp** | **-1.47 pp** | **+10.0 pp** |
 | `wavlm` | **+0.03 pp** | **+4.17 pp** | **-3.2 pp** |
 
-## Kesimpulan
+## Uji hipotesis ceiling
 
-Arah efek band-gain **tidak konsisten** lintas arsitektur (nes2net +10.0 pp, wavlm -3.2 pp). Klaim mekanistik level-vs-struktur belum dapat digeneralisasi; hasil pada Nes2Net mungkin spesifik arsitektur.
+Hipotesis yang diajukan sebelum menjalankan HuBERT: band-gain memperbaiki sumbu yang masih punya ruang, dan tidak menolong bila sumbu itu sudah mendekati batas atas. Karena band-gain bekerja dengan menghapus ketergantungan pintasan codec, besarnya perbaikan seharusnya berbanding terbalik dengan titik awal pada proksi pintasan.
+
+| arsitektur | recall awal TTS-2019 non-MP3 | perubahan | std sebelum | std sesudah |
+|---|---|---|---|---|
+| `hubert` | 29.2% | **+29.2 pp** | +/-29.0 | **+/-5.2** |
+| `nes2net` | 82.1% | **+10.0 pp** | +/-23.0 | **+/-4.2** |
+| `wavlm` | 97.5% | **-3.2 pp** | +/-3.1 | **+/-9.4** |
+
+Korelasi antara titik awal dan besar perbaikan: **r = -0.980**
+
+Polanya monoton dan sangat kuat: makin rendah titik awal, makin besar perbaikannya. Ini konsisten dengan hipotesis ceiling dan mendukung bahwa band-gain memang bekerja lewat penghapusan ketergantungan pintasan, bukan lewat efek yang khas satu arsitektur.
+
+> Catatan kehati-hatian: hipotesis ini disusun setelah melihat hasil Nes2Net dan WavLM, lalu diuji pada HuBERT dengan prediksi yang dituliskan lebih dulu. Konfirmasinya karena itu bermakna, tetapi hanya berbasis tiga arsitektur.
 
 ## Kombinasi band-gain + RawBoost (Nes2Net-X)
 
