@@ -202,6 +202,17 @@ def main():
         head_lr = enc_lr = args.uniform_lr
         for p in model.parameters():
             p.requires_grad = True
+        # BUG YANG DIPERBAIKI: menyetel requires_grad saja tidak cukup. Ketiga
+        # kelas berbasis SSL membungkus forward encoder dengan
+        #   ctx = torch.no_grad() if self.frozen else torch.enable_grad()
+        # sehingga selama atribut frozen masih True tidak ada gradien yang
+        # sampai ke encoder. Optimizer tetap menerima grup parameter encoder,
+        # namun grad-nya selalu None sehingga AdamW melewatinya. Akibatnya
+        # seluruh run replikasi proposal sebelum perbaikan ini menghasilkan skor
+        # yang identik bitwise dengan run berencoder beku, yaitu encoder tidak
+        # pernah benar-benar ikut dilatih meskipun log mengaku sebaliknya.
+        if hasattr(model, "frozen"):
+            model.frozen = False
         n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
         print(f"mode LR seragam {args.uniform_lr}: encoder DILATIH, "
               f"{n_tr/1e6:.2f} M parameter")
