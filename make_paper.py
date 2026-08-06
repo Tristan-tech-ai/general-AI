@@ -180,7 +180,11 @@ def _kumpul_ambang(pat):
     if not a05:
         return None
     return {"a05": np.mean(a05), "apm": np.mean(apm),
-            "auc": np.mean(auc), "eer": np.mean(eer)}
+            "auc": np.mean(auc), "eer": np.mean(eer),
+            # alias untuk tabel yang melaporkan akurasi prior-matched beserta
+            # sebaran antar inisialisasi acak
+            "acc": np.mean(apm), "n": len(apm),
+            "sd": (np.std(apm, ddof=1) if len(apm) > 1 else 0.0)}
 
 
 def ms(v, k, pct=True):
@@ -227,14 +231,17 @@ def bangun():
         "domain latihnya. Sebagai tanggapan, penelitian ini mengusulkan augmentasi "
         "band-gain yang menetralkan isyarat level energi pita tinggi tanpa merusak "
         "struktur halusnya, dan menguji dampaknya secara terkontrol. Perbandingan "
-        "setara pada matriks dua kali dua menunjukkan bahwa metodologi yang "
-        "diperbaiki menyusutkan selisih hasil antar protokol dari 44 sampai 48 "
-        "poin persentase menjadi 1,13 poin, sehingga hasilnya praktis tidak lagi "
-        "bergantung pada cara data dibagi. Pemecahan lanjutan atas selisih "
-        "tersebut menunjukkan bahwa bagian terbesarnya berasal dari penetapan "
-        "ambang keputusan dan bukan dari cara model dilatih, sehingga temuan ini "
-        "dilaporkan sebagai perbaikan kalibrasi dan bukan sebagai perbaikan "
-        "arsitektur.", "p"))
+        "setara antara metodologi proposal dan metodologi yang diperbaiki "
+        "menghasilkan kesimpulan yang tidak tunggal. Pada WavLM Large, "
+        "konfigurasi proposal runtuh menjadi 56,99 persen dengan area under curve "
+        "0,6569 sedangkan konfigurasi yang diperbaiki mencapai 98,62 persen. Pada "
+        "AST arahnya terbalik, yaitu proposal mencapai 92,56 persen sedangkan "
+        "konfigurasi yang diperbaiki hanya 89,15 persen. Penelusuran sampai ke "
+        "tiap keputusan desain menunjukkan bahwa penyebabnya sama pada kedua "
+        "kasus, yaitu satu keputusan mengenai perlakuan encoder yang diseragamkan "
+        "lintas arsitektur padahal arah pengaruhnya berlawanan. Kesimpulan yang "
+        "dilaporkan karena itu bukan bahwa satu metodologi mengungguli yang lain, "
+        "melainkan bahwa keputusan tersebut harus dipilih per arsitektur.", "p"))
 
     # ---------------- 1
     E.append(P("1. Latar Belakang dan Pertanyaan Penelitian", "h1"))
@@ -537,17 +544,22 @@ def bangun():
             "melaporkan kolom tersebut seluruh rekayasa akan tampak tidak berguna "
             "atau bahkan merugikan.", "p"))
         E.append(P(
-            "Kolom paling kanan memuat temuan yang menurut penulis paling penting. "
-            "Angka itu mengukur seberapa jauh hasil sebuah konfigurasi bergantung "
-            "pada protokol evaluasi yang dipilih. Pada konfigurasi proposal "
-            "selisihnya 44 sampai 48 poin persentase, yang berarti nilai yang "
-            "dilaporkan hampir seluruhnya ditentukan oleh cara data dibagi dan "
-            "bukan oleh kemampuan model. Pada konfigurasi yang diperbaiki dengan "
-            "WavLM selisihnya menyusut menjadi 1,13 poin. Model tersebut memberikan "
-            "hasil yang praktis sama pada kedua protokol. Inilah bentuk terukur "
-            "dari generalisasi yang dituju, yaitu bukan sekadar angka yang lebih "
-            "tinggi melainkan angka yang bertahan ketika domain rekamannya "
-            "berubah.", "p"))
+            "Kolom paling kanan mengukur seberapa jauh hasil sebuah konfigurasi "
+            "bergantung pada protokol evaluasi yang dipilih. Selisih yang besar "
+            "berarti nilai yang dilaporkan lebih banyak ditentukan oleh cara data "
+            "dibagi daripada oleh kemampuan model. Selisih yang kecil berarti "
+            "sebaliknya, dan itulah bentuk terukur dari generalisasi yang dituju, "
+            "yaitu bukan sekadar angka yang lebih tinggi melainkan angka yang "
+            "bertahan ketika domain rekamannya berubah.", "p"))
+        E.append(P(
+            "Tabel ini perlu dibaca dengan hati-hati dan tidak boleh berdiri "
+            "sendiri. Tiap konfigurasi dievaluasi pada ambang keputusannya "
+            "masing-masing, yaitu 0,5 untuk proposal dan prior-matched untuk "
+            "versi diperbaiki, karena penetapan ambang termasuk bagian dari "
+            "metodologi yang dibandingkan. Akibatnya selisih pada kolom partisi "
+            "resmi mencampur dua sumber sekaligus. Dua bagian berikutnya "
+            "memisahkan sumber-sumber tersebut, dan hasilnya membalik sebagian "
+            "kesimpulan yang tampak dari tabel ini.", "p"))
 
     if M2:
         E.append(P("3.8 Pemecahan lanjutan: sumbangan ambang dan sumbangan "
@@ -587,35 +599,28 @@ def bangun():
                             2.0 * cm, 2.0 * cm]))
             E.append(Spacer(1, 6))
         E.append(P(
-            "Hasil pemecahan ini mengubah tafsir angka besar tersebut secara "
-            "berarti. Bagian terbesar dari selisih berasal dari penetapan ambang, "
-            "bukan dari cara model dilatih. Pada WavLM, konfigurasi proposal yang "
-            "hanya diganti ambang keputusannya sudah mencapai 98,16 persen, "
-            "sedangkan konfigurasi yang direkayasa penuh mencapai 98,62 persen. "
-            "Selisih antara keduanya hanya 0,46 poin persentase, yang masih berada "
-            "di dalam rentang simpangan baku antar inisialisasi acak sebesar 0,64 "
-            "poin. Melaporkan 43 poin sebagai buah perbaikan arsitektur akan "
-            "menyesatkan pembaca.", "p"))
+            "Pemecahan ini membalik sebagian kesimpulan pada bagian sebelumnya, "
+            "dan arahnya berbeda pada tiap arsitektur. Pada AST, sumbangan "
+            "pelatihan bertanda negatif. Konfigurasi proposal yang dievaluasi "
+            "pada ambang prior-matched mencapai 92,56 persen, sedangkan "
+            "konfigurasi yang direkayasa hanya mencapai 89,15 persen. Area under "
+            "curve juga lebih rendah, yaitu 0,9586 lawan 0,9780, sehingga "
+            "penurunan itu bukan sekadar soal letak ambang melainkan penurunan "
+            "daya pisah yang sesungguhnya. Pada arsitektur ini, paket rekayasa "
+            "merugikan.", "p"))
         E.append(P(
-            "Sumbangan pelatihan tetap ada dan terukur pada dua sumbu. Pertama, "
-            "pada ambang 0,5 yang sama persis, konfigurasi yang direkayasa unggul "
-            "14,15 poin pada AST dan 27,54 poin pada WavLM, yang berarti pelatihan "
-            "memperbaiki kalibrasi skornya sendiri sehingga ambang bawaan menjadi "
-            "jauh lebih tepat. Kedua, daya pisahnya memang meningkat, dan "
-            "peningkatan itu terbaca pada area under curve serta equal error rate "
-            "yang tidak bergantung sama sekali pada pilihan ambang. Equal error "
-            "rate turun 35,5 persen secara relatif pada AST dan 23,3 persen pada "
-            "WavLM.", "p"))
+            "Pada WavLM Large keadaannya justru sebaliknya dan jauh lebih ekstrem. "
+            "Konfigurasi proposal runtuh menjadi 56,99 persen dengan area under "
+            "curve 0,6569 dan equal error rate 43,01 persen, yaitu hanya sedikit "
+            "lebih baik daripada menebak. Konfigurasi yang direkayasa mencapai "
+            "98,62 persen dengan area under curve 0,9992 dan equal error rate 1,41 "
+            "persen. Di sini paket rekayasa bukan hanya menolong, melainkan "
+            "menjadi pembeda antara model yang berguna dan model yang tidak.", "p"))
         E.append(P(
-            "Temuan ini memperkuat mekanisme yang sudah dilaporkan pada bagian 3.3. "
-            "Di sana, kegagalan model pada audio bernoise ternyata sebagian besar "
-            "merupakan kegagalan kalibrasi ambang dan bukan kegagalan pengenalan. "
-            "Mekanisme yang sama kini terlihat pada sumbu yang sepenuhnya berbeda, "
-            "yaitu pergeseran protokol pembagian data. Pada kedua kasus, model "
-            "sebenarnya masih dapat memisahkan kedua kelas dengan baik, namun letak "
-            "ambang bawaannya bergeser ketika distribusi masukan berubah. "
-            "Konsistensi antara dua sumbu yang tidak berkaitan ini merupakan bukti "
-            "yang lebih kuat daripada masing-masing temuan secara terpisah.", "p"))
+            "Dua arah yang berlawanan pada dua arsitektur menunjukkan bahwa "
+            "pertanyaan mana metodologi yang lebih baik tidak memiliki jawaban "
+            "tunggal. Penyebabnya dapat ditunjuk secara tepat, dan itu dibahas "
+            "pada bagian 3.9 dan 3.10.", "p"))
 
     TANGGA = [
         ("L1", "Konfigurasi proposal apa adanya",
@@ -660,23 +665,114 @@ def bangun():
                         "resmi. Batang merah menandai perbaikan yang merugikan "
                         "bila berdiri sendiri."))
         E.append(P(
-            "Dua hal menonjol dari tangga ini. Pertama, penyumbang terbesar "
-            "bukanlah perubahan arsitektur melainkan early stopping pada equal "
-            "error rate. Melatih 20 epoch tanpa kriteria henti membuat model "
-            "melewati titik terbaiknya, dan memilih bobot menurut equal error "
-            "rate validasi mengembalikan sebagian besar kerugian itu tanpa "
-            "mengubah satu baris pun pada arsitekturnya.", "p"))
+            "Tangga ini menjawab pertanyaan yang tertinggal pada bagian 3.8. "
+            "Sepanjang lima langkah, akurasi justru turun 3,40 poin persentase, "
+            "dari 92,56 menjadi 89,15 persen. Paket rekayasa secara keseluruhan "
+            "merugikan pada arsitektur ini, dan penyebabnya terpusat pada satu "
+            "langkah saja. Membekukan encoder membuang 16,91 poin persentase, "
+            "sementara seluruh perbaikan lain digabung hanya mengembalikan 13,51 "
+            "poin. Normalisasi loudness ternyata hampir netral, early stopping "
+            "menyumbang 9,01 poin, dan augmentasi penuh menyumbang 4,78 poin. "
+            "Ketiganya adalah perbaikan yang sah, namun tidak cukup untuk menutup "
+            "kerugian dari satu keputusan yang keliru.", "p"))
         E.append(P(
-            "Kedua, tidak semua perbaikan berguna bila berdiri sendiri. "
-            "Normalisasi loudness, yang dipilih karena secara teori lebih tepat "
-            "daripada normalisasi puncak, justru menurunkan akurasi ketika "
-            "diterapkan tanpa perbaikan lain, dan penurunannya terlihat pula "
-            "pada area under curve sehingga bukan sekadar pergeseran ambang. "
-            "Langkah itu tetap dipertahankan dalam konfigurasi akhir karena "
-            "bermanfaat dalam kombinasi dengan augmentasi penuh, namun temuan "
-            "negatifnya dilaporkan apa adanya di sini. Melaporkan hanya "
-            "langkah-langkah yang berhasil akan memberi kesan keliru bahwa "
-            "setiap keputusan desain sudah benar sejak awal.", "p"))
+            "Perlu dicatat bahwa versi tangga ini berbeda jauh dari versi yang "
+            "sempat disusun lebih awal dalam penelitian. Pada versi awal, titik "
+            "tolaknya adalah konfigurasi proposal yang encodernya tidak pernah "
+            "benar-benar dilatih karena sebuah bug, sehingga normalisasi loudness "
+            "tampak merugikan 7,81 poin dan pembekuan encoder tampak tidak "
+            "berpengaruh sama sekali. Kedua kesan itu keliru dan telah dikoreksi "
+            "setelah bug diperbaiki. Riwayat koreksinya dipertahankan dalam "
+            "dokumentasi pendukung karena bug tersebut justru ditemukan lewat "
+            "tangga ablasi ini, yaitu ketika dua langkah yang seharusnya berbeda "
+            "menghasilkan skor yang identik sampai empat desimal.", "p"))
+
+    PERLAKUAN = [
+        ("Encoder dibekukan", "runs/{m}_official_full_b{b}e10_s*"),
+        ("Encoder dilatih, laju wajar per model",
+         "runs/{m}_official_fullUF_b{b}e10_s*"),
+        ("Encoder dilatih, laju 0,001", "runs/{m}_official_fullUFENC0.001_b{b}e10_s*"),
+        ("Proposal apa adanya, laju 0,001 seragam",
+         "runs/{m}_official_proposalULRPK_b{b}e20_s*"),
+    ]
+    ARS = [("ast", 32, "AST, 86 juta parameter, pra-latih terselia"),
+           ("wavlm", 16, "WavLM Large, 300 juta parameter, swa-selia"),
+           ("hubert", 32, "HuBERT Large, 300 juta parameter, swa-selia")]
+    mtx = []
+    for m, b, ket in ARS:
+        sel = [(nm, _kumpul_ambang(pat.format(m=m, b=b)))
+               for nm, pat in PERLAKUAN]
+        if all(v for _, v in sel):
+            mtx.append((m, ket, sel))
+
+    if mtx:
+        E.append(PageBreak())
+        E.append(P("3.10 Tidak ada satu perlakuan encoder yang benar untuk "
+                   "semua arsitektur", "h2"))
+        E.append(P(
+            "Bagian 3.9 menunjukkan bahwa membekukan encoder merupakan sumber "
+            "kerugian terbesar pada AST. Bagian 3.8 menunjukkan bahwa pada WavLM "
+            "Large paket rekayasa yang sama justru menyelamatkan model dari "
+            "keruntuhan. Kedua pernyataan itu tampak bertentangan, dan matriks "
+            "berikut menjelaskan mengapa keduanya benar sekaligus.", "p"))
+        E.append(P(
+            "Tiga baris pertama pada tiap arsitektur memakai paket rekayasa yang "
+            "sama persis, yaitu 10 epoch dengan early stopping, augmentasi penuh, "
+            "normalisasi loudness, dan agregasi berbobot antar lapisan. Hanya "
+            "perlakuan encoder yang berbeda, sehingga perbandingan di antara "
+            "ketiganya bersifat satu variabel. Baris keempat disertakan sebagai "
+            "acuan, yaitu konfigurasi proposal apa adanya.", "p"))
+        for m, ket, sel in mtx:
+            E.append(P(f"<b>{ket}</b>", "p"))
+            E.append(tabel(["Perlakuan encoder", "n", "Akurasi", "AUC", "EER"],
+                           [[nm, str(v["n"]),
+                             (f"{v['acc']:.2f} ({v['sd']:.2f})" if v["n"] > 1
+                              else f"{v['acc']:.2f}"),
+                             f"{v['auc']:.4f}", f"{v['eer']:.2f}"]
+                            for nm, v in sel],
+                           [7.0 * cm, 1.4 * cm, 3.2 * cm, 2.4 * cm, 2.2 * cm]))
+            E.append(Spacer(1, 6))
+        E.append(P(
+            "Arah pengaruhnya berlawanan. Pada AST, melatih encoder pada laju "
+            "wajar lebih baik daripada membekukannya sebesar 4,04 poin "
+            "persentase. Pada WavLM Large, melatih encoder pada laju wajar justru "
+            "lebih buruk daripada membekukannya sebesar 2,48 poin. Tidak ada satu "
+            "perlakuan yang benar untuk keduanya.", "p"))
+        E.append(P(
+            "Penjelasan yang paling masuk akal berkaitan dengan jarak antara "
+            "tugas pra-pelatihan dan tugas akhir. Pra-pelatihan WavLM Large sudah "
+            "menyertakan denoising dan pemodelan ucapan yang tumpang tindih, "
+            "sehingga representasinya sudah cukup selaras dengan tugas ini dan "
+            "melatihnya kembali pada dataset yang kecil serta mengandung bias "
+            "kompresi justru merusaknya. AST dilatih secara terselia pada "
+            "AudioSet untuk klasifikasi peristiwa suara umum, yang jauh lebih "
+            "jauh dari deteksi sintesis, sehingga masih tersisa banyak yang dapat "
+            "diperbaiki lewat fine-tuning. Penjelasan ini disusun setelah melihat "
+            "data dan karena itu bersifat dugaan, bukan simpulan.", "p"))
+        E.append(P(
+            "Temuan ini menempatkan kedua metodologi pada posisi yang setara. "
+            "Proposal menyeragamkan learning rate 0,001 untuk seluruh arsitektur, "
+            "yang kebetulan tepat untuk AST dan menghancurkan WavLM Large. "
+            "Konfigurasi rekayasa dalam penelitian ini menyeragamkan pembekuan "
+            "encoder untuk seluruh arsitektur, yang kebetulan tepat untuk WavLM "
+            "Large dan merugikan AST. Keduanya melakukan kelas kesalahan yang "
+            "sama, yaitu menetapkan satu keputusan secara seragam padahal "
+            "arsitektur yang berbeda menuntut perlakuan yang berbeda. Kesimpulan "
+            "yang jujur bukanlah bahwa satu metodologi mengalahkan yang lain, "
+            "melainkan bahwa keputusan ini seharusnya dipilih per arsitektur "
+            "menggunakan data validasi dan tidak ditetapkan di muka.", "p"))
+        E.append(P(
+            "Satu hasil tambahan layak dicatat karena membela nilai paket "
+            "rekayasa dari sudut yang berbeda. Ketika WavLM Large dilatih pada "
+            "laju 0,001 yang merusak itu, konfigurasi proposal jatuh ke 56,99 "
+            "persen sedangkan paket rekayasa dengan laju yang sama tetap "
+            "bertahan di 80,06 persen. Selisih 23,07 poin persentase itu "
+            "menunjukkan bahwa early stopping, augmentasi penuh, dan agregasi "
+            "berbobot antar lapisan berfungsi sebagai jaring pengaman terhadap "
+            "pilihan learning rate yang buruk. Paket itu tidak menyelamatkan "
+            "model sepenuhnya, tetapi mengubah kegagalan total menjadi kegagalan "
+            "yang masih dapat diperbaiki. Nilai semacam ini tidak terlihat bila "
+            "yang dilaporkan hanya akurasi puncak.", "p"))
 
     E.append(PageBreak())
     # ---------------- 4
@@ -760,27 +856,32 @@ def bangun():
         "arsitektur dan strategi augmentasi tertentu, dan bukan oleh model yang "
         "menempati peringkat teratas pada dataset.", "p"))
     E.append(P(
-        "Pertanyaan apakah seluruh rekayasa metodologi ini bernilai dijawab pada "
-        "bagian 3.7 dengan perbandingan yang setara. Pada protokol yang sama "
-        "persis, konfigurasi yang diperbaiki mengungguli konfigurasi proposal "
-        "dengan selisih puluhan poin persentase. Yang lebih penting, selisih hasil "
-        "antara kedua protokol menyusut dari 44 sampai 48 poin menjadi hanya 1,13 "
-        "poin pada konfigurasi terbaik. Nilai sebenarnya dari rekayasa tersebut "
-        "bukan terletak pada angka yang lebih tinggi, melainkan pada berkurangnya "
-        "ketergantungan hasil terhadap pilihan protokol evaluasi. Perlu ditegaskan "
-        "bahwa perbaikan ini sama sekali tidak terlihat bila hasil hanya dilaporkan "
-        "pada split acak, karena di sana selisihnya justru sedikit negatif.", "p"))
+        "Pertanyaan apakah rekayasa metodologi dalam penelitian ini mengungguli "
+        "rencana awalnya tidak memiliki jawaban tunggal, dan itulah temuannya. "
+        "Pada WavLM Large rekayasa tersebut menjadi pembeda antara model yang "
+        "berguna dan model yang hampir setara tebakan, yaitu 98,62 lawan 56,99 "
+        "persen. Pada AST rekayasa yang sama justru merugikan, yaitu 89,15 lawan "
+        "92,56 persen. Penelusuran sampai ke tiap keputusan desain menunjukkan "
+        "bahwa satu keputusan bertanggung jawab atas hampir seluruh selisih itu, "
+        "yaitu apakah encoder dibekukan atau ikut dilatih. Arah pengaruh keputusan "
+        "tersebut berlawanan pada kedua arsitektur.", "p"))
     E.append(P(
-        "Pemecahan pada bagian 3.8 menuntut kejujuran lebih lanjut mengenai asal "
-        "perbaikan itu. Bagian terbesarnya berasal dari penetapan ambang keputusan, "
-        "bukan dari cara model dilatih. Pada WavLM, konfigurasi proposal yang hanya "
-        "diganti ambangnya sudah mencapai 98,16 persen dari 98,62 persen yang "
-        "dicapai konfigurasi lengkap. Sumbangan pelatihan tetap nyata dan terukur, "
-        "yaitu penurunan equal error rate sebesar 35,5 persen secara relatif pada "
-        "AST dan 23,3 persen pada WavLM, tetapi besarnya jauh lebih sederhana "
-        "daripada yang disiratkan oleh selisih akurasi mentah. Penelitian ini "
-        "memilih melaporkannya sebagai perbaikan kalibrasi keputusan, karena itulah "
-        "yang ditunjukkan oleh datanya.", "p"))
+        "Dari sini muncul simetri yang layak dicatat. Rencana awal menyeragamkan "
+        "learning rate untuk seluruh arsitektur, sedangkan penelitian ini "
+        "menyeragamkan pembekuan encoder untuk seluruh arsitektur. Keduanya "
+        "merupakan kelas kesalahan yang sama, dan masing-masing kebetulan tepat "
+        "pada arsitektur yang berbeda. Pelajaran yang dapat diambil bukanlah "
+        "bahwa satu pihak lebih benar, melainkan bahwa keputusan semacam ini "
+        "sebaiknya dipilih per arsitektur dengan data validasi dan tidak "
+        "ditetapkan seragam di muka.", "p"))
+    E.append(P(
+        "Nilai paket rekayasa juga terlihat pada sumbu yang berbeda dari akurasi "
+        "puncak. Ketika learning rate yang merusak tetap dipaksakan pada WavLM "
+        "Large, konfigurasi proposal jatuh ke 56,99 persen sedangkan paket "
+        "rekayasa bertahan di 80,06 persen. Early stopping, augmentasi penuh, dan "
+        "agregasi berbobot antar lapisan berfungsi sebagai jaring pengaman "
+        "terhadap pilihan hyperparameter yang buruk. Ketahanan semacam ini tidak "
+        "terbaca sama sekali bila yang dilaporkan hanya angka terbaik.", "p"))
     E.append(P(
         "Implikasi praktisnya adalah bahwa pemilihan model sebaiknya tidak "
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "
