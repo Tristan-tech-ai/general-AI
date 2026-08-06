@@ -20,8 +20,10 @@ Pada split acak selisihnya hanya -0.11 poin (99.86% menjadi 99.75%), yang menunj
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | belum ada | **belum ada** | n/a |
+| Proposal apa adanya | 100.00% | **55.61%** | +44.39 pp |
 | Diperbaiki (rekayasa) | belum ada | **98.62% (0.64)** | n/a |
+
+**Nilai rekayasa pada protokol resmi: +43.01 poin persentase** (55.61% menjadi 98.62%).
 
 ## hubert
 
@@ -42,5 +44,6 @@ Pada split acak selisihnya hanya -0.11 poin (99.86% menjadi 99.75%), yang menunj
 | Arsitektur | Proposal pada partisi resmi | Diperbaiki pada partisi resmi | Selisih |
 |---|---|---|---|
 | ast | 51.56% | **89.15%** | **+37.59 pp** |
+| wavlm | 55.61% | **98.62%** | **+43.01 pp** |
 
-Rerata selisih +37.59 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.
+Rerata selisih +40.30 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.
