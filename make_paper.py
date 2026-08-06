@@ -135,6 +135,33 @@ def kumpul_gen():
     return g
 
 
+def matriks_2x2():
+    """Empat sel per arsitektur: konfigurasi proposal atau diperbaiki, pada
+    split acak atau partisi resmi. Ambang mengikuti konfigurasinya masing-masing,
+    yaitu 0,5 untuk proposal dan prior-matched untuk versi diperbaiki, karena
+    ambang termasuk bagian dari metodologi yang dibandingkan."""
+    hasil = {}
+    for model in ["ast", "wavlm", "hubert", "nes2net"]:
+        sel = {}
+        for cfg in ["proposal", "diperbaiki"]:
+            pat = (f"runs/{model}_%s_proposalULRPK_*" if cfg == "proposal"
+                   else f"runs/{model}_%s_full_*")
+            for split in ["random", "official"]:
+                acc = []
+                for d in sorted(glob.glob(os.path.join(HERE, pat % split))):
+                    f = os.path.join(d, "test_scores.npy")
+                    if not os.path.exists(f):
+                        continue
+                    y, p, _ = np.load(f)
+                    y = y.astype(int)
+                    t = 0.5 if cfg == "proposal" else prior_matched_threshold(p, 0.5)
+                    acc.append(full_metrics(y, p, t)["accuracy"] * 100)
+                sel[(cfg, split)] = acc
+        if all(sel.values()):
+            hasil[model] = sel
+    return hasil
+
+
 def ms(v, k, pct=True):
     a = np.array([x[k] for x in v], dtype=float) * (100 if pct else 1)
     a = a[~np.isnan(a)]
@@ -178,7 +205,11 @@ def bangun():
         "tersedia publik memiliki spesifisitas nol persen ketika diuji di luar "
         "domain latihnya. Sebagai tanggapan, penelitian ini mengusulkan augmentasi "
         "band-gain yang menetralkan isyarat level energi pita tinggi tanpa merusak "
-        "struktur halusnya, dan menguji dampaknya secara terkontrol.", "p"))
+        "struktur halusnya, dan menguji dampaknya secara terkontrol. Perbandingan "
+        "setara pada matriks dua kali dua menunjukkan bahwa metodologi yang "
+        "diperbaiki menyusutkan selisih hasil antar protokol dari 44 sampai 48 "
+        "poin persentase menjadi 1,13 poin, sehingga hasilnya praktis tidak lagi "
+        "bergantung pada cara data dibagi.", "p"))
 
     # ---------------- 1
     E.append(P("1. Latar Belakang dan Pertanyaan Penelitian", "h1"))
@@ -367,6 +398,82 @@ def bangun():
         "keliru pada korpus ini. Metrik equal error rate yang dilaporkan dalam "
         "domain tidak dapat menangkap kegagalan semacam ini.", "p"))
 
+    M2 = matriks_2x2()
+    if M2:
+        E.append(PageBreak())
+        E.append(P("3.7 Apakah rekayasa metodologi benar-benar melampaui "
+                   "baseline", "h2"))
+        E.append(P(
+            "Semua perbandingan sejauh ini menyandingkan konfigurasi proposal pada "
+            "split acak dengan konfigurasi yang diperbaiki pada partisi resmi. "
+            "Kedua kolom itu tidak setara, sehingga tidak dapat menjawab pertanyaan "
+            "pokok, yaitu apakah rekayasa yang dilakukan memang bernilai atau hanya "
+            "memindahkan angka dari satu protokol ke protokol lain. Untuk "
+            "menjawabnya, tiap arsitektur dijalankan pada keempat kombinasi dari "
+            "dua konfigurasi dan dua skema pembagian data, dengan batch, seed, dan "
+            "data yang dijaga tetap. Dengan demikian setiap perbandingan hanya "
+            "mengubah satu variabel.", "p"))
+        E.append(P(
+            "Konfigurasi proposal memakai learning rate 0,001 seragam dengan "
+            "encoder ikut dilatih, 20 epoch tanpa early stopping, normalisasi "
+            "amplitudo puncak, augmentasi noise pada rentang 15 sampai 30 dB, dan "
+            "ambang keputusan 0,5. Konfigurasi yang diperbaiki memakai learning "
+            "rate per model dengan encoder dibekukan dan agregasi berbobot antar "
+            "lapisan, 10 epoch dengan early stopping pada equal error rate, "
+            "normalisasi loudness, augmentasi penuh, dan ambang prior-matched.", "p"))
+
+        def _sel(a):
+            if not a:
+                return "n/a"
+            a = np.array(a)
+            return (f"{a[0]:.2f}" if len(a) == 1
+                    else f"{a.mean():.2f} ({a.std(ddof=1):.2f})")
+
+        baris, ringkas = [], []
+        for model, sel in M2.items():
+            for cfg, nm in [("proposal", "Proposal apa adanya"),
+                            ("diperbaiki", "Diperbaiki")]:
+                r = np.mean(sel[(cfg, "random")])
+                o = np.mean(sel[(cfg, "official")])
+                baris.append([model if cfg == "proposal" else "", nm,
+                              _sel(sel[(cfg, "random")]),
+                              _sel(sel[(cfg, "official")]), f"{r - o:+.2f}"])
+            ringkas.append((model,
+                            np.mean(sel[("proposal", "official")]),
+                            np.mean(sel[("diperbaiki", "official")])))
+        E.append(tabel(["Arsitektur", "Konfigurasi", "Split acak",
+                        "Partisi resmi", "Selisih (pp)"], baris,
+                       [2.6 * cm, 4.6 * cm, 2.9 * cm, 3.0 * cm, 2.9 * cm]))
+        E.append(Spacer(1, 6))
+        E.extend(gambar("10_matriks_2x2.png", 15.5 * cm,
+                        "Gambar 5. Ketergantungan hasil pada protokol evaluasi. "
+                        "Garis yang landai menandakan hasil yang bertahan ketika "
+                        "domain rekaman berubah. Garis putus-putus abu-abu adalah "
+                        "konfigurasi proposal."))
+
+        kal = "; ".join(f"{m} naik dari {p:.2f} menjadi {d:.2f} persen, "
+                        f"yaitu {d - p:+.2f} poin" for m, p, d in ringkas)
+        rata = np.mean([d - p for _, p, d in ringkas])
+        E.append(P(
+            "Pada kolom partisi resmi, yaitu satu-satunya kolom yang menguji "
+            f"generalisasi lintas domain, {kal}. Rerata perbaikan {rata:+.2f} poin "
+            "persentase pada protokol yang sama persis. Pada kolom split acak "
+            "selisihnya justru sedikit negatif, sehingga bila penelitian ini hanya "
+            "melaporkan kolom tersebut seluruh rekayasa akan tampak tidak berguna "
+            "atau bahkan merugikan.", "p"))
+        E.append(P(
+            "Kolom paling kanan memuat temuan yang menurut penulis paling penting. "
+            "Angka itu mengukur seberapa jauh hasil sebuah konfigurasi bergantung "
+            "pada protokol evaluasi yang dipilih. Pada konfigurasi proposal "
+            "selisihnya 44 sampai 48 poin persentase, yang berarti nilai yang "
+            "dilaporkan hampir seluruhnya ditentukan oleh cara data dibagi dan "
+            "bukan oleh kemampuan model. Pada konfigurasi yang diperbaiki dengan "
+            "WavLM selisihnya menyusut menjadi 1,13 poin. Model tersebut memberikan "
+            "hasil yang praktis sama pada kedua protokol. Inilah bentuk terukur "
+            "dari generalisasi yang dituju, yaitu bukan sekadar angka yang lebih "
+            "tinggi melainkan angka yang bertahan ketika domain rekamannya "
+            "berubah.", "p"))
+
     E.append(PageBreak())
     # ---------------- 4
     E.append(P("4. Usulan: Augmentasi Band-Gain", "h1"))
@@ -448,6 +555,17 @@ def bangun():
         "97 sampai 99 persen dengan tingkat alarm palsu 5 persen, tetapi hanya oleh "
         "arsitektur dan strategi augmentasi tertentu, dan bukan oleh model yang "
         "menempati peringkat teratas pada dataset.", "p"))
+    E.append(P(
+        "Pertanyaan apakah seluruh rekayasa metodologi ini bernilai dijawab pada "
+        "bagian 3.7 dengan perbandingan yang setara. Pada protokol yang sama "
+        "persis, konfigurasi yang diperbaiki mengungguli konfigurasi proposal "
+        "dengan selisih puluhan poin persentase. Yang lebih penting, selisih hasil "
+        "antara kedua protokol menyusut dari 44 sampai 48 poin menjadi hanya 1,13 "
+        "poin pada konfigurasi terbaik. Nilai sebenarnya dari rekayasa tersebut "
+        "bukan terletak pada angka yang lebih tinggi, melainkan pada berkurangnya "
+        "ketergantungan hasil terhadap pilihan protokol evaluasi. Perlu ditegaskan "
+        "bahwa perbaikan ini sama sekali tidak terlihat bila hasil hanya dilaporkan "
+        "pada split acak, karena di sana selisihnya justru sedikit negatif.", "p"))
     E.append(P(
         "Implikasi praktisnya adalah bahwa pemilihan model sebaiknya tidak "
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "

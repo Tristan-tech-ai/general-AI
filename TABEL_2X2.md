@@ -21,9 +21,10 @@ Pada split acak selisihnya hanya -0.11 poin (99.86% menjadi 99.75%), yang menunj
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
 | Proposal apa adanya | 100.00% | **55.61%** | +44.39 pp |
-| Diperbaiki (rekayasa) | belum ada | **98.62% (0.64)** | n/a |
+| Diperbaiki (rekayasa) | 99.75% | **98.62% (0.64)** | +1.13 pp |
 
 **Nilai rekayasa pada protokol resmi: +43.01 poin persentase** (55.61% menjadi 98.62%).
+Pada split acak selisihnya hanya -0.25 poin (100.00% menjadi 99.75%), yang menunjukkan bahwa protokol longgar tidak dapat membedakan kedua konfigurasi.
 
 ## hubert
 

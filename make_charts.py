@@ -229,6 +229,78 @@ def chart_datasets(rec):
     save(fig, "04_lintas_dataset.png")
 
 
+def chart_2x2():
+    """Grafik kemiringan: seberapa jauh hasil runtuh saat protokol diperketat.
+
+    Garis yang landai berarti hasilnya tidak bergantung pada protokol evaluasi,
+    dan itulah yang dimaksud dengan generalisasi lintas domain. Garis yang curam
+    berarti angka yang dilaporkan sebagian besar ditentukan oleh cara data
+    dibagi.
+    """
+    import glob as _g
+    from forlib.metrics import full_metrics, prior_matched_threshold
+
+    data = {}
+    for m in ["ast", "wavlm", "hubert", "nes2net"]:
+        sel = {}
+        for cfg in ["proposal", "diperbaiki"]:
+            pat = (f"runs/{m}_%s_proposalULRPK_*" if cfg == "proposal"
+                   else f"runs/{m}_%s_full_*")
+            for sp in ["random", "official"]:
+                a = []
+                for d in sorted(_g.glob(os.path.join(HERE, pat % sp))):
+                    f = os.path.join(d, "test_scores.npy")
+                    if not os.path.exists(f):
+                        continue
+                    y, p, _ = np.load(f)
+                    y = y.astype(int)
+                    t = 0.5 if cfg == "proposal" else prior_matched_threshold(p, 0.5)
+                    a.append(full_metrics(y, p, t)["accuracy"] * 100)
+                sel[(cfg, sp)] = a
+        if all(sel.values()):
+            data[m] = sel
+    if not data:
+        return
+
+    fig, axes = plt.subplots(1, len(data), figsize=(5.2 * len(data), 5.4),
+                             sharey=True, squeeze=False)
+    for ax, (m, sel) in zip(axes[0], data.items()):
+        for cfg, sty, cl in [("proposal", "--", "#ADB5BD"),
+                             ("diperbaiki", "-", col(m))]:
+            r, o = (np.mean(sel[(cfg, "random")]),
+                    np.mean(sel[(cfg, "official")]))
+            ax.plot([0, 1], [r, o], sty, color=cl, lw=3, marker="o", ms=9,
+                    zorder=3,
+                    label=("Proposal apa adanya" if cfg == "proposal"
+                           else "Diperbaiki (rekayasa)"))
+            # kedua garis berangkat dari titik yang hampir sama pada split acak,
+            # sehingga labelnya digeser vertikal agar tidak saling menimpa
+            dy = 8 if cfg == "proposal" else -8
+            ax.annotate(f"{r:.2f}", (0, r), xytext=(-9, dy),
+                        textcoords="offset points", ha="right", va="center",
+                        fontsize=9.5, color=cl, weight="bold")
+            ax.annotate(f"{o:.2f}", (1, o), xytext=(9, 0),
+                        textcoords="offset points", ha="left", va="center",
+                        fontsize=9.5, color=cl, weight="bold")
+            ax.annotate(f"turun {r - o:.2f} pp", (0.5, (r + o) / 2),
+                        xytext=(0, -14 if cfg == "proposal" else 10),
+                        textcoords="offset points", ha="center",
+                        fontsize=8.5, color=cl, style="italic")
+        ax.set_xlim(-0.42, 1.42)
+        ax.set_xticks([0, 1])
+        ax.set_xticklabels(["Split acak\n60/20/20", "Partisi resmi\nFoR"])
+        ax.set_title(lab(m), fontsize=11, weight="bold")
+        ax.grid(axis="y", alpha=0.25, zorder=0)
+        ax.axhline(50, color="#E03131", lw=1, ls=":", zorder=1)
+    axes[0][0].set_ylabel("Akurasi (persen)")
+    axes[0][0].set_ylim(40, 104)
+    axes[0][0].legend(loc="lower left", fontsize=9, framealpha=0.95)
+    fig.suptitle("Ketergantungan hasil pada protokol evaluasi\n"
+                 "garis landai berarti kemampuan bertahan saat domain berubah",
+                 fontsize=12.5, weight="bold", y=1.03)
+    save(fig, "10_matriks_2x2.png")
+
+
 def main():
     print("membuat grafik ...")
     rec = load_for()
@@ -237,6 +309,7 @@ def main():
     chart_split(rec)
     chart_snr()
     chart_datasets(rec)
+    chart_2x2()
     print(f"\nselesai -> {os.path.relpath(OUT, HERE)}/")
 
 
