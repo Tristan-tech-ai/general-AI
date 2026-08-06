@@ -162,6 +162,27 @@ def matriks_2x2():
     return hasil
 
 
+def _kumpul_ambang(pat):
+    """Rerata akurasi pada kedua ambang, ditambah AUC dan EER yang tidak
+    bergantung pada ambang, dari seluruh run yang cocok dengan pola."""
+    a05, apm, auc, eer = [], [], [], []
+    for d in sorted(glob.glob(os.path.join(HERE, pat))):
+        f = os.path.join(d, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        y, p, _ = np.load(f)
+        y = y.astype(int)
+        m0 = full_metrics(y, p, 0.5)
+        a05.append(m0["accuracy"] * 100)
+        apm.append(full_metrics(y, p, prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        auc.append(m0["auc"])
+        eer.append(m0["eer"] * 100)
+    if not a05:
+        return None
+    return {"a05": np.mean(a05), "apm": np.mean(apm),
+            "auc": np.mean(auc), "eer": np.mean(eer)}
+
+
 def ms(v, k, pct=True):
     a = np.array([x[k] for x in v], dtype=float) * (100 if pct else 1)
     a = a[~np.isnan(a)]
@@ -209,7 +230,11 @@ def bangun():
         "setara pada matriks dua kali dua menunjukkan bahwa metodologi yang "
         "diperbaiki menyusutkan selisih hasil antar protokol dari 44 sampai 48 "
         "poin persentase menjadi 1,13 poin, sehingga hasilnya praktis tidak lagi "
-        "bergantung pada cara data dibagi.", "p"))
+        "bergantung pada cara data dibagi. Pemecahan lanjutan atas selisih "
+        "tersebut menunjukkan bahwa bagian terbesarnya berasal dari penetapan "
+        "ambang keputusan dan bukan dari cara model dilatih, sehingga temuan ini "
+        "dilaporkan sebagai perbaikan kalibrasi dan bukan sebagai perbaikan "
+        "arsitektur.", "p"))
 
     # ---------------- 1
     E.append(P("1. Latar Belakang dan Pertanyaan Penelitian", "h1"))
@@ -474,6 +499,74 @@ def bangun():
             "tinggi melainkan angka yang bertahan ketika domain rekamannya "
             "berubah.", "p"))
 
+    if M2:
+        E.append(P("3.8 Pemecahan lanjutan: sumbangan ambang dan sumbangan "
+                   "pelatihan", "h2"))
+        E.append(P(
+            "Angka pada bagian sebelumnya membandingkan dua metodologi secara utuh. "
+            "Di dalamnya dua hal berubah bersamaan, yaitu cara model dilatih dan "
+            "cara ambang keputusan ditetapkan. Selisih tersebut karena itu tidak "
+            "boleh dibaca sebagai sumbangan pelatihan semata. Untuk memisahkannya, "
+            "empat besaran dihitung dari berkas skor yang sama persis tanpa "
+            "melatih ulang apa pun, yaitu tiap konfigurasi dievaluasi pada kedua "
+            "ambang.", "p"))
+        b28, d28 = [], []
+        for model, sel in M2.items():
+            a = np.mean(sel[("proposal", "official")])
+            d = np.mean(sel[("diperbaiki", "official")])
+            pr = _kumpul_ambang(f"runs/{model}_official_proposalULRPK_*")
+            re_ = _kumpul_ambang(f"runs/{model}_official_full_*")
+            if not (pr and re_):
+                continue
+            b28.append([model, f"{pr['a05']:.2f}", f"{pr['apm']:.2f}",
+                        f"{re_['a05']:.2f}", f"{re_['apm']:.2f}"])
+            d28.append([model, f"{pr['apm'] - pr['a05']:+.2f}",
+                        f"{re_['a05'] - pr['a05']:+.2f}",
+                        f"{pr['auc']:.4f}", f"{re_['auc']:.4f}",
+                        f"{pr['eer']:.2f}", f"{re_['eer']:.2f}"])
+        if b28:
+            E.append(tabel(["Arsitektur", "Proposal, ambang 0,5",
+                            "Proposal, ambang prior", "Rekayasa, ambang 0,5",
+                            "Rekayasa, ambang prior"], b28,
+                           [2.6 * cm, 3.4 * cm, 3.4 * cm, 3.4 * cm, 3.2 * cm]))
+            E.append(Spacer(1, 6))
+            E.append(tabel(["Arsitektur", "Sumbangan ambang saja (pp)",
+                            "Sumbangan pelatihan saja (pp)", "AUC proposal",
+                            "AUC rekayasa", "EER proposal", "EER rekayasa"], d28,
+                           [2.2 * cm, 2.9 * cm, 2.9 * cm, 2.2 * cm, 2.2 * cm,
+                            2.0 * cm, 2.0 * cm]))
+            E.append(Spacer(1, 6))
+        E.append(P(
+            "Hasil pemecahan ini mengubah tafsir angka besar tersebut secara "
+            "berarti. Bagian terbesar dari selisih berasal dari penetapan ambang, "
+            "bukan dari cara model dilatih. Pada WavLM, konfigurasi proposal yang "
+            "hanya diganti ambang keputusannya sudah mencapai 98,16 persen, "
+            "sedangkan konfigurasi yang direkayasa penuh mencapai 98,62 persen. "
+            "Selisih antara keduanya hanya 0,46 poin persentase, yang masih berada "
+            "di dalam rentang simpangan baku antar inisialisasi acak sebesar 0,64 "
+            "poin. Melaporkan 43 poin sebagai buah perbaikan arsitektur akan "
+            "menyesatkan pembaca.", "p"))
+        E.append(P(
+            "Sumbangan pelatihan tetap ada dan terukur pada dua sumbu. Pertama, "
+            "pada ambang 0,5 yang sama persis, konfigurasi yang direkayasa unggul "
+            "14,15 poin pada AST dan 27,54 poin pada WavLM, yang berarti pelatihan "
+            "memperbaiki kalibrasi skornya sendiri sehingga ambang bawaan menjadi "
+            "jauh lebih tepat. Kedua, daya pisahnya memang meningkat, dan "
+            "peningkatan itu terbaca pada area under curve serta equal error rate "
+            "yang tidak bergantung sama sekali pada pilihan ambang. Equal error "
+            "rate turun 35,5 persen secara relatif pada AST dan 23,3 persen pada "
+            "WavLM.", "p"))
+        E.append(P(
+            "Temuan ini memperkuat mekanisme yang sudah dilaporkan pada bagian 3.3. "
+            "Di sana, kegagalan model pada audio bernoise ternyata sebagian besar "
+            "merupakan kegagalan kalibrasi ambang dan bukan kegagalan pengenalan. "
+            "Mekanisme yang sama kini terlihat pada sumbu yang sepenuhnya berbeda, "
+            "yaitu pergeseran protokol pembagian data. Pada kedua kasus, model "
+            "sebenarnya masih dapat memisahkan kedua kelas dengan baik, namun letak "
+            "ambang bawaannya bergeser ketika distribusi masukan berubah. "
+            "Konsistensi antara dua sumbu yang tidak berkaitan ini merupakan bukti "
+            "yang lebih kuat daripada masing-masing temuan secara terpisah.", "p"))
+
     E.append(PageBreak())
     # ---------------- 4
     E.append(P("4. Usulan: Augmentasi Band-Gain", "h1"))
@@ -566,6 +659,17 @@ def bangun():
         "ketergantungan hasil terhadap pilihan protokol evaluasi. Perlu ditegaskan "
         "bahwa perbaikan ini sama sekali tidak terlihat bila hasil hanya dilaporkan "
         "pada split acak, karena di sana selisihnya justru sedikit negatif.", "p"))
+    E.append(P(
+        "Pemecahan pada bagian 3.8 menuntut kejujuran lebih lanjut mengenai asal "
+        "perbaikan itu. Bagian terbesarnya berasal dari penetapan ambang keputusan, "
+        "bukan dari cara model dilatih. Pada WavLM, konfigurasi proposal yang hanya "
+        "diganti ambangnya sudah mencapai 98,16 persen dari 98,62 persen yang "
+        "dicapai konfigurasi lengkap. Sumbangan pelatihan tetap nyata dan terukur, "
+        "yaitu penurunan equal error rate sebesar 35,5 persen secara relatif pada "
+        "AST dan 23,3 persen pada WavLM, tetapi besarnya jauh lebih sederhana "
+        "daripada yang disiratkan oleh selisih akurasi mentah. Penelitian ini "
+        "memilih melaporkannya sebagai perbaikan kalibrasi keputusan, karena itulah "
+        "yang ditunjukkan oleh datanya.", "p"))
     E.append(P(
         "Implikasi praktisnya adalah bahwa pemilihan model sebaiknya tidak "
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "
