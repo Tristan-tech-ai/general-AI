@@ -301,6 +301,61 @@ def chart_2x2():
     save(fig, "10_matriks_2x2.png")
 
 
+def chart_ablasi():
+    """Tangga ablasi: sumbangan tiap perbaikan, termasuk yang negatif.
+
+    Batang hijau menaikkan akurasi, batang merah menurunkannya. Batang yang
+    merah sengaja ditampilkan dan tidak disembunyikan, karena perbaikan yang
+    merugikan bila berdiri sendiri merupakan bagian dari temuan.
+    """
+    from forlib.metrics import full_metrics, prior_matched_threshold
+
+    TANGGA = [
+        ("Proposal\napa adanya", "runs/ast_official_proposalULRPK_b32e20_s42"),
+        ("Normalisasi\nloudness", "runs/ast_official_proposalULR_b32e20_s42"),
+        ("LR per model,\nencoder beku", "runs/ast_official_proposal_b32e20_s42"),
+        ("Early stopping\npada EER", "runs/ast_official_proposal_b32e10_s42"),
+        ("Augmentasi\npenuh", "runs/ast_official_full_b32e10_s42"),
+    ]
+    nm, acc = [], []
+    for label, d in TANGGA:
+        f = os.path.join(HERE, d, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        y, p, _ = np.load(f)
+        acc.append(full_metrics(y.astype(int), p,
+                                prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        nm.append(label)
+    if len(acc) < 2:
+        return
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.6))
+    ax.bar(0, acc[0], color="#868E96", width=0.62, zorder=3)
+    ax.text(0, acc[0] + 1.2, f"{acc[0]:.2f}", ha="center", fontsize=10,
+            weight="bold", color="#495057")
+    for i in range(1, len(acc)):
+        d = acc[i] - acc[i - 1]
+        lo, hi = min(acc[i - 1], acc[i]), max(acc[i - 1], acc[i])
+        ax.bar(i, hi - lo, bottom=lo, width=0.62, zorder=3,
+               color="#2F9E44" if d >= 0 else "#E03131")
+        ax.plot([i - 0.69, i - 0.31], [acc[i - 1]] * 2, color="#ADB5BD",
+                lw=1.1, ls="--", zorder=2)
+        ax.text(i, hi + 1.2, f"{d:+.2f}", ha="center", fontsize=10.5,
+                weight="bold", color="#2F9E44" if d >= 0 else "#E03131")
+        ax.text(i, lo - 3.0, f"{acc[i]:.2f}", ha="center", fontsize=9,
+                color="#495057")
+    ax.set_xticks(range(len(nm)))
+    ax.set_xticklabels(nm, fontsize=9.5)
+    ax.set_ylabel("Akurasi pada partisi resmi (persen)")
+    ax.set_ylim(min(acc) - 8, max(acc) + 7)
+    ax.grid(axis="y", alpha=0.25, zorder=0)
+    ax.set_title("Sumbangan tiap perbaikan pada AST, partisi resmi\n"
+                 "batang merah menandai perbaikan yang merugikan bila "
+                 "berdiri sendiri",
+                 fontsize=12, weight="bold")
+    save(fig, "11_tangga_ablasi.png")
+
+
 def main():
     print("membuat grafik ...")
     rec = load_for()
@@ -310,6 +365,7 @@ def main():
     chart_snr()
     chart_datasets(rec)
     chart_2x2()
+    chart_ablasi()
     print(f"\nselesai -> {os.path.relpath(OUT, HERE)}/")
 
 
