@@ -90,7 +90,15 @@ def main():
     print(f"audio asli untuk kalibrasi ambang: {len(reals)} berkas (In-the-Wild bona-fide)")
 
     cands = []
-    for tag in ["wavlm_official_fullbg_b16e10_s42",
+    for tag in ["hubert_official_fullbg_b16e10_s42",
+                "hubert_official_fullbg_b16e10_s1337",
+                "hubert_official_fullbg_b16e10_s2024",
+                "hubert_official_full_b16e10_s1337",
+                "hubert_official_full_b16e10_s2024",
+                "wavlm_official_fullbgrb_b16e10_s42",
+                "wavlm_official_fullbgrb_b16e10_s1337",
+                "wavlm_official_fullbgrb_b16e10_s2024",
+                "wavlm_official_fullbg_b16e10_s42",
                 "wavlm_official_fullbg_b16e10_s1337",
                 "wavlm_official_fullbg_b16e10_s2024",
                 "wavlm_official_full_b16e10_s1337",

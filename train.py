@@ -63,6 +63,11 @@ def get_augment(name: str) -> AugmentConfig:
         # dapat diatribusikan; ini memperbaikinya.
         return AugmentConfig(codec=0.5, noise=0.5, reverb=0.25, gain=0.3,
                              snr_range=(0.0, 30.0), band_gain=0.6)
+    if name == "proposal":
+        # Replikasi persis metodologi proposal (hal. 57): HANYA penambahan noise
+        # latar pada SNR 15-30 dB. Tanpa codec, reverb, gain, atau band-gain.
+        return AugmentConfig(codec=0.0, noise=1.0, reverb=0.0, gain=0.0,
+                             snr_range=(15.0, 30.0))
     if name == "fullbgrb":
         # Kombinasi: band-gain (netralkan level HF) + RawBoost (degradasi kanal).
         # Menguji apakah keunggulan FoR RawBoost dan keunggulan generalisasi
@@ -114,7 +119,11 @@ def main():
                     choices=["official", "random", "clean_val", "wavval"])
     ap.add_argument("--augment", default="codec",
                     choices=["none", "codec", "noise", "full", "rawboost", "fullrb",
-                             "soft", "softcodec", "fullbg", "fullbgrb"])
+                             "soft", "softcodec", "fullbg", "fullbgrb",
+                             "proposal"])
+    ap.add_argument("--uniform-lr", type=float, default=None,
+                    help="paksa satu learning rate untuk encoder DAN head "
+                         "(replikasi proposal: 0.001 seragam untuk semua model)")
     ap.add_argument("--normalize", default="loudness", choices=["loudness", "peak"])
     ap.add_argument("--epochs", type=int, default=12)
     ap.add_argument("--batch", type=int, default=32)
@@ -139,6 +148,8 @@ def main():
     # saling menimpa dan perbandingan menjadi tidak terkontrol
     tag = (f"{args.model}_{args.split}_{args.augment}"
            f"{'AV' if args.augment_val else ''}"
+           f"{'ULR' if args.uniform_lr is not None else ''}"
+           f"{'PK' if args.normalize == 'peak' else ''}"
            f"_b{args.batch}e{args.epochs}_s{args.seed}")
     outdir = os.path.join(HERE, args.out, tag)
     os.makedirs(outdir, exist_ok=True)
@@ -184,6 +195,16 @@ def main():
     print(f"parameter: {n_tr/1e6:.2f} M dilatih / {n_all/1e6:.2f} M total")
 
     head_lr, enc_lr = DEFAULT_LR[args.model]
+    if args.uniform_lr is not None:
+        # Proposal hal. 68 menetapkan satu learning rate untuk seluruh model.
+        # Untuk model pra-latih ini berarti encoder ikut dilatih pada LR itu,
+        # sehingga encoder tidak lagi dibekukan.
+        head_lr = enc_lr = args.uniform_lr
+        for p in model.parameters():
+            p.requires_grad = True
+        n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        print(f"mode LR seragam {args.uniform_lr}: encoder DILATIH, "
+              f"{n_tr/1e6:.2f} M parameter")
     opt = torch.optim.AdamW(model.trainable_groups(head_lr, enc_lr), weight_decay=0.01)
     steps = max(1, len(dl_tr)) * args.epochs
     warm = int(0.1 * steps)
