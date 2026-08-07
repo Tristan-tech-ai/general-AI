@@ -8,19 +8,19 @@ Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak dapat dibaca ap
 |---|---|---|---|---|---|---|---|
 | AST: encoder dilatih vs dibekukan | 3/3 | 93.38 | 89.15 | +4.23 | 0.1597 | 0.4792 | **belum terbukti berbeda** |
 | AST: encoder dilatih vs proposal | 3/3 | 93.38 | 93.57 | -0.18 | 0.9064 | 0.9064 | **belum terbukti berbeda** |
-| WavLM: encoder dibekukan vs dilatih | 3/3 | 98.62 | 97.30 | +1.32 | 0.3135 | 0.6269 | **belum terbukti berbeda** |
-| HuBERT: encoder dilatih vs dibekukan | 3/3 | 97.49 | 94.67 | +2.82 | 0.0500 | 0.1998 | **belum terbukti berbeda** |
-| WavLM: rekayasa dibekukan vs proposal | 3/3 | 98.62 | 63.73 | +34.90 | 0.0087 | 0.0520 | **di garis batas, belum meyakinkan** |
-| HuBERT: rekayasa dilatih vs proposal | 3/3 | 97.49 | 52.14 | +45.34 | 0.0090 | 0.0520 | **di garis batas, belum meyakinkan** |
+| WavLM: encoder dibekukan vs dilatih | 5/3 | 98.36 | 97.30 | +1.06 | 0.3964 | 0.7929 | **belum terbukti berbeda** |
+| HuBERT: encoder dilatih vs dibekukan | 4/3 | 97.13 | 94.67 | +2.46 | 0.0455 | 0.1819 | **belum terbukti berbeda** |
+| WavLM: rekayasa dibekukan vs proposal | 5/5 | 98.36 | 63.29 | +35.07 | 0.0000 | 0.0002 | **selisih melampaui ragam** |
+| HuBERT: rekayasa dilatih vs proposal | 4/4 | 97.13 | 52.87 | +44.26 | 0.0007 | 0.0035 | **selisih melampaui ragam** |
 
 ## Bacaan
 
-Tabel ini memuat satu situasi yang mudah disalahbaca ke dua arah sekaligus, dan karena itu perlu dijelaskan dengan hati-hati.
+Hasilnya terbelah bersih menjadi dua kelompok yang tidak saling berdekatan.
 
-Dua perbandingan dengan selisih terbesar, yaitu 34,90 dan 45,34 poin persentase, berhenti pada nilai p terkoreksi 0,0520. Angka itu tepat di atas ambang 0,05 yang lazim dipakai. Menyimpulkan dari situ bahwa selisih 45 poin persentase tidak nyata jelas keliru. Penyebab nilai p tersebut bukan efek yang kecil melainkan derajat bebas yang sangat sedikit. Dengan tiga inisialisasi per sel, uji t Welch hanya memiliki sekitar dua derajat bebas, sementara sel konfigurasi proposal juga memiliki simpangan baku yang besar. Nilai p mentahnya 0,0087 dan 0,0090, dan koreksi Holm atas enam perbandingan menaikkannya menjadi tepat di atas ambang.
+Kelompok pertama adalah perbandingan antara konfigurasi proposal dan konfigurasi rekayasa pada kedua model swa-selia berukuran besar. Selisihnya berpuluh poin persentase dan nilai p terkoreksinya jauh di bawah ambang, sehingga kesimpulannya kokoh. Perlu dicatat bahwa pada tahap sebelumnya, ketika tiap sel baru memiliki tiga inisialisasi, kedua perbandingan ini justru berhenti pada nilai p terkoreksi 0,0520 yaitu tepat di atas ambang. Penyebabnya bukan efek yang kecil melainkan derajat bebas yang sangat sedikit dan simpangan baku yang besar pada sel konfigurasi proposal. Menambah inisialisasi keempat dan kelima menyelesaikannya, dan itu memang tanggapan yang tepat terhadap nilai p yang berhenti di ambang.
 
-Kesalahan ke arah sebaliknya juga perlu dihindari. Nilai p yang lolos ambang tidak akan membuat selisih itu lebih nyata daripada sekarang, dan besaran efek sudah lebih dari tujuh kali simpangan baku gabungannya. Yang sebenarnya dibutuhkan bukan penafsiran yang lebih longgar melainkan inisialisasi tambahan, dan itu dijadwalkan pada run_seeds4.ps1.
+Kelompok kedua adalah perbandingan antara membekukan dan melatih encoder. Selisihnya berada pada orde yang sama dengan simpangan bakunya sendiri, dan tidak satu pun terbukti berbeda meskipun sebagian sel sudah memiliki empat atau lima inisialisasi. Untuk kelompok ini, penelitian ini tidak berhak menyatakan bahwa satu perlakuan lebih baik daripada yang lain.
 
-Sebaliknya, perbandingan antara membekukan dan melatih encoder menghasilkan selisih yang berada pada orde yang sama dengan simpangan bakunya sendiri. Untuk kelompok itu, penelitian ini tidak berhak menyatakan bahwa satu perlakuan lebih baik daripada yang lain, dan menambah inisialisasi belum tentu mengubahnya.
+Kesimpulan keseluruhannya sempit tetapi jelas. Yang menentukan hasil pada partisi resmi adalah besaran learning rate relatif terhadap encodernya, bukan keputusan membekukan atau melatih encoder itu sendiri.
 
 Konsekuensinya bagi keseluruhan penelitian cukup besar dan perlu dinyatakan terus terang. Beberapa kesimpulan yang sempat ditarik lebih awal, ketika tiap sel baru dijalankan sekali, ternyata tidak bertahan setelah ragam antar inisialisasi diukur. Yang tersisa sebagai temuan yang kokoh adalah hal-hal yang selisihnya berpuluh poin, bukan berbilang poin.
