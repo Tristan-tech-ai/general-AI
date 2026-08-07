@@ -31,8 +31,8 @@ Perbedaan dengan tabel di atas hanya pada cara data dibagi. Seluruh setelan pela
 | model | n | akurasi @0,5 | akurasi @prior | AUC | EER |
 |---|---|---|---|---|---|
 | ast | 3 | 74.85% | **93.57% (1.75)** | 0.9824 | 6.50% |
-| wavlm | 4 | 54.18% | **63.40% (4.83)** | 0.7171 | 36.63% |
-| hubert | 3 | 52.27% | **52.14% (8.08)** | 0.5605 | 48.22% |
+| wavlm | 5 | 53.40% | **63.29% (4.19)** | 0.7096 | 36.73% |
+| hubert | 5 | 51.47% | **51.64% (6.47)** | 0.5597 | 48.60% |
 
 Selisih antara kedua tabel jauh lebih besar daripada selisih antar arsitektur di dalam masing-masing tabel. Pada split acak seluruh model berkerumun dalam rentang setengah poin persentase, sedangkan pada partisi resmi rentangnya puluhan poin. Pemeringkatan yang dihasilkan kedua protokol juga tidak sama, sehingga memilih model berdasarkan split acak dapat menghasilkan pilihan yang keliru.
 
@@ -42,8 +42,8 @@ Selisih antara kedua tabel jauh lebih besar daripada selisih antar arsitektur di
 |---|---|---|
 | wavlm + fullbgrb | 3 | **98.90%** |
 | wavlm + fullbg | 3 | **98.65%** |
-| wavlm + full | 4 | **98.55%** |
 | nes2net + fullrb | 3 | **98.50%** |
+| wavlm + full | 5 | **98.36%** |
 | nes2net + fullbgrb | 3 | **97.46%** |
 
 Perlu dicatat bahwa kedua kolom tidak setara. Replikasi proposal diuji pada split acak, sedangkan versi diperbaiki diuji pada partisi resmi yang memisahkan domain rekaman. Angka yang lebih tinggi pada split acak tidak berarti model lebih baik, melainkan bahwa tugasnya lebih mudah. Inilah inti temuan penelitian ini.

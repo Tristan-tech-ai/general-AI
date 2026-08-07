@@ -6,12 +6,12 @@ Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak dapat dibaca ap
 
 | Perbandingan | n | Rerata A | Rerata B | Selisih | p mentah | p Holm | Bacaan |
 |---|---|---|---|---|---|---|---|
-| AST: encoder dilatih vs dibekukan | 3/3 | 93.38 | 89.15 | +4.23 | 0.1597 | 0.4792 | **belum terbukti berbeda** |
+| AST: encoder dilatih vs dibekukan | 3/3 | 93.38 | 89.15 | +4.23 | 0.1597 | 0.6389 | **belum terbukti berbeda** |
 | AST: encoder dilatih vs proposal | 3/3 | 93.38 | 93.57 | -0.18 | 0.9064 | 0.9064 | **belum terbukti berbeda** |
-| WavLM: encoder dibekukan vs dilatih | 5/3 | 98.36 | 97.30 | +1.06 | 0.3964 | 0.7929 | **belum terbukti berbeda** |
-| HuBERT: encoder dilatih vs dibekukan | 4/3 | 97.13 | 94.67 | +2.46 | 0.0455 | 0.1819 | **belum terbukti berbeda** |
+| WavLM: encoder dibekukan vs dilatih | 5/3 | 98.36 | 97.30 | +1.06 | 0.3964 | 0.7978 | **belum terbukti berbeda** |
+| HuBERT: encoder dilatih vs dibekukan | 5/3 | 96.19 | 94.67 | +1.53 | 0.2659 | 0.7978 | **belum terbukti berbeda** |
 | WavLM: rekayasa dibekukan vs proposal | 5/5 | 98.36 | 63.29 | +35.07 | 0.0000 | 0.0002 | **selisih melampaui ragam** |
-| HuBERT: rekayasa dilatih vs proposal | 4/4 | 97.13 | 52.87 | +44.26 | 0.0007 | 0.0035 | **selisih melampaui ragam** |
+| HuBERT: rekayasa dilatih vs proposal | 5/5 | 96.19 | 51.64 | +44.56 | 0.0000 | 0.0002 | **selisih melampaui ragam** |
 
 ## Bacaan
 

@@ -20,20 +20,20 @@ Pada split acak selisihnya hanya +0.06 poin (99.69% menjadi 99.75%), yang menunj
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | 99.52% | **54.18% (4.08)** | +45.34 pp |
-| Diperbaiki (rekayasa) | 99.75% | **98.55% (0.54)** | +1.20 pp |
+| Proposal apa adanya | 99.52% | **53.40% (3.94)** | +46.12 pp |
+| Diperbaiki (rekayasa) | 99.75% | **98.36% (0.63)** | +1.38 pp |
 
-**Nilai rekayasa pada protokol resmi: +44.37 poin persentase** (54.18% menjadi 98.55%).
+**Nilai rekayasa pada protokol resmi: +44.96 poin persentase** (53.40% menjadi 98.36%).
 Pada split acak selisihnya hanya +0.22 poin (99.52% menjadi 99.75%), yang menunjukkan bahwa protokol longgar tidak dapat membedakan kedua konfigurasi.
 
 ## hubert
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | 99.69% | **52.27% (2.18)** | +47.43 pp |
+| Proposal apa adanya | 99.69% | **51.47% (1.89)** | +48.22 pp |
 | Diperbaiki (rekayasa) | belum ada | **95.01% (0.97)** | n/a |
 
-**Nilai rekayasa pada protokol resmi: +42.74 poin persentase** (52.27% menjadi 95.01%).
+**Nilai rekayasa pada protokol resmi: +43.54 poin persentase** (51.47% menjadi 95.01%).
 
 ## nes2net
 
@@ -47,7 +47,7 @@ Pada split acak selisihnya hanya +0.22 poin (99.52% menjadi 99.75%), yang menunj
 | Arsitektur | Proposal pada partisi resmi | Diperbaiki pada partisi resmi | Selisih |
 |---|---|---|---|
 | ast | 74.85% | **89.15%** | **+14.31 pp** |
-| wavlm | 54.18% | **98.55%** | **+44.37 pp** |
-| hubert | 52.27% | **95.01%** | **+42.74 pp** |
+| wavlm | 53.40% | **98.36%** | **+44.96 pp** |
+| hubert | 51.47% | **95.01%** | **+43.54 pp** |
 
-Rerata selisih +33.81 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.
+Rerata selisih +34.27 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.

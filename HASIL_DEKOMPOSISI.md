@@ -7,24 +7,24 @@ Perbandingan antara konfigurasi proposal dan konfigurasi diperbaiki pada matriks
 | Arsitektur | n | A. proposal @ 0,5 | B. proposal @ prior | C. rekayasa @ 0,5 | D. rekayasa @ prior |
 |---|---|---|---|---|---|
 | ast | 3/3 | 74.85 | **93.57** | **58.82** | **89.15** |
-| wavlm | 4/4 | 54.18 | **63.40** | **82.24** | **98.55** |
-| hubert | 3/6 | 52.27 | **52.14** | **76.95** | **95.01** |
+| wavlm | 5/5 | 53.40 | **63.29** | **81.34** | **98.36** |
+| hubert | 5/6 | 51.47 | **51.64** | **76.95** | **95.01** |
 
 ## Sumbangan tiap sumbu (poin persentase)
 
 | Arsitektur | Ambang saja (B-A) | Pelatihan saja (C-A) | Interaksi | Total (D-A) |
 |---|---|---|---|---|
 | ast | **+18.72** | **-16.02** | +11.61 | +14.31 |
-| wavlm | **+9.21** | **+28.06** | +7.10 | +44.37 |
-| hubert | **-0.12** | **+24.68** | +18.18 | +42.74 |
+| wavlm | **+9.89** | **+27.94** | +7.13 | +44.96 |
+| hubert | **+0.17** | **+25.47** | +17.90 | +43.54 |
 
 ## Daya pisah, yang sama sekali tidak bergantung pada ambang
 
 | Arsitektur | AUC proposal | AUC rekayasa | EER proposal | EER rekayasa | Penurunan EER relatif |
 |---|---|---|---|---|---|
 | ast | 0.9824 | **0.9540** | 6.50 | **10.81** | **-66.5 persen** |
-| wavlm | 0.7171 | **0.9989** | 36.63 | **1.47** | **+96.0 persen** |
-| hubert | 0.5605 | **0.9916** | 48.22 | **4.99** | **+89.6 persen** |
+| wavlm | 0.7096 | **0.9985** | 36.73 | **1.65** | **+95.5 persen** |
+| hubert | 0.5597 | **0.9916** | 48.60 | **4.99** | **+89.7 persen** |
 
 ## Bacaan
 

@@ -11,8 +11,8 @@ Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.
 | CNN+ASP tanpa augmentasi | acak 60/20/20 | 1 | **99.75** | 0.03 |
 | CNN+ASP tanpa augmentasi | resmi FoR | 1 | **71.88** | 28.12 |
 | Replikasi proposal: ast | resmi FoR | 3 | **74.85** (1.47) | 6.50 |
-| Replikasi proposal: wavlm | resmi FoR | 4 | **54.18** (4.08) | 36.63 |
-| Replikasi proposal: hubert | resmi FoR | 4 | **51.75** (2.06) | 47.43 |
+| Replikasi proposal: wavlm | resmi FoR | 5 | **53.40** (3.94) | 36.73 |
+| Replikasi proposal: hubert | resmi FoR | 5 | **51.47** (1.89) | 48.60 |
 | Replikasi proposal: cnnlstm_proposal | acak 60/20/20 | 1 | **99.83** | 0.03 |
 | Replikasi proposal: wav2vec2 | acak 60/20/20 | 1 | **99.78** | 0.08 |
 | Replikasi proposal: ast | acak 60/20/20 | 1 | **99.69** | 0.14 |
@@ -27,14 +27,14 @@ Metrik replikasi proposal dilaporkan pada ambang 0,5 seperti yang tersirat di pr
 |---|---|---|---|---|
 | wavlm | fullbgrb | 3 | **98.90** (0.18) | 1.10 |
 | wavlm | fullbg | 3 | **98.65** (0.37) | 1.29 |
-| wavlm | full | 4 | **98.55** (0.54) | 1.47 |
 | nes2net | fullrb | 3 | **98.50** (0.41) | 1.44 |
-| hubert | fullUF | 3 | **97.49** (1.33) | 2.51 |
+| wavlm | full | 5 | **98.36** (0.63) | 1.65 |
 | nes2net | fullbgrb | 3 | **97.46** (2.10) | 2.54 |
 | wavlm | fullUF | 3 | **97.30** (1.71) | 2.70 |
 | hubert | codec | 8 | **97.29** (2.16) | 2.71 |
 | nes2net | fullbg | 3 | **97.12** (2.77) | 2.88 |
 | nes2net | soft | 3 | **96.75** (0.77) | 3.25 |
+| wavlm | codec | 3 | **96.51** (2.41) | 3.55 |
 
 ## 3. Deteksi TTS komersial 2025-2026
 
