@@ -728,15 +728,35 @@ def bangun():
         ("L5", "Augmentasi penuh menggantikan noise saja",
          "runs/ast_official_full_b32e10_s42"),
     ]
-    tg, prev = [], None
+    tgr, prev, prev_v = [], None, None
     for kode, nama, d in TANGGA:
-        m = _kumpul_ambang(d)
+        pola = re.sub(r"_s\d+$", "_s*", d)
+        m = _kumpul_ambang(pola)
         if m is None:
             continue
-        tg.append([kode, nama, f"{m['apm']:.2f}",
-                   "" if prev is None else f"{m['apm'] - prev:+.2f}",
-                   f"{m['auc']:.4f}", f"{m['eer']:.2f}"])
-        prev = m["apm"]
+        v = _akurasi_seed(pola)
+        p = None if prev_v is None else _welch_p(v, prev_v)
+        tgr.append({"kode": kode, "nama": nama, "m": m, "p": p,
+                    "sel": None if prev is None else m["apm"] - prev})
+        prev, prev_v = m["apm"], v
+    # Koreksi Holm atas seluruh langkah yang diuji.
+    ut = [b for b in tgr if b["p"] is not None]
+    for rank, b in enumerate(sorted(ut, key=lambda x: x["p"])):
+        b["ph"] = min(1.0, b["p"] * (len(ut) - rank))
+    jl = 0.0
+    for b in sorted(ut, key=lambda x: x["p"]):
+        jl = max(jl, b["ph"])
+        b["ph"] = jl
+    tg = []
+    for b in tgr:
+        m = b["m"]
+        tg.append([b["kode"], b["nama"], str(m["n"]),
+                   (f"{m['apm']:.2f} ({m['sd']:.2f})" if m["n"] > 1
+                    else f"{m['apm']:.2f}"),
+                   "" if b["sel"] is None else f"{b['sel']:+.2f}",
+                   "" if b["p"] is None else f"{b['p']:.3f}",
+                   "" if "ph" not in b else f"{b['ph']:.3f}",
+                   f"{m['auc']:.4f}"])
 
     if len(tg) >= 2:
         E.append(P("3.9 Perbaikan mana yang membeli berapa", "h2"))
@@ -749,26 +769,43 @@ def bangun():
             "konfigurasi proposal, seluruhnya pada AST, partisi resmi, batch 32, "
             "dan seed 42. Akurasi dilaporkan pada ambang prior-matched untuk "
             "semua langkah agar sumbu ambang tidak ikut bercampur.", "p"))
-        E.append(tabel(["Langkah", "Perbaikan yang ditambahkan", "Akurasi",
-                        "Selisih (pp)", "AUC", "EER"], tg,
-                       [1.6 * cm, 6.4 * cm, 2.2 * cm, 2.2 * cm, 2.0 * cm,
-                        1.8 * cm]))
+        E.append(tabel(["Langkah", "Perbaikan yang ditambahkan", "n", "Akurasi",
+                        "Selisih", "p mentah", "p Holm", "AUC"], tg,
+                       [1.4 * cm, 4.6 * cm, 0.9 * cm, 2.4 * cm, 1.5 * cm,
+                        1.6 * cm, 1.5 * cm, 1.7 * cm]))
         E.append(Spacer(1, 6))
         E.extend(gambar("11_tangga_ablasi.png", 15.0 * cm,
                         "Gambar 6. Sumbangan tiap perbaikan pada AST di partisi "
                         "resmi. Batang merah menandai perbaikan yang merugikan "
                         "bila berdiri sendiri."))
         E.append(P(
-            "Tangga ini menjawab pertanyaan yang tertinggal pada bagian 3.8. "
-            "Sepanjang lima langkah, akurasi justru turun 3,40 poin persentase, "
-            "dari 92,56 menjadi 89,15 persen. Paket rekayasa secara keseluruhan "
-            "merugikan pada arsitektur ini, dan penyebabnya terpusat pada satu "
-            "langkah saja. Membekukan encoder membuang 16,91 poin persentase, "
-            "sementara seluruh perbaikan lain digabung hanya mengembalikan 13,51 "
-            "poin. Normalisasi loudness ternyata hampir netral, early stopping "
-            "menyumbang 9,01 poin, dan augmentasi penuh menyumbang 4,78 poin. "
-            "Ketiganya adalah perbaikan yang sah, namun tidak cukup untuk menutup "
-            "kerugian dari satu keputusan yang keliru.", "p"))
+            "Tangga ini menjawab pertanyaan yang tertinggal pada bagian 3.8, "
+            "meskipun jawabannya lebih lemah daripada yang diharapkan. Sepanjang "
+            "lima langkah, akurasi justru turun, sehingga paket rekayasa secara "
+            "keseluruhan merugikan pada arsitektur ini. Langkah dengan selisih "
+            "terbesar adalah pembekuan encoder, diikuti early stopping pada arah "
+            "sebaliknya, sedangkan normalisasi loudness dan augmentasi penuh "
+            "memberi selisih yang jauh lebih kecil.", "p"))
+        E.append(P(
+            "Selisih tiap langkah diuji terhadap langkah sebelumnya dengan uji t "
+            "Welch dan dikoreksi Holm-Bonferroni untuk empat pengujian sekaligus. "
+            "Dua langkah dengan selisih terbesar memiliki nilai p mentah di bawah "
+            "0,05, tetapi tidak satu pun bertahan di bawah ambang setelah "
+            "koreksi. Sebabnya perlu dinyatakan dengan tepat. Seluruh tangga ini "
+            "dijalankan pada AST, yaitu arsitektur dengan ragam antar "
+            "inisialisasi terbesar di antara yang diuji dalam penelitian ini, "
+            "sehingga daya ujinya paling rendah justru di tempat yang paling "
+            "banyak dibandingkan. Nilai p yang besar di sini menunjukkan "
+            "kurangnya bukti, bukan ketiadaan efek.", "p"))
+        E.append(P(
+            "Kesimpulan yang dapat dipertanggungjawabkan dari tangga ini karena "
+            "itu terbatas. Arah tiap langkah konsisten dengan penjelasan "
+            "mekanistik yang diajukan pada bagian 3.10, tetapi besarannya belum "
+            "dapat dipisahkan dari ragam pada ukuran sampel ini. Tangga ablasi "
+            "lebih tepat dibaca sebagai peta kemungkinan sebab yang menunjukkan "
+            "ke mana harus mencari, bukan sebagai pengukuran sumbangan tiap "
+            "perbaikan. Versi awal naskah ini menyajikannya sebagai pengukuran, "
+            "dan itu keliru.", "p"))
         E.append(P(
             "Perlu dicatat bahwa versi tangga ini berbeda jauh dari versi yang "
             "sempat disusun lebih awal dalam penelitian. Pada versi awal, titik "
