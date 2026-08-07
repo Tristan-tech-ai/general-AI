@@ -50,10 +50,21 @@ menghapus keduanya; band-gain hanya mengacak level. Ablasi variabel-tunggal
 
 | Ditambahkan | Δ akurasi FoR | Δ TTS 2025-26 | Δ TTS-2019 non-MP3 |
 |---|---|---|---|
-| RawBoost | +4,75 pp | **−7,33 pp** | **−21,4 pp** |
-| **band-gain** | +3,37 pp | −1,47 pp | **+10,0 pp** |
+| RawBoost | +4,75 pp | −7,33 pp | −21,4 pp |
+| band-gain | +3,37 pp | −1,47 pp | +10,0 pp |
 
-Simpangan baku pada proksi pintasan runtuh dari ±23,0 menjadi ±4,2.
+> **Selisih di atas tidak bertahan setelah diuji.** Recall pada kedua sumbu TTS
+> sangat tidak stabil antar inisialisasi acak: Nes2Net tanpa band-gain
+> menghasilkan 93,8 / 96,9 / **55,7** persen pada TTS-2019 non-MP3, simpangan
+> baku ±23,0. Uji t Welch dengan koreksi Holm atas enam perbandingan pada tiga
+> arsitektur memberi p Holm = 1,0000 untuk **seluruhnya**. Keunggulan +10,0 pp
+> itu ditentukan hampir sepenuhnya oleh satu inisialisasi yang buruk.
+> Rinciannya di [HASIL_UJI_KLAIM_BANDGAIN.md](HASIL_UJI_KLAIM_BANDGAIN.md).
+>
+> Yang masih dapat dinyatakan: simpangan baku band-gain jauh lebih kecil pada
+> kedua sumbu (±4,2 lawan ±23,0 pada Nes2Net; ±2,15 lawan ±7,29 pada WavLM),
+> yaitu hasilnya lebih dapat diulang. Klaim keunggulan rerata ditarik sebagai
+> temuan dan dinyatakan ulang sebagai pengamatan yang belum diuji.
 
 **8. Split acak buta terhadap kerusakan besar, bukan sekadar menggelembung.**
 Dua kerusakan nyata menimpa model selama penelitian ini, dan hanya partisi resmi
