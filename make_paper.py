@@ -312,7 +312,7 @@ def bangun():
         "pembagian data secara acak menghasilkan akurasi 99,94 persen sementara "
         "partisi resmi menghasilkan 50,00 persen. Selisih tersebut sepenuhnya "
         "berasal dari protokol pembagian data. Temuan lanjutan menunjukkan bahwa "
-        "akurasi pada dataset ini berkorelasi negatif dengan kemampuan mendeteksi "
+        "akurasi pada dataset ini tidak memprediksi kemampuan mendeteksi "
         "sistem text-to-speech generasi 2025 sampai 2026, bahwa kegagalan di bawah "
         "gangguan noise sebagian besar merupakan kegagalan kalibrasi ambang dan "
         "bukan kegagalan pengenalan, dan bahwa model anti-spoofing terbaik yang "
@@ -544,20 +544,51 @@ def bangun():
                     "95 persen yang disamakan untuk semua model."))
 
     E.append(PageBreak())
-    E.append(P("3.5 Akurasi in-domain berkorelasi negatif dengan generalisasi", "h2"))
+    E.append(P("3.5 Akurasi in-domain tidak memprediksi generalisasi", "h2"))
     E.append(P(
         "Menggabungkan hasil pada Fake-or-Real dengan hasil pada sistem "
         "text-to-speech terbaru menghasilkan pola yang berlawanan dengan harapan. "
         "Model dengan akurasi tertinggi pada dataset justru bukan model terbaik "
-        "pada sistem terbaru. Contoh paling jelas adalah HuBERT dengan augmentasi "
-        "penuh, yang mencapai akurasi 95,3 persen pada dataset tetapi hanya "
-        "mengenali 2,3 persen sampel dari sistem text-to-speech 2019 yang tidak "
-        "dikompresi MP3. Model tersebut pada praktiknya mendeteksi kompresi, bukan "
-        "sintesis.", "p"))
+        "pada sistem terbaru. Contoh yang paling menonjol adalah HuBERT dengan "
+        "augmentasi penuh, yang mencapai akurasi 95,3 persen pada dataset tetapi "
+        "hanya mengenali 29,2 persen sampel dari sistem text-to-speech 2019 yang "
+        "tidak dikompresi MP3, dengan simpangan baku 28,96 poin persentase atas "
+        "tiga inisialisasi acak.", "p"))
+    E.append(P(
+        "Versi awal naskah ini melaporkan angka 2,3 persen untuk sel yang sama. "
+        "Angka tersebut merupakan inisialisasi terburuk dari tiga, yaitu 2,3 dan "
+        "59,9 dan 25,4 persen, dan penyebutannya tanpa menyertakan dua yang lain "
+        "memberi kesan yang jauh lebih dramatis daripada yang ditunjukkan "
+        "datanya. Reratanya tetap rendah dan tetap menopang pernyataan bahwa "
+        "akurasi tinggi pada Fake-or-Real tidak menjamin apa pun mengenai "
+        "generator lain, namun sebarannya sangat lebar dan hal itu harus "
+        "dinyatakan.", "p"))
+    E.append(P(
+        "Sebuah klaim yang lebih kuat sempat diajukan, yaitu bahwa kedua besaran "
+        "tersebut berkorelasi negatif secara sistematis, dengan koefisien "
+        "korelasi negatif nol koma lima empat dua atas tujuh model. Klaim itu "
+        "ditarik. Dihitung ulang atas sepuluh konfigurasi, yaitu pasangan "
+        "arsitektur dan strategi augmentasi yang masing-masing dirata-ratakan "
+        "atas inisialisasi acaknya, koefisiennya menjadi negatif nol koma nol "
+        "empat delapan. Uji permutasi memberi nilai p sebesar nol koma delapan "
+        "sembilan lima, dan selang kepercayaan bootstrap sembilan puluh lima "
+        "persen membentang dari negatif nol koma enam enam empat sampai positif "
+        "nol koma enam dua sembilan, sehingga memuat nol dengan lebar yang "
+        "hampir mencakup seluruh rentang koefisien yang mungkin.", "p"))
+    E.append(P(
+        "Perbedaan antara kedua pernyataan itu penting dan bukan sekadar soal "
+        "kehati-hatian. Pernyataan bahwa akurasi in-domain tidak memprediksi "
+        "generalisasi merupakan peringatan, dan peringatan itu ditopang oleh "
+        "mekanisme yang terdokumentasi secara terpisah pada bagian 3.2, yaitu "
+        "kebocoran provenance codec yang dihitung langsung dari berkas dan bukan "
+        "diperkirakan secara statistik. Pernyataan bahwa keduanya berkorelasi "
+        "negatif merupakan klaim mengenai struktur hubungan, dan klaim semacam "
+        "itu menuntut bukti yang tidak dimiliki penelitian ini.", "p"))
     E.extend(gambar("06_tradeoff.png", 16 * cm,
                     "Gambar 4. Hubungan antara akurasi in-domain dan kemampuan "
                     "generalisasi untuk beberapa strategi augmentasi pada "
-                    "arsitektur yang sama."))
+                    "arsitektur yang sama. Sebaran titiknya tidak menunjukkan "
+                    "hubungan yang dapat dipisahkan dari derau."))
 
     E.append(P("3.6 Model anti-spoofing terbaik runtuh di luar domainnya", "h2"))
     E.append(P(
@@ -1397,11 +1428,24 @@ def bangun():
         "urutan peringkat model karena itu bersifat indikatif.", "p"))
     E.append(P(
         "Kedua, korelasi negatif antara akurasi in-domain dan kemampuan "
-        "generalisasi dihitung dari tujuh model. Ukuran sampel sekecil itu tidak "
-        "cukup untuk menyimpulkan besaran korelasinya. Yang menopang temuan ini "
-        "bukan nilai korelasinya melainkan mekanismenya, yang terdokumentasi secara "
-        "terpisah melalui audit dataset, eksperimen augmentasi terkontrol, dan pola "
-        "kebutaan model terhadap sistem yang tidak dikompresi.", "p"))
+        "generalisasi yang sempat dilaporkan sebagai temuan telah ditarik "
+        "sepenuhnya, bukan sekadar dilemahkan. Dihitung ulang secara benar, "
+        "koefisiennya mendekati nol dengan selang kepercayaan yang memuat nol "
+        "dan hampir mencakup seluruh rentang yang mungkin. Yang menopang "
+        "pernyataan bahwa akurasi in-domain tidak dapat diandalkan karena itu "
+        "bukan korelasinya melainkan mekanismenya, yang terdokumentasi secara "
+        "terpisah melalui audit dataset, eksperimen augmentasi terkontrol, dan "
+        "pola kebutaan model terhadap sistem yang tidak dikompresi.", "p"))
+    E.append(P(
+        "Ketiga, hipotesis mengenai ruang perbaikan yang tersisa, yang sempat "
+        "didukung koefisien korelasi negatif nol koma sembilan delapan nol atas "
+        "tiga arsitektur, praktis tidak dapat diuji. Pada tiga titik data, uji "
+        "permutasi lengkap hanya memiliki enam susunan yang mungkin, sehingga "
+        "nilai p terkecil yang dapat dihasilkannya sekitar nol koma tiga tiga "
+        "berapa pun kuatnya pola yang teramati. Koefisien sebesar itu pada "
+        "ukuran sampel sebesar itu tidak membawa informasi yang dapat "
+        "dipertanggungjawabkan, dan penyebutannya sebaiknya dibaca sebagai "
+        "pengamatan yang mengundang pengujian, bukan sebagai dukungan.", "p"))
     E.append(P(
         "Ketiga, efek band-gain berbeda arah pada arsitektur yang berbeda. "
         "Penjelasan berdasarkan ruang perbaikan yang tersisa masuk akal namun "
