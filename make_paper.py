@@ -786,26 +786,43 @@ def bangun():
             "terbesar adalah pembekuan encoder, diikuti early stopping pada arah "
             "sebaliknya, sedangkan normalisasi loudness dan augmentasi penuh "
             "memberi selisih yang jauh lebih kecil.", "p"))
+        _lo = [b for b in ut if b["ph"] < 0.05]
+        _no = [b for b in ut if b["ph"] >= 0.05]
         E.append(P(
             "Selisih tiap langkah diuji terhadap langkah sebelumnya dengan uji t "
-            "Welch dan dikoreksi Holm-Bonferroni untuk empat pengujian sekaligus. "
-            "Dua langkah dengan selisih terbesar memiliki nilai p mentah di bawah "
-            "0,05, tetapi tidak satu pun bertahan di bawah ambang setelah "
-            "koreksi. Sebabnya perlu dinyatakan dengan tepat. Seluruh tangga ini "
-            "dijalankan pada AST, yaitu arsitektur dengan ragam antar "
-            "inisialisasi terbesar di antara yang diuji dalam penelitian ini, "
-            "sehingga daya ujinya paling rendah justru di tempat yang paling "
-            "banyak dibandingkan. Nilai p yang besar di sini menunjukkan "
-            "kurangnya bukti, bukan ketiadaan efek.", "p"))
+            "Welch dan dikoreksi Holm-Bonferroni untuk empat pengujian sekaligus, "
+            "dengan tiga inisialisasi acak per langkah. Hasilnya memisahkan "
+            "tangga ini menjadi dua bagian yang sangat berbeda. "
+            + ("Langkah yang selisihnya melampaui ragam antar inisialisasi "
+               "adalah " + ", ".join(
+                   f"{b['kode']} sebesar {b['sel']:+.2f} poin dengan p "
+                   f"terkoreksi {b['ph']:.3f}" for b in _lo) + ". "
+               if _lo else "")
+            + ("Langkah yang selisihnya belum terbukti berbeda dari nol adalah "
+               + ", ".join(
+                   f"{b['kode']} sebesar {b['sel']:+.2f} poin dengan p "
+                   f"terkoreksi {b['ph']:.3f}" for b in _no) + "."
+               if _no else ""), "p"))
         E.append(P(
-            "Kesimpulan yang dapat dipertanggungjawabkan dari tangga ini karena "
-            "itu terbatas. Arah tiap langkah konsisten dengan penjelasan "
-            "mekanistik yang diajukan pada bagian 3.10, tetapi besarannya belum "
-            "dapat dipisahkan dari ragam pada ukuran sampel ini. Tangga ablasi "
-            "lebih tepat dibaca sebagai peta kemungkinan sebab yang menunjukkan "
-            "ke mana harus mencari, bukan sebagai pengukuran sumbangan tiap "
-            "perbaikan. Versi awal naskah ini menyajikannya sebagai pengukuran, "
-            "dan itu keliru.", "p"))
+            "Dua keputusan pelatihan karena itu terbukti berpengaruh, yaitu "
+            "membekukan encoder dan menerapkan early stopping, sementara "
+            "normalisasi loudness dan augmentasi penuh tidak. Perlu dicatat "
+            "bahwa arah kedua keputusan yang terbukti itu berlawanan dan "
+            "besarannya berdekatan, sehingga keduanya sebagian besar saling "
+            "meniadakan. Itulah sebabnya tangga ini berakhir lebih rendah "
+            "daripada titik tolaknya meskipun mengandung dua langkah yang "
+            "masing-masing nyata.", "p"))
+        E.append(P(
+            "Bagian ini sempat dilaporkan secara keliru dua kali selama "
+            "penelitian, dan keduanya dicatat di sini. Versi pertama menyajikan "
+            "selisih dari satu inisialisasi sebagai pengukuran sumbangan tiap "
+            "perbaikan, padahal ragam antar inisialisasi pada AST mencapai "
+            "beberapa poin persentase. Versi kedua, setelah dua inisialisasi "
+            "tersedia, menyatakan bahwa tidak satu pun langkah bertahan setelah "
+            "koreksi. Inisialisasi ketiga menunjukkan bahwa pernyataan itu juga "
+            "terlalu jauh, karena dua langkah terbesar ternyata bertahan. Kedua "
+            "kekeliruan itu berasal dari sumber yang sama, yaitu menarik "
+            "kesimpulan sebelum sebarannya diketahui.", "p"))
         E.append(P(
             "Perlu dicatat bahwa versi tangga ini berbeda jauh dari versi yang "
             "sempat disusun lebih awal dalam penelitian. Pada versi awal, titik "
