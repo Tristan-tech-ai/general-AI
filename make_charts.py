@@ -381,7 +381,7 @@ def chart_matriks_lr():
 
     data = []
     for m, b, lbl in ARS:
-        vals = []
+        vals, errs = [], []
         for _, pat, _ in PERLAKUAN:
             acc = []
             for d in sorted(_g.glob(os.path.join(HERE, pat.format(m=m, b=b)))):
@@ -392,8 +392,9 @@ def chart_matriks_lr():
                 acc.append(full_metrics(y.astype(int), p,
                                         prior_matched_threshold(p, 0.5))["accuracy"] * 100)
             vals.append(np.mean(acc) if acc else None)
+            errs.append(np.std(acc, ddof=1) if len(acc) > 1 else 0.0)
         if any(v is not None for v in vals):
-            data.append((lbl, vals))
+            data.append((lbl, vals, errs))
     if not data:
         return
 
@@ -402,10 +403,16 @@ def chart_matriks_lr():
     for j, (nm, _, cl) in enumerate(PERLAKUAN):
         xs = [i + (j - (n - 1) / 2) * w for i in range(len(data))]
         ys = [(d[1][j] if d[1][j] is not None else 0) for d in data]
-        ax.bar(xs, ys, width=w * 0.92, color=cl, label=nm, zorder=3)
-        for x, y in zip(xs, ys):
+        es = [d[2][j] for d in data]
+        # Batang galat adalah simpangan baku antar inisialisasi acak. Tanpa ini
+        # dua batang yang tampak berbeda dapat berasal dari sebaran yang saling
+        # bertumpang tindih sepenuhnya.
+        ax.bar(xs, ys, width=w * 0.92, color=cl, label=nm, zorder=3,
+               yerr=es, capsize=3,
+               error_kw={"ecolor": "#343A40", "lw": 1.1, "zorder": 4})
+        for x, y, e in zip(xs, ys, es):
             if y:
-                ax.text(x, y + 1.0, f"{y:.1f}", ha="center", fontsize=8.5,
+                ax.text(x, y + e + 1.2, f"{y:.1f}", ha="center", fontsize=8.5,
                         weight="bold", color=cl)
     ax.axhline(50, color="#E03131", lw=1.1, ls=":", zorder=2)
     ax.text(-0.48, 51.2, "tebakan acak", fontsize=8.5, color="#E03131",
@@ -417,8 +424,9 @@ def chart_matriks_lr():
     ax.grid(axis="y", alpha=0.25, zorder=0)
     ax.legend(fontsize=9, ncol=2, loc="lower left", framealpha=0.95)
     ax.set_title("Perlakuan encoder terbaik berbeda menurut arsitektur\n"
-                 "laju seragam 0,001 menghancurkan kedua model swa-selia besar",
-                 fontsize=12.5, weight="bold")
+                 "laju seragam 0,001 menghancurkan kedua model swa-selia besar\n"
+                 "batang galat adalah simpangan baku antar inisialisasi acak",
+                 fontsize=12, weight="bold")
     save(fig, "12_matriks_encoder.png")
 
 
