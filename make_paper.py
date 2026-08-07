@@ -1227,6 +1227,45 @@ def bangun():
         "Keempat, sejumlah kesimpulan sementara dalam penelitian ini pernah keliru "
         "dan telah dikoreksi setelah pengukuran ulang. Riwayat koreksi tersebut "
         "sengaja dipertahankan dalam dokumentasi pendukung agar dapat ditelusuri.", "p"))
+    E.append(P("5.1 Satu pola kegagalan yang berulang lima kali", "h2"))
+    E.append(P(
+        "Kekeliruan yang muncul selama penelitian ini ternyata sebagian besar "
+        "berasal dari satu pola yang sama, dan pola itu layak dinyatakan "
+        "tersendiri karena kemungkinan besar tidak khas penelitian ini saja. "
+        "Polanya adalah kode yang benar ketika ditulis lalu menjadi salah karena "
+        "data baru masuk, sementara kesalahannya tidak menimbulkan galat apa pun "
+        "sehingga berlangsung tanpa diketahui.", "p"))
+    E.append(P(
+        "Kasus pertama dan paling merusak terjadi pada bendera yang seharusnya "
+        "melatih encoder. Bendera itu menyetel atribut requires_grad, yang benar "
+        "pada saat ditulis, tetapi kelas modelnya kemudian dilengkapi pembungkus "
+        "torch.no_grad yang dikendalikan atribut lain. Sejak saat itu bendera "
+        "tersebut tidak lagi berfungsi, sedangkan lognya tetap mencetak bahwa "
+        "encoder dilatih dan optimizer tetap menerima grup parameternya. "
+        "Seluruh arm replikasi proposal berjalan dengan encoder yang tidak "
+        "pernah menerima satu pun gradien, dan hal itu baru ketahuan ketika dua "
+        "langkah tangga ablasi yang seharusnya berbeda menghasilkan skor identik "
+        "sampai empat desimal.", "p"))
+    E.append(P(
+        "Empat kasus berikutnya terjadi pada skrip pelaporan. Masing-masing "
+        "memakai pola pencocokan nama berkas yang benar ketika hanya ada satu "
+        "skema pembagian data atau satu inisialisasi acak. Ketika konfigurasi "
+        "baru ditambahkan, sebagian pola ikut menangkap hasil yang tidak "
+        "dimaksudkan dan sebagian lain melewatkannya. Salah satu di antaranya "
+        "melabeli hasil partisi resmi sebagai hasil split acak, sehingga tabel "
+        "yang seharusnya menunjukkan bahwa split acak menggelembungkan angka "
+        "justru menampilkan angka yang membantahnya.", "p"))
+    E.append(P(
+        "Yang menyatukan kelimanya bukan kecerobohan pada satu titik, melainkan "
+        "ketiadaan mekanisme yang memberi tahu bahwa ada yang berubah. Tidak ada "
+        "galat yang dilempar, tidak ada peringatan yang dicetak, dan hasilnya "
+        "tetap berupa angka yang tampak masuk akal. Sebagai tanggapan, seluruh "
+        "angka yang dikutip dalam prosa naskah ini kini dihitung ulang setiap "
+        "kali naskah dibangun dan tidak lagi ditulis tangan, dan skrip pelaporan "
+        "diwajibkan menghitung serta melaporkan berapa berkas yang dilewatinya. "
+        "Anjuran yang dapat diambil untuk penelitian sejenis adalah "
+        "memperlakukan pelewatan tanpa suara sebagai kesalahan, bukan sebagai "
+        "perilaku wajar.", "p"))
 
     # ---------------- 6
     E.append(P("6. Kesimpulan", "h1"))
