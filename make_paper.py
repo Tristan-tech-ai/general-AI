@@ -1318,14 +1318,24 @@ def bangun():
             "kasar gagal menghilangkan isyarat level sedangkan penetralan yang "
             "terlalu agresif mulai merusak struktur halus.", "p"))
         E.append(P(
-            "Gambaran itu sebagian besar tidak bertahan. Ketika titik-titiknya "
-            "dijalankan ulang dengan inisialisasi tambahan, selisih pada dua "
-            "belas pita menyusut dari satu koma empat satu poin menjadi nol koma "
-            "dua satu poin, dan keunggulan enam desibel berubah tanda dari "
-            "positif nol koma empat tiga menjadi negatif nol koma satu dua. "
-            "Hanya satu efek yang bertahan, yaitu bahwa tiga pita merugikan, dan "
-            "efek itu pun berada di garis batas setelah koreksi untuk pengujian "
-            "berganda.", "p"))
+            "Gambaran itu tidak bertahan sama sekali. Ketika setiap titik "
+            "dijalankan dengan tiga inisialisasi acak, selisih pada dua belas "
+            "pita menyusut dari satu koma empat satu poin persentase menjadi nol, "
+            "keunggulan enam desibel menyusut dari nol koma empat tiga menjadi "
+            "nol koma nol enam, dan kerugian tiga pita menyusut dari satu koma "
+            "tiga dua menjadi nol koma tujuh nol. Setelah koreksi untuk sebelas "
+            "perbandingan, tidak satu pun berada di bawah ambang.", "p"))
+        E.append(P(
+            "Satu titik menyisakan sinyal yang layak dicatat tanpa diklaim. "
+            "Redaman tiga desibel mengungguli konfigurasi tanpa band-gain "
+            "sebesar nol koma sembilan poin persentase dengan nilai p mentah nol "
+            "koma nol tiga tujuh, yang berada di bawah ambang sebelum koreksi "
+            "tetapi menjadi nol koma empat nol delapan setelah dikoreksi untuk "
+            "sebelas perbandingan. Titik itu merupakan kandidat yang pantas "
+            "diuji ulang secara terpisah dengan hipotesis yang ditetapkan di "
+            "muka, dan bukan temuan dari sapuan ini. Menyatakannya sebagai "
+            "temuan berarti memanfaatkan kebebasan memilih satu titik dari "
+            "sebelas setelah melihat hasilnya.", "p"))
         E.append(P(
             "Peristiwa ini layak dicatat sebagai studi kasus, dan bukan sekadar "
             "hasil negatif yang perlu dilewati. Kurva yang dihasilkan tahap "
