@@ -251,9 +251,45 @@ def ms(v, k, pct=True):
 
 
 # ---------------------------------------------------------------- isi
+def _angka():
+    """Nilai kunci yang dikutip dalam prosa, dihitung ulang tiap kali naskah
+    dibangun.
+
+    Sepanjang penelitian ini beberapa angka sempat dikutip dari satu
+    inisialisasi acak lalu menjadi kedaluwarsa ketika inisialisasi lain
+    ditambahkan. Menghitungnya di sini menutup kemungkinan itu.
+    """
+    P = {}
+    for kunci, pat in [
+            ("ast_proposal", "runs/ast_official_proposalULRPK_b32e20_s*"),
+            ("ast_beku", "runs/ast_official_full_b32e10_s*"),
+            ("ast_dilatih", "runs/ast_official_fullUF_b32e10_s*"),
+            ("wavlm_proposal", "runs/wavlm_official_proposalULRPK_b16e20_s*"),
+            ("wavlm_beku", "runs/wavlm_official_full_b16e10_s*"),
+            ("wavlm_dilatih", "runs/wavlm_official_fullUF_b16e10_s*"),
+            ("hubert_proposal", "runs/hubert_official_proposalULRPK_b32e20_s*"),
+            ("hubert_beku", "runs/hubert_official_full_b32e10_s*"),
+            ("hubert_dilatih", "runs/hubert_official_fullUF_b32e10_s*"),
+            ("hubert_1e3", "runs/hubert_official_fullUFENC0.001_b32e10_s*"),
+            ("wavlm_1e3", "runs/wavlm_official_fullUFENC0.001_b16e10_s*")]:
+        m = _kumpul_ambang(pat)
+        P[kunci] = m
+    return P
+
+
+def _sn(m, desimal=2):
+    """Format rerata beserta simpangan baku bila lebih dari satu inisialisasi."""
+    if m is None:
+        return "belum tersedia"
+    if m["n"] > 1:
+        return f"{m['acc']:.{desimal}f} persen ({m['sd']:.2f})"
+    return f"{m['acc']:.{desimal}f} persen"
+
+
 def bangun():
     FOR = kumpul_for()
     GEN = kumpul_gen()
+    A = _angka()
     E = []
 
     E.append(P("Ketika Akurasi Tinggi Menyesatkan: Audit Dataset, Replikasi, "
@@ -289,11 +325,13 @@ def bangun():
         "Welch dan dikoreksi Holm-Bonferroni. Dari seluruh perbandingan itu hanya "
         "satu keputusan yang terbukti menentukan, yaitu besaran learning rate "
         "relatif terhadap ukuran dan jenis encoder. Learning rate seragam 0,001 "
-        "yang ditetapkan proposal memberi 92,56 persen pada AST yang berukuran 86 "
-        "juta parameter, tetapi menjatuhkan WavLM Large dan HuBERT Large ke 56,99 "
-        "dan 50,46 persen, yaitu setara tebakan acak. Seluruh perbandingan lain, "
-        "termasuk antara membekukan dan melatih encoder, tidak terbukti berbeda "
-        "setelah ragam antar inisialisasi diperhitungkan.", "p"))
+        f"yang ditetapkan proposal memberi {_sn(A['ast_proposal'])} pada AST yang "
+        f"berukuran 86 juta parameter, tetapi menjatuhkan WavLM Large ke "
+        f"{_sn(A['wavlm_proposal'])} dan HuBERT Large ke "
+        f"{_sn(A['hubert_proposal'])}, yaitu mendekati tebakan acak. Seluruh "
+        "perbandingan lain, termasuk antara membekukan dan melatih encoder, "
+        "tidak terbukti berbeda setelah ragam antar inisialisasi "
+        "diperhitungkan.", "p"))
 
     # ---------------- 1
     E.append(P("1. Latar Belakang dan Pertanyaan Penelitian", "h1"))
@@ -654,20 +692,24 @@ def bangun():
             "Pemecahan ini membalik sebagian kesimpulan pada bagian sebelumnya, "
             "dan arahnya berbeda pada tiap arsitektur. Pada AST, sumbangan "
             "pelatihan bertanda negatif. Konfigurasi proposal yang dievaluasi "
-            "pada ambang prior-matched mencapai 92,56 persen, sedangkan "
-            "konfigurasi yang direkayasa hanya mencapai 89,15 persen. Area under "
-            "curve juga lebih rendah, yaitu 0,9586 lawan 0,9780, sehingga "
-            "penurunan itu bukan sekadar soal letak ambang melainkan penurunan "
-            "daya pisah yang sesungguhnya. Pada arsitektur ini, paket rekayasa "
-            "merugikan.", "p"))
+            f"pada ambang prior-matched mencapai {_sn(A['ast_proposal'])}, "
+            "sedangkan konfigurasi yang direkayasa dengan encoder dibekukan hanya "
+            f"mencapai {_sn(A['ast_beku'])}. Area under curve juga lebih rendah, "
+            f"yaitu {A['ast_beku']['auc']:.4f} lawan "
+            f"{A['ast_proposal']['auc']:.4f}, sehingga penurunan itu bukan "
+            "sekadar soal letak ambang melainkan penurunan daya pisah yang "
+            "sesungguhnya.", "p"))
         E.append(P(
             "Pada WavLM Large keadaannya justru sebaliknya dan jauh lebih ekstrem. "
-            "Konfigurasi proposal runtuh menjadi 56,99 persen dengan area under "
-            "curve 0,6569 dan equal error rate 43,01 persen, yaitu hanya sedikit "
-            "lebih baik daripada menebak. Konfigurasi yang direkayasa mencapai "
-            "98,62 persen dengan area under curve 0,9992 dan equal error rate 1,41 "
-            "persen. Di sini paket rekayasa bukan hanya menolong, melainkan "
-            "menjadi pembeda antara model yang berguna dan model yang tidak.", "p"))
+            f"Konfigurasi proposal runtuh menjadi {_sn(A['wavlm_proposal'])} "
+            f"dengan area under curve {A['wavlm_proposal']['auc']:.4f} dan equal "
+            f"error rate {A['wavlm_proposal']['eer']:.2f} persen, yaitu hanya "
+            "sedikit lebih baik daripada menebak. Konfigurasi yang direkayasa "
+            f"mencapai {_sn(A['wavlm_beku'])} dengan area under curve "
+            f"{A['wavlm_beku']['auc']:.4f} dan equal error rate "
+            f"{A['wavlm_beku']['eer']:.2f} persen. Di sini paket rekayasa bukan "
+            "hanya menolong, melainkan menjadi pembeda antara model yang berguna "
+            "dan model yang tidak.", "p"))
         E.append(P(
             "Dua arah yang berlawanan pada dua arsitektur menunjukkan bahwa "
             "pertanyaan mana metodologi yang lebih baik tidak memiliki jawaban "
@@ -795,8 +837,9 @@ def bangun():
             "seluruh arsitektur yang diuji, yaitu bahwa besaran learning rate "
             "harus disesuaikan dengan encodernya. Laju 0,001 yang ditetapkan "
             "proposal menghancurkan kedua model swa-selia berukuran 300 juta "
-            "parameter sampai mendekati tebakan acak, yaitu 56,99 persen pada "
-            "WavLM Large dan 50,46 persen pada HuBERT Large, sementara laju yang "
+            "parameter sampai mendekati tebakan acak, yaitu "
+            f"{_sn(A['wavlm_proposal'])} pada WavLM Large dan "
+            f"{_sn(A['hubert_proposal'])} pada HuBERT Large, sementara laju yang "
             "sama justru membantu AST yang berukuran 86 juta parameter. Pola ini "
             "terlihat pada dua model yang tujuan dan korpus pra-pelatihannya "
             "berbeda, sehingga cukup kuat untuk dilaporkan.", "p"))
@@ -850,17 +893,18 @@ def bangun():
             "Satu dugaan tambahan sempat disusun dan kemudian gugur, dan "
             "kegugurannya dilaporkan di sini karena termasuk bagian dari "
             "temuan. Pada WavLM Large yang dilatih dengan laju 0,001 yang "
-            "merusak itu, konfigurasi proposal jatuh ke 56,99 persen sedangkan "
-            "paket rekayasa dengan laju yang sama bertahan di 80,06 persen. "
-            "Selisih 23,07 poin persentase itu semula ditafsirkan sebagai bukti "
+            f"merusak itu, konfigurasi proposal jatuh ke {_sn(A['wavlm_proposal'])} "
+            f"sedangkan paket rekayasa dengan laju yang sama bertahan di "
+            f"{_sn(A['wavlm_1e3'])}. Selisih itu semula ditafsirkan sebagai bukti "
             "bahwa early stopping, augmentasi penuh, dan agregasi berbobot antar "
             "lapisan berfungsi sebagai jaring pengaman terhadap pilihan learning "
             "rate yang buruk.", "p"))
         E.append(P(
             "HuBERT Large membantah tafsir tersebut. Pada arsitektur itu, "
-            "konfigurasi proposal dengan laju 0,001 mencapai 50,46 persen "
-            "sedangkan paket rekayasa dengan laju yang sama justru turun ke 43,66 "
-            "persen dengan area under curve 0,4837, yaitu sedikit di bawah "
+            "konfigurasi proposal dengan laju 0,001 mencapai "
+            f"{_sn(A['hubert_proposal'])} sedangkan paket rekayasa dengan laju "
+            f"yang sama justru turun ke {_sn(A['hubert_1e3'])} dengan area under "
+            f"curve {A['hubert_1e3']['auc']:.4f}, yaitu sedikit di bawah "
             "tebakan acak sehingga urutan skornya bahkan terbalik. Paket rekayasa "
             "tidak memberikan perlindungan apa pun di sini. Kesimpulan yang dapat "
             "dipertahankan karena itu lebih sempit daripada yang semula ditulis, "
@@ -1120,9 +1164,10 @@ def bangun():
         "rencana awalnya dijawab dengan tiga inisialisasi acak per sel dan uji "
         "yang dikoreksi untuk banding ganda. Jawabannya sebagian besar negatif, "
         "dan itu perlu dinyatakan terus terang. Pada AST, konfigurasi proposal "
-        "mencapai 93,57 persen sedangkan konfigurasi rekayasa dengan encoder yang "
-        "dilatih mencapai 93,38 persen, yaitu selisih 0,18 poin dengan nilai p "
-        "0,906. Perbandingan antara membekukan dan melatih encoder juga tidak "
+        f"mencapai {_sn(A['ast_proposal'])} sedangkan konfigurasi rekayasa dengan "
+        f"encoder yang dilatih mencapai {_sn(A['ast_dilatih'])}, yaitu selisih "
+        f"{abs(A['ast_dilatih']['acc'] - A['ast_proposal']['acc']):.2f} poin yang "
+        "tidak bermakna secara statistik. Perbandingan antara membekukan dan melatih encoder juga tidak "
         "terbukti berbeda pada ketiga arsitektur setelah koreksi Holm-Bonferroni. "
         "Selisih-selisih yang sempat tampak meyakinkan ketika tiap sel baru "
         "dijalankan sekali ternyata berada di dalam ragam antar inisialisasi.", "p"))
