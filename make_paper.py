@@ -978,18 +978,52 @@ def bangun():
             "karena kebetulan jatuh di sisi yang menguntungkan adalah bentuk "
             "pemilihan hasil yang justru dikritik oleh penelitian ini sendiri di "
             "bagian lain.", "p"))
+        stab = []
+        for m, b, ket in [("ast", 32, "AST"), ("wavlm", 16, "WavLM Large"),
+                          ("hubert", 32, "HuBERT Large")]:
+            r1 = _akurasi_seed(f"runs/{m}_official_full_b{b}e10_s*")
+            r2 = _akurasi_seed(f"runs/{m}_official_fullUF_b{b}e10_s*")
+            if len(r1) < 2 or len(r2) < 2:
+                continue
+            stab.append([ket,
+                         f"{r1.std(ddof=1):.2f}", f"{r1.max() - r1.min():.2f}",
+                         f"{r2.std(ddof=1):.2f}", f"{r2.max() - r2.min():.2f}"])
+        if stab:
+            E.append(P(
+                "Kolom simpangan baku menyimpan pengamatan yang tidak terbaca "
+                "dari rerata sama sekali, yaitu bahwa kestabilan hasil terhadap "
+                "inisialisasi acak sangat berbeda antar arsitektur.", "p"))
+            E.append(tabel(["Arsitektur", "Simpangan, encoder beku",
+                            "Rentang, encoder beku", "Simpangan, encoder dilatih",
+                            "Rentang, encoder dilatih"], stab,
+                           [3.2 * cm, 3.3 * cm, 3.0 * cm, 3.4 * cm, 3.0 * cm]))
+            E.append(Spacer(1, 6))
+            E.append(P(
+                "Selisih kestabilan antar arsitektur mencapai satu orde besaran. "
+                "Pada AST dengan encoder dibekukan, hasil ketiga inisialisasi "
+                "terentang 85,66 sampai 92,65 persen, yaitu rentang 7 poin "
+                "persentase yang lebih lebar daripada hampir semua selisih antar "
+                "konfigurasi yang dibahas dalam penelitian ini. Pada HuBERT Large "
+                "dengan perlakuan yang sama, rentangnya hanya 0,19 poin. Dua "
+                "arsitektur yang dilaporkan berdampingan dalam satu tabel karena "
+                "itu tidak memiliki bobot bukti yang setara, meskipun keduanya "
+                "ditulis dengan jumlah angka desimal yang sama.", "p"))
+            E.append(P(
+                "Konsekuensinya bagi penelitian ini cukup tajam. Seluruh tangga "
+                "ablasi pada bagian 3.9 dijalankan pada AST, yaitu arsitektur "
+                "yang paling tidak stabil di antara ketiganya. Selisih 16,91 poin "
+                "untuk pembekuan encoder kemungkinan besar tetap bertahan karena "
+                "jauh melampaui ragam tersebut, tetapi selisih 9,01 poin untuk "
+                "early stopping dan terutama 4,78 poin untuk augmentasi penuh "
+                "berada pada wilayah yang menuntut pengujian lebih lanjut sebelum "
+                "dapat dinyatakan mantap.", "p"))
         E.append(P(
-            "Satu pengamatan sampingan muncul dari kolom simpangan baku dan "
-            "layak dicatat karena tidak terbaca dari rerata. Pada HuBERT Large, "
-            "konfigurasi yang encodernya dibekukan menghasilkan simpangan baku "
-            "0,13 poin persentase, sedangkan yang encodernya dilatih "
-            "menghasilkan 1,33. Membekukan encoder memberi hasil yang jauh lebih "
-            "dapat diulang, sementara melatihnya memberi rerata lebih tinggi "
-            "dengan ayunan sepuluh kali lipat lebih lebar. Untuk pekerjaan yang "
-            "harus dapat direproduksi oleh orang lain, sifat itu memiliki nilai "
-            "tersendiri yang terpisah dari akurasi rerata, dan pemilihan di "
-            "antara keduanya karena itu bukan semata soal angka mana yang lebih "
-            "besar.", "p"))
+            "Pada HuBERT Large, konfigurasi yang encodernya dibekukan juga jauh "
+            "lebih dapat diulang daripada yang encodernya dilatih. Untuk "
+            "pekerjaan yang harus dapat direproduksi oleh orang lain, sifat itu "
+            "memiliki nilai tersendiri yang terpisah dari akurasi rerata, "
+            "sehingga pemilihan di antara keduanya bukan semata soal angka mana "
+            "yang lebih besar.", "p"))
         E.append(P(
             "Pengalaman ini sekaligus menjadi contoh konkret bagi anjuran yang "
             "diajukan penelitian ini sendiri, yaitu bahwa hasil sebaiknya "
