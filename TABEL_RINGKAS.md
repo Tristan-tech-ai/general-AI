@@ -10,21 +10,16 @@ Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.
 |---|---|---|---|---|
 | CNN+ASP tanpa augmentasi | acak 60/20/20 | 1 | **99.75** | 0.03 |
 | CNN+ASP tanpa augmentasi | resmi FoR | 1 | **71.88** | 28.12 |
-| Replikasi proposal: ast | acak 60/20/20 | 1 | **75.83** | 4.41 |
-| Replikasi proposal: ast | acak 60/20/20 | 1 | **75.55** | 7.63 |
-| Replikasi proposal: ast | acak 60/20/20 | 1 | **73.16** | 7.44 |
-| Replikasi proposal: ast | acak 60/20/20 | 1 | **99.69** | 0.14 |
+| Replikasi proposal: ast | resmi FoR | 3 | **74.85** (1.47) | 6.50 |
+| Replikasi proposal: wavlm | resmi FoR | 4 | **54.18** (4.08) | 36.63 |
+| Replikasi proposal: hubert | resmi FoR | 4 | **51.75** (2.06) | 47.43 |
 | Replikasi proposal: cnnlstm_proposal | acak 60/20/20 | 1 | **99.83** | 0.03 |
-| Replikasi proposal: hubert | acak 60/20/20 | 1 | **51.93** | 55.24 |
-| Replikasi proposal: hubert | acak 60/20/20 | 1 | **54.60** | 39.06 |
-| Replikasi proposal: hubert | acak 60/20/20 | 1 | **50.28** | 50.37 |
-| Replikasi proposal: hubert | acak 60/20/20 | 1 | **99.69** | 0.39 |
 | Replikasi proposal: wav2vec2 | acak 60/20/20 | 1 | **99.78** | 0.08 |
-| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **59.83** | 33.46 |
-| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **50.09** | 32.44 |
-| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **53.31** | 43.01 |
-| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **53.49** | 37.59 |
+| Replikasi proposal: ast | acak 60/20/20 | 1 | **99.69** | 0.14 |
+| Replikasi proposal: hubert | acak 60/20/20 | 1 | **99.69** | 0.39 |
 | Replikasi proposal: wavlm | acak 60/20/20 | 1 | **99.52** | 0.31 |
+
+Metrik replikasi proposal dilaporkan pada ambang 0,5 seperti yang tersirat di proposal. Angka dalam kurung adalah simpangan baku antar inisialisasi acak.
 
 ## 2. Kinerja pada partisi resmi FoR
 
