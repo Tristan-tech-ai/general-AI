@@ -445,6 +445,83 @@ def chart_matriks_lr():
     save(fig, "12_matriks_encoder.png")
 
 
+def chart_bandgain():
+    """Sapuan parameter band-gain, satu panel per parameter.
+
+    Sumbu redaman menyertakan titik nol, yaitu konfigurasi yang sama tanpa
+    band-gain sama sekali. Tanpa titik itu kurva tampak monoton dan mengarah
+    ke kesimpulan yang keliru bahwa augmentasi ini sebaiknya dimatikan.
+    """
+    import glob as _g
+    import re as _re
+    from forlib.metrics import full_metrics, prior_matched_threshold
+
+    POLA = _re.compile(r"^wavlm_official_fullbg"
+                       r"(?:F(?P<f>\d+))?(?:N(?P<n>\d+))?(?:D(?P<d>\d+))?"
+                       r"_b16e10_s\d+$")
+    kel = {}
+
+    def tambah(kunci, d):
+        f = os.path.join(d, "test_scores.npy")
+        if not os.path.exists(f):
+            return
+        y, p, _ = np.load(f)
+        kel.setdefault(kunci, []).append(
+            full_metrics(y.astype(int), p,
+                         prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+
+    for d in sorted(_g.glob(os.path.join(HERE, "runs",
+                                         "wavlm_official_full_b16e10_s*"))):
+        tambah(("3000", "6", "0"), d)
+    for d in sorted(_g.glob(os.path.join(HERE, "runs",
+                                         "wavlm_official_fullbg*"))):
+        m = POLA.match(os.path.basename(d))
+        if m:
+            tambah((m.group("f") or "3000", m.group("n") or "6",
+                    m.group("d") or "12"), d)
+    if not kel:
+        return
+
+    SUMBU = [(0, "f_lo (Hz)", ("6", "12"), "#1864AB"),
+             (1, "jumlah pita", ("3000", "12"), "#2F9E44"),
+             (2, "redaman maksimum (dB)", ("3000", "6"), "#E8590C")]
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.6))
+    for ax, (idx, judul, tetap, cl) in zip(axes, SUMBU):
+        titik = []
+        for k, v in kel.items():
+            sisa = tuple(x for i, x in enumerate(k) if i != idx)
+            if sisa == tetap:
+                titik.append((int(k[idx]), float(np.mean(v)),
+                              float(np.std(v, ddof=1)) if len(v) > 1 else 0.0,
+                              len(v)))
+        if len(titik) < 2:
+            ax.set_visible(False)
+            continue
+        titik.sort()
+        xs = [t[0] for t in titik]
+        ys = [t[1] for t in titik]
+        es = [t[2] for t in titik]
+        ax.errorbar(xs, ys, yerr=es, marker="o", ms=7, lw=2, color=cl,
+                    capsize=4, ecolor="#343A40", zorder=3)
+        puncak = max(titik, key=lambda t: t[1])
+        ax.annotate(f"{puncak[1]:.2f}", (puncak[0], puncak[1]),
+                    xytext=(0, 12), textcoords="offset points", ha="center",
+                    fontsize=10, weight="bold", color=cl)
+        for t in titik:
+            if t[3] > 1:
+                ax.annotate(f"n={t[3]}", (t[0], t[1]), xytext=(0, -16),
+                            textcoords="offset points", ha="center",
+                            fontsize=8, color="#868E96")
+        ax.set_xlabel(judul)
+        ax.grid(alpha=0.25, zorder=0)
+    axes[0].set_ylabel("Akurasi pada partisi resmi (persen)")
+    fig.suptitle("Sapuan parameter band-gain pada WavLM Large berencoder beku\n"
+                 "titik 0 dB pada panel kanan adalah konfigurasi tanpa "
+                 "band-gain sama sekali",
+                 fontsize=12, weight="bold", y=1.04)
+    save(fig, "13_sapuan_bandgain.png")
+
+
 def main():
     print("membuat grafik ...")
     rec = load_for()
@@ -456,6 +533,7 @@ def main():
     chart_2x2()
     chart_ablasi()
     chart_matriks_lr()
+    chart_bandgain()
     print(f"\nselesai -> {os.path.relpath(OUT, HERE)}/")
 
 
