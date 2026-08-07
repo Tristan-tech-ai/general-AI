@@ -7,7 +7,7 @@ Seluruh angka diukur pada partisi resmi Fake-or-Real dengan ambang prior-matched
 | Perlakuan encoder | n | Akurasi | AUC | EER |
 |---|---|---|---|---|
 | Encoder dibekukan | 1 | 89.15 | 0.9586 | 10.85 |
-| Encoder dilatih, laju wajar per model | 1 | **93.20** | 0.9817 | 6.80 |
+| Encoder dilatih, laju wajar per model | 3 | **93.38 (1.85)** | 0.9811 | 6.68 |
 | Encoder dilatih, laju 0,001 | 1 | 88.51 | 0.9513 | 11.49 |
 | Proposal apa adanya, laju 0,001 seragam | 1 | 92.56 | 0.9780 | 7.44 |
 
@@ -31,7 +31,7 @@ Seluruh angka diukur pada partisi resmi Fake-or-Real dengan ambang prior-matched
 
 ## Bacaan
 
-Pada AST, melatih encoder pada laju wajar lebih baik daripada membekukannya, dengan selisih +4.04 poin persentase.
+Pada AST, melatih encoder pada laju wajar lebih baik daripada membekukannya, dengan selisih +4.23 poin persentase.
 
 Pada WavLM Large, melatih encoder pada laju wajar lebih buruk daripada membekukannya, dengan selisih -2.48 poin persentase.
 

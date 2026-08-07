@@ -742,12 +742,20 @@ def bangun():
             "sama justru membantu AST yang berukuran 86 juta parameter. Pola ini "
             "terlihat pada dua model yang tujuan dan korpus pra-pelatihannya "
             "berbeda, sehingga cukup kuat untuk dilaporkan.", "p"))
+        sel_bandingan = []
+        for m, ket, sel in mtx:
+            d = {nm: v for nm, v in sel}
+            bk = d.get("Encoder dibekukan")
+            wj = d.get("Encoder dilatih, laju wajar per model")
+            if bk and wj:
+                sel_bandingan.append(
+                    f"{ket.split(',')[0]} {wj['acc'] - bk['acc']:+.2f} poin")
         E.append(P(
             "Pola kedua tidak konsisten, dan penulis semula keliru "
-            "menggeneralisasikannya. Bila learning rate sudah wajar, melatih "
-            "encoder lebih baik daripada membekukannya pada AST sebesar 4,04 poin "
-            "persentase dan pada HuBERT Large sebesar 4,23 poin, tetapi lebih "
-            "buruk pada WavLM Large sebesar 2,48 poin. Dugaan awal bahwa model "
+            "menggeneralisasikannya. Bila learning rate sudah wajar, selisih "
+            "antara melatih encoder dan membekukannya adalah "
+            + ", ".join(sel_bandingan) +
+            ". Dugaan awal bahwa model "
             "swa-selia berukuran besar sebaiknya dibekukan karena "
             "representasinya sudah selaras dengan tugas ternyata tidak bertahan. "
             "HuBERT Large berukuran sama dan sama-sama swa-selia, namun berperilaku "
@@ -757,11 +765,17 @@ def bangun():
             "mengapa. Pra-pelatihan WavLM yang menyertakan denoising merupakan "
             "kandidat penjelasan, namun itu tetap dugaan yang belum diuji.", "p"))
         E.append(P(
-            "Perlu dicatat pula bahwa sel WavLM yang dilatih baru dijalankan "
-            "dengan satu inisialisasi acak, sedangkan sel WavLM yang dibekukan "
-            "memakai tiga. Selisih 2,48 poin itu memang beberapa kali lipat "
-            "simpangan bakunya, namun pengujian dengan lebih banyak inisialisasi "
-            "tetap diperlukan sebelum pengecualian ini dapat dinyatakan mantap.", "p"))
+            "Selisih-selisih itu harus dibaca bersama sebarannya, dan kolom n "
+            "pada tabel menunjukkan berapa inisialisasi acak yang menopang tiap "
+            "sel. Sel AST yang encodernya dilatih dijalankan dengan tiga "
+            "inisialisasi dan menghasilkan 91,64 sampai 95,31 persen, yaitu "
+            "rentang 3,67 poin persentase dengan simpangan baku 1,85. Rentang "
+            "sebesar itu lebih lebar daripada selisih antara kedua metodologi "
+            "pada arsitektur tersebut, sehingga perbandingan berbasis satu "
+            "inisialisasi di sini tidak dapat menyimpulkan apa pun. Beberapa sel "
+            "lain dalam tabel masih bersandar pada satu inisialisasi, dan "
+            "kesimpulan mengenai sel-sel tersebut karena itu bersifat "
+            "sementara.", "p"))
         E.append(P(
             "Temuan ini menempatkan kedua metodologi pada posisi yang setara. "
             "Proposal menyeragamkan learning rate 0,001 untuk seluruh arsitektur, "
