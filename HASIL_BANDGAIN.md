@@ -8,13 +8,15 @@ Konfigurasi ini dipilih karena simpangan bakunya terkecil di antara seluruh konf
 |---|---|---|---|---|---|---|---|
 | 2000 | 6 | 12 | 1 | 98.90 | +0.25 | 0.9994 | 0.92 |
 | 3000 | 3 | 12 | 1 | 97.33 | -1.32 | 0.9965 | 2.67 |
+| 3000 (tanpa band-gain) | 6 | 0 | 5 | 98.36 (0.63) | -0.29 | 0.9985 | 1.65 |
+| 3000 | 6 | 3 | 1 | 99.45 | +0.80 | 0.9998 | 0.46 |
 | 3000 | 6 | 6 | 1 | 99.08 | +0.43 | 0.9996 | 0.92 |
 | 3000 (bawaan) | 6 | 12 | 3 | 98.65 (0.37) | +0.00 | 0.9991 | 1.29 |
 | 3000 | 6 | 20 | 1 | 97.43 | -1.23 | 0.9978 | 2.48 |
 | 3000 | 12 | 12 | 1 | 97.24 | -1.41 | 0.9977 | 2.67 |
 | 4000 | 6 | 12 | 1 | 98.71 | +0.06 | 0.9994 | 1.29 |
 
-Nilai bawaan mencapai 98.65 persen. Kombinasi terbaik dalam sapuan ini adalah f_lo 3000 Hz dengan 6 pita dan redaman 6 dB, yaitu 99.08 persen atau +0.43 poin persentase.
+Nilai bawaan mencapai 98.65 persen. Kombinasi terbaik dalam sapuan ini adalah f_lo 3000 Hz dengan 6 pita dan redaman 3 dB, yaitu 99.45 persen atau +0.80 poin persentase.
 
 Selisih itu belum dapat dinyatakan bermakna. Sapuan ini memakai satu inisialisasi acak per titik, sedangkan simpangan baku konfigurasi bawaannya sendiri 0.37 poin persentase pada 3 inisialisasi. Titik terbaik perlu diulang dengan beberapa inisialisasi sebelum dapat dibandingkan secara sah, dan itu berlaku juga bila selisihnya tampak besar.
 

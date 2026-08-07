@@ -53,6 +53,19 @@ def akurasi(d):
 
 
 kel, lewat = {}, []
+
+# JANGKAR NOL. Sumbu redaman tidak dapat ditafsirkan tanpa titik nol, yaitu
+# konfigurasi yang sama persis tetapi tanpa band-gain sama sekali. Tanpa jangkar
+# ini, tren "semakin lembut semakin baik" akan terbaca seolah band-gain hanya
+# merugikan dan sebaiknya dimatikan, padahal titik nolnya justru lebih rendah
+# daripada beberapa titik bukan nol. Preset `full` adalah titik nol tersebut
+# karena identik dengan `fullbg` kecuali band-gain-nya dimatikan.
+for d in sorted(glob.glob(os.path.join(HERE, "runs",
+                                       "wavlm_official_full_b16e10_s*"))):
+    v = akurasi(d)
+    if v is not None:
+        kel.setdefault(("3000", "6", "0"), []).append(v)
+
 for d in sorted(glob.glob(os.path.join(HERE, "runs", "wavlm_official_fullbg*"))):
     nama = os.path.basename(d)
     m = POLA.match(nama)
@@ -95,7 +108,8 @@ else:
     b = gab(dasar) if dasar else None
     for kunci in sorted(kel, key=lambda k: (int(k[0]), int(k[1]), int(k[2]))):
         g = gab(kel[kunci])
-        tanda = " (bawaan)" if kunci == ("3000", "6", "12") else ""
+        tanda = (" (bawaan)" if kunci == ("3000", "6", "12")
+                 else " (tanpa band-gain)" if kunci[2] == "0" else "")
         sel = "" if b is None else f"{g['acc'] - b['acc']:+.2f}"
         akur = (f"{g['acc']:.2f} ({g['sd']:.2f})" if g["n"] > 1
                 else f"{g['acc']:.2f}")
