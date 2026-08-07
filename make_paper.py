@@ -285,16 +285,15 @@ def bangun():
         "band-gain yang menetralkan isyarat level energi pita tinggi tanpa merusak "
         "struktur halusnya, dan menguji dampaknya secara terkontrol. Perbandingan "
         "setara antara metodologi proposal dan metodologi yang diperbaiki "
-        "menghasilkan kesimpulan yang tidak tunggal. Pada WavLM Large, "
-        "konfigurasi proposal runtuh menjadi 56,99 persen dengan area under curve "
-        "0,6569 sedangkan konfigurasi yang diperbaiki mencapai 98,62 persen. Pada "
-        "AST arahnya terbalik, yaitu proposal mencapai 92,56 persen sedangkan "
-        "konfigurasi yang diperbaiki hanya 89,15 persen. Penelusuran sampai ke "
-        "tiap keputusan desain menunjukkan bahwa penyebabnya sama pada kedua "
-        "kasus, yaitu satu keputusan mengenai perlakuan encoder yang diseragamkan "
-        "lintas arsitektur padahal arah pengaruhnya berlawanan. Kesimpulan yang "
-        "dilaporkan karena itu bukan bahwa satu metodologi mengungguli yang lain, "
-        "melainkan bahwa keputusan tersebut harus dipilih per arsitektur.", "p"))
+        "dilakukan dengan tiga inisialisasi acak per sel, lalu diuji dengan uji t "
+        "Welch dan dikoreksi Holm-Bonferroni. Dari seluruh perbandingan itu hanya "
+        "satu keputusan yang terbukti menentukan, yaitu besaran learning rate "
+        "relatif terhadap ukuran dan jenis encoder. Learning rate seragam 0,001 "
+        "yang ditetapkan proposal memberi 92,56 persen pada AST yang berukuran 86 "
+        "juta parameter, tetapi menjatuhkan WavLM Large dan HuBERT Large ke 56,99 "
+        "dan 50,46 persen, yaitu setara tebakan acak. Seluruh perbandingan lain, "
+        "termasuk antara membekukan dan melatih encoder, tidak terbukti berbeda "
+        "setelah ragam antar inisialisasi diperhitungkan.", "p"))
 
     # ---------------- 1
     E.append(P("1. Latar Belakang dan Pertanyaan Penelitian", "h1"))
@@ -1118,23 +1117,25 @@ def bangun():
         "menempati peringkat teratas pada dataset.", "p"))
     E.append(P(
         "Pertanyaan apakah rekayasa metodologi dalam penelitian ini mengungguli "
-        "rencana awalnya tidak memiliki jawaban tunggal, dan itulah temuannya. "
-        "Pada WavLM Large rekayasa tersebut menjadi pembeda antara model yang "
-        "berguna dan model yang hampir setara tebakan, yaitu 98,62 lawan 56,99 "
-        "persen. Pada AST rekayasa yang sama justru merugikan, yaitu 89,15 lawan "
-        "92,56 persen. Penelusuran sampai ke tiap keputusan desain menunjukkan "
-        "bahwa satu keputusan bertanggung jawab atas hampir seluruh selisih itu, "
-        "yaitu apakah encoder dibekukan atau ikut dilatih. Arah pengaruh keputusan "
-        "tersebut berlawanan pada kedua arsitektur.", "p"))
+        "rencana awalnya dijawab dengan tiga inisialisasi acak per sel dan uji "
+        "yang dikoreksi untuk banding ganda. Jawabannya sebagian besar negatif, "
+        "dan itu perlu dinyatakan terus terang. Pada AST, konfigurasi proposal "
+        "mencapai 93,57 persen sedangkan konfigurasi rekayasa dengan encoder yang "
+        "dilatih mencapai 93,38 persen, yaitu selisih 0,18 poin dengan nilai p "
+        "0,906. Perbandingan antara membekukan dan melatih encoder juga tidak "
+        "terbukti berbeda pada ketiga arsitektur setelah koreksi Holm-Bonferroni. "
+        "Selisih-selisih yang sempat tampak meyakinkan ketika tiap sel baru "
+        "dijalankan sekali ternyata berada di dalam ragam antar inisialisasi.", "p"))
     E.append(P(
-        "Dari sini muncul simetri yang layak dicatat. Rencana awal menyeragamkan "
-        "learning rate untuk seluruh arsitektur, sedangkan penelitian ini "
-        "menyeragamkan pembekuan encoder untuk seluruh arsitektur. Keduanya "
-        "merupakan kelas kesalahan yang sama, dan masing-masing kebetulan tepat "
-        "pada arsitektur yang berbeda. Pelajaran yang dapat diambil bukanlah "
-        "bahwa satu pihak lebih benar, melainkan bahwa keputusan semacam ini "
-        "sebaiknya dipilih per arsitektur dengan data validasi dan tidak "
-        "ditetapkan seragam di muka.", "p"))
+        "Yang bertahan hanya satu, dan justru karena itu ia layak dipercaya. "
+        "Besaran learning rate relatif terhadap ukuran dan jenis encoder adalah "
+        "satu-satunya keputusan yang selisihnya berpuluh poin persentase, jauh "
+        "melampaui ragam antar inisialisasi yang berkisar 0,1 sampai 3,5 poin. "
+        "Learning rate seragam 0,001 kebetulan tepat untuk AST yang berukuran 86 "
+        "juta parameter dan menghancurkan kedua model swa-selia berukuran 300 juta "
+        "parameter sampai ke tingkat tebakan acak. Kekeliruan pada keputusan ini "
+        "juga tidak dapat ditambal oleh perbaikan lain mana pun di dalam "
+        "pipeline, sebagaimana ditunjukkan pada HuBERT Large.", "p"))
     E.append(P(
         "Pesan praktis yang paling kokoh dari seluruh rangkaian percobaan ini "
         "adalah bahwa learning rate yang tidak sesuai dengan encoder tidak dapat "
@@ -1149,6 +1150,18 @@ def bangun():
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "
         "sebaiknya menyertakan spesifisitas pada korpus asing serta simpangan baku "
         "atas beberapa inisialisasi.", "p"))
+    E.append(P(
+        "Anjuran terakhir itu bukan formalitas yang dipinjam dari literatur. "
+        "Penelitian ini sendiri hampir melaporkan sejumlah kesimpulan yang keliru "
+        "karena mengabaikannya. Pada AST dengan encoder dibekukan, tiga "
+        "inisialisasi menghasilkan 85,66 sampai 92,65 persen, yaitu rentang yang "
+        "lebih lebar daripada hampir semua selisih antar konfigurasi yang dibahas "
+        "di sini. Bergantung pada inisialisasi mana yang kebetulan dijalankan "
+        "lebih dahulu, laporan yang sama dapat menyimpulkan bahwa rekayasa unggul "
+        "beberapa poin atau tertinggal beberapa poin, dan kedua versi akan "
+        "terbaca sama meyakinkannya. Praktik melaporkan satu angka dari satu "
+        "inisialisasi karena itu bukan sekadar kurang teliti, melainkan cukup "
+        "untuk membalik arah kesimpulan sebuah penelitian.", "p"))
 
     doc = SimpleDocTemplate(OUT, pagesize=A4,
                             leftMargin=2.4 * cm, rightMargin=2.4 * cm,

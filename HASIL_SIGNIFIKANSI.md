@@ -6,10 +6,10 @@ Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak dapat dibaca ap
 
 | Perbandingan | n | Rerata A | Rerata B | Selisih | p mentah | p Holm | Bacaan |
 |---|---|---|---|---|---|---|---|
-| AST: encoder dilatih vs dibekukan | 3/1 | 93.38 | 89.15 | +4.23 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
-| AST: encoder dilatih vs proposal | 3/1 | 93.38 | 92.56 | +0.83 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
-| WavLM: encoder dibekukan vs dilatih | 3/3 | 98.62 | 97.30 | +1.32 | 0.3135 | 0.3135 | **belum terbukti berbeda** |
-| HuBERT: encoder dilatih vs dibekukan | 3/3 | 97.49 | 94.67 | +2.82 | 0.0500 | 0.0999 | **di garis batas, belum meyakinkan** |
+| AST: encoder dilatih vs dibekukan | 3/3 | 93.38 | 89.15 | +4.23 | 0.1597 | 0.4792 | **belum terbukti berbeda** |
+| AST: encoder dilatih vs proposal | 3/3 | 93.38 | 93.57 | -0.18 | 0.9064 | 0.9064 | **belum terbukti berbeda** |
+| WavLM: encoder dibekukan vs dilatih | 3/3 | 98.62 | 97.30 | +1.32 | 0.3135 | 0.6269 | **belum terbukti berbeda** |
+| HuBERT: encoder dilatih vs dibekukan | 3/3 | 97.49 | 94.67 | +2.82 | 0.0500 | 0.1998 | **belum terbukti berbeda** |
 | WavLM: rekayasa dibekukan vs proposal | 3/1 | 98.62 | 56.99 | +41.64 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
 | HuBERT: rekayasa dilatih vs proposal | 3/1 | 97.49 | 50.46 | +47.03 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
 
