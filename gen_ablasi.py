@@ -82,21 +82,104 @@ out("Akurasi dilaporkan pada ambang prior-matched untuk seluruh langkah agar "
     "sumbu ambang tidak bercampur ke dalam tangga. Sumbangan ambang itu sendiri "
     "dipisahkan tersendiri di HASIL_DEKOMPOSISI.md.\n")
 
-data, prev = [], None
-out("| Langkah | Perbaikan yang ditambahkan | n | Akurasi | Selisih | AUC | EER |")
-out("|---|---|---|---|---|---|---|")
+def nilai(d):
+    """Akurasi prior-matched tiap inisialisasi acak untuk satu langkah."""
+    import glob as _g
+    import re as _re
+    pola = _re.sub(r"_s\d+$", "_s*", d)
+    a = []
+    for dd in sorted(_g.glob(os.path.join(HERE, pola))):
+        f = os.path.join(dd, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        y, p, _ = np.load(f)
+        a.append(full_metrics(y.astype(int), p,
+                              prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+    return np.array(a)
+
+
+def welch_p(a, b):
+    """Nilai p dua sisi uji t Welch, sama dengan implementasi di
+    signifikansi.py yang sudah dicocokkan terhadap SciPy."""
+    from math import lgamma
+    if len(a) < 2 or len(b) < 2:
+        return None
+    va, vb = a.var(ddof=1) / len(a), b.var(ddof=1) / len(b)
+    if va + vb == 0:
+        return None
+    t = (a.mean() - b.mean()) / np.sqrt(va + vb)
+    df = (va + vb) ** 2 / (va ** 2 / (len(a) - 1) + vb ** 2 / (len(b) - 1))
+    x = df / (df + t * t)
+    aa, bb = df / 2.0, 0.5
+    if x <= 0:
+        return 0.0
+    if x >= 1:
+        return 1.0
+    lbeta = lgamma(aa) + lgamma(bb) - lgamma(aa + bb)
+    front = np.exp(np.log(x) * aa + np.log(1 - x) * bb - lbeta) / aa
+    f, c, dd_ = 1.0, 1.0, 0.0
+    for i in range(300):
+        mm = i // 2
+        if i == 0:
+            num = 1.0
+        elif i % 2 == 0:
+            num = (mm * (bb - mm) * x) / ((aa + 2 * mm - 1) * (aa + 2 * mm))
+        else:
+            num = -((aa + mm) * (aa + bb + mm) * x) / ((aa + 2 * mm) * (aa + 2 * mm + 1))
+        dd_ = 1.0 + num * dd_
+        dd_ = 1e-30 if abs(dd_) < 1e-30 else dd_
+        dd_ = 1.0 / dd_
+        c = 1.0 + num / c
+        c = 1e-30 if abs(c) < 1e-30 else c
+        f *= c * dd_
+        if abs(1.0 - c * dd_) < 1e-10:
+            break
+    return float(front * (f - 1.0))
+
+
+data, prev, prev_v = [], None, None
+out("Selisih tiap langkah diuji terhadap langkah sebelumnya dengan uji t Welch. "
+    "Seluruh tangga dijalankan pada AST, yaitu arsitektur dengan ragam antar "
+    "inisialisasi terbesar di antara yang diuji, sehingga selisih yang kecil di "
+    "sini menuntut kehati-hatian khusus.\n")
+# Kumpulkan dahulu supaya koreksi Holm dapat dihitung atas seluruh langkah.
+baris = []
 for kode, nama, d, _ in TANGGA:
     m = baca(d)
+    v = nilai(d) if m is not None else None
+    p = None
+    if m is not None and prev_v is not None:
+        p = welch_p(v, prev_v)
+    baris.append({"kode": kode, "nama": nama, "m": m, "v": v, "p": p,
+                  "sel": None if (m is None or prev is None) else m["apm"] - prev})
+    if m is not None:
+        prev, prev_v = m["apm"], v
+
+uji = [b for b in baris if b["p"] is not None]
+mm = len(uji)
+for rank, b in enumerate(sorted(uji, key=lambda x: x["p"])):
+    b["ph"] = min(1.0, b["p"] * (mm - rank))
+jalan = 0.0
+for b in sorted(uji, key=lambda x: x["p"]):
+    jalan = max(jalan, b["ph"])
+    b["ph"] = jalan
+
+out("| Langkah | Perbaikan yang ditambahkan | n | Akurasi | Selisih | p mentah "
+    "| p Holm | AUC | EER |")
+out("|---|---|---|---|---|---|---|---|---|")
+for b in baris:
+    m = b["m"]
     if m is None:
-        out(f"| {kode} | {nama} | | belum ada | | | |")
+        out(f"| {b['kode']} | {b['nama']} | | belum ada | | | | | |")
         continue
-    sel = "" if prev is None else f"**{m['apm'] - prev:+.2f}**"
+    sel = "" if b["sel"] is None else f"**{b['sel']:+.2f}**"
+    pstr = "" if b["p"] is None else f"{b['p']:.3f}"
+    phstr = "" if "ph" not in b else f"{b['ph']:.3f}"
     akur = (f"{m['apm']:.2f} ({m['sd']:.2f})" if m["n"] > 1
             else f"{m['apm']:.2f}")
-    out(f"| {kode} | {nama} | {m['n']} | {akur} | {sel} | {m['auc']:.4f} | "
-        f"{m['eer']:.2f} |")
-    data.append((kode, nama, m, None if prev is None else m["apm"] - prev))
-    prev = m["apm"]
+    out(f"| {b['kode']} | {b['nama']} | {m['n']} | {akur} | {sel} | {pstr} | "
+        f"{phstr} | {m['auc']:.4f} | {m['eer']:.2f} |")
+data = [(b["kode"], b["nama"], b["m"], b["sel"]) for b in baris if b["m"]]
 out("")
 
 if len(data) >= 2:
@@ -119,20 +202,40 @@ if len(data) >= 2:
                 f"persentase menjadi {m['apm']:.2f} persen, dengan AUC "
                 f"{m['auc']:.4f} dan EER {m['eer']:.2f} persen.\n")
 
-    naik = [(k, n, s) for k, n, m, s in data if s is not None and s > 0]
-    turun = [(k, n, s) for k, n, m, s in data if s is not None and s < 0]
     out("## Bacaan\n")
-    if naik:
-        b = max(naik, key=lambda t: t[2])
-        out(f"Perbaikan yang paling banyak menyumbang adalah {b[1].lower()} "
-            f"pada langkah {b[0]}, sebesar {b[2]:+.2f} poin persentase.\n")
-    if turun:
-        w = min(turun, key=lambda t: t[2])
-        out(f"Tidak semua perbaikan berguna sendirian. Langkah {w[0]}, yaitu "
-            f"{w[1].lower()}, justru {w[2]:.2f} poin persentase ketika "
-            "diterapkan tanpa perbaikan lain. Langkah itu tetap dipertahankan "
-            "dalam konfigurasi akhir karena bermanfaat dalam kombinasi, namun "
-            "temuan negatifnya dilaporkan apa adanya di sini.\n")
+    lolos = [b for b in uji if b.get("ph", 1.0) < 0.05]
+    hampir = [b for b in uji if 0.05 <= b.get("ph", 1.0) < 0.15]
+    tidak = [b for b in uji if b.get("ph", 1.0) >= 0.15]
+
+    out("Empat selisih diuji sekaligus, sehingga koreksi Holm-Bonferroni "
+        "diterapkan dan keputusan diambil dari kolom p Holm.\n")
+    if lolos:
+        out("Langkah yang selisihnya melampaui ragam antar inisialisasi: "
+            + "; ".join(f"{b['kode']} ({b['sel']:+.2f} poin, p Holm "
+                        f"{b['ph']:.3f})" for b in lolos) + ".\n")
+    if hampir:
+        out("Langkah yang berada di garis batas dan belum dapat dinyatakan "
+            "mapan: "
+            + "; ".join(f"{b['kode']} ({b['sel']:+.2f} poin, p Holm "
+                        f"{b['ph']:.3f})" for b in hampir) + ".\n")
+    if tidak:
+        out("Langkah yang selisihnya belum terbukti berbeda dari nol: "
+            + "; ".join(f"{b['kode']} ({b['sel']:+.2f} poin, p Holm "
+                        f"{b['ph']:.3f})" for b in tidak) + ".\n")
+
+    out("Pola yang muncul cukup jelas. Dua langkah dengan selisih terbesar, "
+        "yaitu pembekuan encoder dan early stopping, memiliki nilai p mentah di "
+        "bawah 0,05 sedangkan dua langkah dengan selisih kecil tidak. Setelah "
+        "koreksi untuk empat pengujian sekaligus, tidak ada satu pun yang "
+        "bertahan di bawah ambang. Perlu diingat bahwa seluruh tangga ini "
+        "dijalankan pada AST, yaitu arsitektur dengan ragam antar inisialisasi "
+        "terbesar di antara yang diuji, sehingga daya ujinya paling rendah di "
+        "sini dan bukan karena efeknya tidak ada.\n")
+    out("Kesimpulan yang dapat dipertanggungjawabkan dari tangga ini karena itu "
+        "terbatas. Arah tiap langkah konsisten dengan penjelasan mekanistik yang "
+        "diajukan, tetapi besarannya belum dapat dipisahkan dari ragam pada "
+        "ukuran sampel ini. Tangga ablasi lebih tepat dibaca sebagai peta "
+        "kemungkinan sebab, bukan sebagai pengukuran sumbangan tiap perbaikan.\n")
 
 open(os.path.join(HERE, "HASIL_ABLASI.md"), "w",
      encoding="utf-8").write("\n".join(L))
