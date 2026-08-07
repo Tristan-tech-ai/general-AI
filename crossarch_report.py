@@ -24,9 +24,16 @@ def parse(tag):
 
 
 foracc = {}
+# Tag yang tidak cocok dengan pola sengaja dihitung dan dilaporkan. Tiga bug
+# dalam penelitian ini berasal dari pola yang benar ketika ditulis lalu menjadi
+# salah karena konfigurasi baru masuk, dan seluruhnya luput karena pelewatannya
+# terjadi tanpa suara.
+_lewat = []
 for d in sorted(glob.glob(os.path.join(HERE, "runs", "*"))):
     f = os.path.join(d, "test_scores.npy")
     p = parse(os.path.basename(d))
+    if os.path.exists(f) and not p and "_official_" in os.path.basename(d):
+        _lewat.append(os.path.basename(d))
     if not (os.path.exists(f) and p):
         continue
     y, s, _ = np.load(f)
@@ -139,6 +146,20 @@ if kb:
             % ("mempertahankan" if kb[1].mean() >= bb[1].mean() - 2 else "kehilangan",
                kb[1].mean(), bb[1].mean(), rb[1].mean()))
 
+if _lewat:
+    out("## Cakupan\n")
+    out(f"Sebanyak {len(_lewat)} run pada partisi resmi tidak masuk analisis ini "
+        "karena nama tag-nya di luar pola yang ditangani, yaitu konfigurasi yang "
+        "ditambahkan setelah skrip ini ditulis seperti encoder yang dilatih dan "
+        "replikasi proposal. Analisis ini memang menyangkut augmentasi band-gain "
+        "dan tidak memerlukannya, namun jumlahnya dicatat di sini supaya "
+        "pelewatan tersebut tidak berlangsung tanpa diketahui.\n")
+    out("Tag yang dilewati: " + ", ".join(f"`{t}`" for t in _lewat[:8])
+        + (f", dan {len(_lewat) - 8} lainnya." if len(_lewat) > 8 else "."))
+    out("")
+
 open(os.path.join(HERE, "HASIL_LINTAS_ARSITEKTUR.md"), "w",
      encoding="utf-8").write("\n".join(L))
 print("\n-> HASIL_LINTAS_ARSITEKTUR.md")
+if _lewat:
+    print(f"   catatan: {len(_lewat)} run partisi resmi dilewati pola tag")
