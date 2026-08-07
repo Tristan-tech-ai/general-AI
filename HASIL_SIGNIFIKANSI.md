@@ -2,14 +2,16 @@
 
 Tiap baris membandingkan dua konfigurasi pada partisi resmi dengan ambang prior-matched, memakai uji t Welch yang tidak mengandaikan ragam kedua kelompok sama. Ukuran sampel kecil, yaitu paling banyak tiga inisialisasi per sel, sehingga uji ini berdaya rendah. Nilai p yang besar berarti belum terbukti berbeda, dan bukan terbukti sama.
 
-| Perbandingan | n | Rerata A | Rerata B | Selisih | p | Bacaan |
-|---|---|---|---|---|---|---|
-| AST: encoder dilatih vs dibekukan | 3/1 | 93.38 | 89.15 | +4.23 | tidak dapat diuji | perlu minimal dua inisialisasi di kedua sisi |
-| AST: encoder dilatih vs proposal | 3/1 | 93.38 | 92.56 | +0.83 | tidak dapat diuji | perlu minimal dua inisialisasi di kedua sisi |
-| WavLM: encoder dibekukan vs dilatih | 3/3 | 98.62 | 97.30 | +1.32 | 0.313 | **belum terbukti berbeda** |
-| HuBERT: encoder dilatih vs dibekukan | 1/1 | 98.16 | 93.93 | +4.23 | tidak dapat diuji | perlu minimal dua inisialisasi di kedua sisi |
-| WavLM: rekayasa dibekukan vs proposal | 3/1 | 98.62 | 56.99 | +41.64 | tidak dapat diuji | perlu minimal dua inisialisasi di kedua sisi |
-| HuBERT: rekayasa dilatih vs proposal | 1/1 | 98.16 | 50.46 | +47.70 | tidak dapat diuji | perlu minimal dua inisialisasi di kedua sisi |
+Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak dapat dibaca apa adanya. Menguji enam hipotesis pada ambang 0,05 memberi peluang sekitar 26 persen untuk mendapatkan setidaknya satu hasil yang tampak bermakna semata karena kebetulan. Karena itu koreksi Holm-Bonferroni diterapkan, dan keputusan diambil dari nilai p terkoreksi.
+
+| Perbandingan | n | Rerata A | Rerata B | Selisih | p mentah | p Holm | Bacaan |
+|---|---|---|---|---|---|---|---|
+| AST: encoder dilatih vs dibekukan | 3/1 | 93.38 | 89.15 | +4.23 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
+| AST: encoder dilatih vs proposal | 3/1 | 93.38 | 92.56 | +0.83 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
+| WavLM: encoder dibekukan vs dilatih | 3/3 | 98.62 | 97.30 | +1.32 | 0.3135 | 0.3135 | **belum terbukti berbeda** |
+| HuBERT: encoder dilatih vs dibekukan | 3/3 | 97.49 | 94.67 | +2.82 | 0.0500 | 0.0999 | **di garis batas, belum meyakinkan** |
+| WavLM: rekayasa dibekukan vs proposal | 3/1 | 98.62 | 56.99 | +41.64 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
+| HuBERT: rekayasa dilatih vs proposal | 3/1 | 97.49 | 50.46 | +47.03 | tidak dapat diuji | | perlu minimal dua inisialisasi di kedua sisi |
 
 ## Bacaan
 

@@ -115,27 +115,53 @@ out("Tiap baris membandingkan dua konfigurasi pada partisi resmi dengan ambang "
     "kelompok sama. Ukuran sampel kecil, yaitu paling banyak tiga inisialisasi "
     "per sel, sehingga uji ini berdaya rendah. Nilai p yang besar berarti belum "
     "terbukti berbeda, dan bukan terbukti sama.\n")
-out("| Perbandingan | n | Rerata A | Rerata B | Selisih | p | Bacaan |")
-out("|---|---|---|---|---|---|---|")
+out("Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak dapat "
+    "dibaca apa adanya. Menguji enam hipotesis pada ambang 0,05 memberi peluang "
+    "sekitar 26 persen untuk mendapatkan setidaknya satu hasil yang tampak "
+    "bermakna semata karena kebetulan. Karena itu koreksi Holm-Bonferroni "
+    "diterapkan, dan keputusan diambil dari nilai p terkoreksi.\n")
 
+# Kumpulkan dahulu, lalu koreksi Holm-Bonferroni atas seluruh perbandingan
+# yang benar-benar dapat diuji.
+hasil = []
 for nama, pa, pb in BANDINGAN:
     a, b = akurasi(pa), akurasi(pb)
     if len(a) == 0 or len(b) == 0:
-        out(f"| {nama} | | belum ada | | | | |")
+        hasil.append({"nama": nama, "status": "belum ada"})
         continue
-    sel = a.mean() - b.mean()
     w = welch(a, b)
-    if w is None:
-        out(f"| {nama} | {len(a)}/{len(b)} | {a.mean():.2f} | {b.mean():.2f} | "
-            f"{sel:+.2f} | tidak dapat diuji | perlu minimal dua inisialisasi "
-            "di kedua sisi |")
+    hasil.append({"nama": nama, "na": len(a), "nb": len(b),
+                  "ma": a.mean(), "mb": b.mean(), "sel": a.mean() - b.mean(),
+                  "p": None if w is None else p_dua_sisi(*w),
+                  "status": "ok"})
+
+diuji = [h for h in hasil if h.get("p") is not None]
+m = len(diuji)
+for rank, h in enumerate(sorted(diuji, key=lambda x: x["p"])):
+    # Holm: nilai p ke-k dikalikan (m - k), lalu dijaga tidak menurun
+    h["p_holm"] = min(1.0, h["p"] * (m - rank))
+berjalan = 0.0
+for h in sorted(diuji, key=lambda x: x["p"]):
+    berjalan = max(berjalan, h["p_holm"])
+    h["p_holm"] = berjalan
+
+out("| Perbandingan | n | Rerata A | Rerata B | Selisih | p mentah | p Holm | Bacaan |")
+out("|---|---|---|---|---|---|---|---|")
+for h in hasil:
+    if h["status"] == "belum ada":
+        out(f"| {h['nama']} | | belum ada | | | | | |")
         continue
-    t, df = w
-    p = p_dua_sisi(t, df)
-    bacaan = ("selisih melampaui ragam" if p < 0.05
-              else "belum terbukti berbeda")
-    out(f"| {nama} | {len(a)}/{len(b)} | {a.mean():.2f} | {b.mean():.2f} | "
-        f"{sel:+.2f} | {p:.3f} | **{bacaan}** |")
+    if h["p"] is None:
+        out(f"| {h['nama']} | {h['na']}/{h['nb']} | {h['ma']:.2f} | "
+            f"{h['mb']:.2f} | {h['sel']:+.2f} | tidak dapat diuji | | "
+            "perlu minimal dua inisialisasi di kedua sisi |")
+        continue
+    ph = h["p_holm"]
+    bacaan = ("selisih melampaui ragam" if ph < 0.05 else
+              "di garis batas, belum meyakinkan" if ph < 0.15 else
+              "belum terbukti berbeda")
+    out(f"| {h['nama']} | {h['na']}/{h['nb']} | {h['ma']:.2f} | {h['mb']:.2f} | "
+        f"{h['sel']:+.2f} | {h['p']:.4f} | {ph:.4f} | **{bacaan}** |")
 out("")
 
 out("## Bacaan\n")

@@ -894,18 +894,36 @@ def bangun():
          "runs/hubert_official_fullUF_b32e10_s*",
          "runs/hubert_official_proposalULRPK_b32e20_s*"),
     ]
-    sig = []
+    raw = []
     for nama, pa, pb in BANDINGAN:
         a, b = _akurasi_seed(pa), _akurasi_seed(pb)
         if len(a) == 0 or len(b) == 0:
             continue
-        sel = a.mean() - b.mean()
-        p = _welch_p(a, b)
-        sig.append([nama, f"{len(a)}/{len(b)}", f"{a.mean():.2f}",
-                    f"{b.mean():.2f}", f"{sel:+.2f}",
-                    "n/a" if p is None else f"{p:.3f}",
-                    ("belum dapat diuji" if p is None else
-                     "melampaui ragam" if p < 0.05 else
+        raw.append({"nama": nama, "na": len(a), "nb": len(b), "ma": a.mean(),
+                    "mb": b.mean(), "sel": a.mean() - b.mean(),
+                    "p": _welch_p(a, b)})
+    # Koreksi Holm-Bonferroni atas seluruh perbandingan yang dapat diuji.
+    diuji = [h for h in raw if h["p"] is not None]
+    mm = len(diuji)
+    for rank, h in enumerate(sorted(diuji, key=lambda x: x["p"])):
+        h["ph"] = min(1.0, h["p"] * (mm - rank))
+    jalan = 0.0
+    for h in sorted(diuji, key=lambda x: x["p"]):
+        jalan = max(jalan, h["ph"])
+        h["ph"] = jalan
+    sig = []
+    for h in raw:
+        if h["p"] is None:
+            sig.append([h["nama"], f"{h['na']}/{h['nb']}", f"{h['ma']:.2f}",
+                        f"{h['mb']:.2f}", f"{h['sel']:+.2f}", "n/a", "n/a",
+                        "belum dapat diuji"])
+            continue
+        ph = h["ph"]
+        sig.append([h["nama"], f"{h['na']}/{h['nb']}", f"{h['ma']:.2f}",
+                    f"{h['mb']:.2f}", f"{h['sel']:+.2f}", f"{h['p']:.4f}",
+                    f"{ph:.4f}",
+                    ("melampaui ragam" if ph < 0.05 else
+                     "di garis batas" if ph < 0.15 else
                      "belum terbukti berbeda")])
     if sig:
         E.append(PageBreak())
@@ -919,10 +937,17 @@ def bangun():
             "ukuran sampelnya kecil, yaitu paling banyak tiga inisialisasi per "
             "sel, sehingga uji ini berdaya rendah. Nilai p yang besar karena itu "
             "berarti belum terbukti berbeda, dan bukan terbukti sama.", "p"))
+        E.append(P(
+            "Enam perbandingan diuji sekaligus, sehingga nilai p mentah tidak "
+            "dapat dibaca apa adanya. Menguji enam hipotesis pada ambang 0,05 "
+            "memberi peluang sekitar 26 persen untuk memperoleh setidaknya satu "
+            "hasil yang tampak bermakna semata karena kebetulan. Koreksi "
+            "Holm-Bonferroni karena itu diterapkan, dan keputusan diambil dari "
+            "kolom p Holm.", "p"))
         E.append(tabel(["Perbandingan", "n", "Rerata A", "Rerata B", "Selisih",
-                        "p", "Bacaan"], sig,
-                       [4.4 * cm, 1.2 * cm, 1.9 * cm, 1.9 * cm, 1.7 * cm,
-                        1.5 * cm, 3.4 * cm]))
+                        "p mentah", "p Holm", "Bacaan"], sig,
+                       [3.9 * cm, 1.1 * cm, 1.6 * cm, 1.6 * cm, 1.5 * cm,
+                        1.6 * cm, 1.5 * cm, 3.2 * cm]))
         E.append(Spacer(1, 6))
         E.append(P(
             "Hasilnya terbelah bersih menjadi dua kelompok. Kelompok pertama "
@@ -942,6 +967,29 @@ def bangun():
             "merupakan pengecualian yang sebaiknya dibekukan termasuk di "
             "antaranya, karena setelah tiga inisialisasi pada kedua sisi nilai "
             "p-nya 0,313.", "p"))
+        E.append(P(
+            "Perbandingan pada HuBERT Large layak dibahas tersendiri karena "
+            "berada tepat di garis batas. Melatih encoder unggul 2,82 poin "
+            "persentase atas membekukannya dengan nilai p mentah 0,0500, yang "
+            "setelah koreksi Holm menjadi 0,0999. Penulis memilih tidak "
+            "menyatakannya sebagai temuan yang mapan. Nilai p yang berhenti "
+            "persis di ambang, pada ukuran sampel tiga, merupakan keadaan yang "
+            "paling mudah disalahtafsirkan, dan menyebutnya bermakna hanya "
+            "karena kebetulan jatuh di sisi yang menguntungkan adalah bentuk "
+            "pemilihan hasil yang justru dikritik oleh penelitian ini sendiri di "
+            "bagian lain.", "p"))
+        E.append(P(
+            "Satu pengamatan sampingan muncul dari kolom simpangan baku dan "
+            "layak dicatat karena tidak terbaca dari rerata. Pada HuBERT Large, "
+            "konfigurasi yang encodernya dibekukan menghasilkan simpangan baku "
+            "0,13 poin persentase, sedangkan yang encodernya dilatih "
+            "menghasilkan 1,33. Membekukan encoder memberi hasil yang jauh lebih "
+            "dapat diulang, sementara melatihnya memberi rerata lebih tinggi "
+            "dengan ayunan sepuluh kali lipat lebih lebar. Untuk pekerjaan yang "
+            "harus dapat direproduksi oleh orang lain, sifat itu memiliki nilai "
+            "tersendiri yang terpisah dari akurasi rerata, dan pemilihan di "
+            "antara keduanya karena itu bukan semata soal angka mana yang lebih "
+            "besar.", "p"))
         E.append(P(
             "Pengalaman ini sekaligus menjadi contoh konkret bagi anjuran yang "
             "diajukan penelitian ini sendiri, yaitu bahwa hasil sebaiknya "
