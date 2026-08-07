@@ -10,7 +10,21 @@ Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.
 |---|---|---|---|---|
 | CNN+ASP tanpa augmentasi | acak 60/20/20 | 1 | **99.75** | 0.03 |
 | CNN+ASP tanpa augmentasi | resmi FoR | 1 | **71.88** | 28.12 |
-| Replikasi proposal: wav2vec2 | acak 60/20/20 | 1 | **99.80** | 0.28 |
+| Replikasi proposal: ast | acak 60/20/20 | 1 | **75.83** | 4.41 |
+| Replikasi proposal: ast | acak 60/20/20 | 1 | **75.55** | 7.63 |
+| Replikasi proposal: ast | acak 60/20/20 | 1 | **73.16** | 7.44 |
+| Replikasi proposal: ast | acak 60/20/20 | 1 | **99.69** | 0.14 |
+| Replikasi proposal: cnnlstm_proposal | acak 60/20/20 | 1 | **99.83** | 0.03 |
+| Replikasi proposal: hubert | acak 60/20/20 | 1 | **51.93** | 55.24 |
+| Replikasi proposal: hubert | acak 60/20/20 | 1 | **54.60** | 39.06 |
+| Replikasi proposal: hubert | acak 60/20/20 | 1 | **50.28** | 50.37 |
+| Replikasi proposal: hubert | acak 60/20/20 | 1 | **99.69** | 0.39 |
+| Replikasi proposal: wav2vec2 | acak 60/20/20 | 1 | **99.78** | 0.08 |
+| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **59.83** | 33.46 |
+| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **50.09** | 32.44 |
+| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **53.31** | 43.01 |
+| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **53.49** | 37.59 |
+| Replikasi proposal: wavlm | acak 60/20/20 | 1 | **99.52** | 0.31 |
 
 ## 2. Kinerja pada partisi resmi FoR
 
@@ -18,14 +32,14 @@ Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.
 |---|---|---|---|---|
 | wavlm | fullbgrb | 3 | **98.90** (0.18) | 1.10 |
 | wavlm | fullbg | 3 | **98.65** (0.37) | 1.29 |
-| wavlm | full | 3 | **98.62** (0.64) | 1.41 |
+| wavlm | full | 4 | **98.55** (0.54) | 1.47 |
 | nes2net | fullrb | 3 | **98.50** (0.41) | 1.44 |
+| hubert | fullUF | 3 | **97.49** (1.33) | 2.51 |
 | nes2net | fullbgrb | 3 | **97.46** (2.10) | 2.54 |
+| wavlm | fullUF | 3 | **97.30** (1.71) | 2.70 |
 | hubert | codec | 8 | **97.29** (2.16) | 2.71 |
 | nes2net | fullbg | 3 | **97.12** (2.77) | 2.88 |
 | nes2net | soft | 3 | **96.75** (0.77) | 3.25 |
-| wavlm | codec | 3 | **96.51** (2.41) | 3.55 |
-| hubert | fullbg | 3 | **95.71** (1.29) | 4.26 |
 
 ## 3. Deteksi TTS komersial 2025-2026
 

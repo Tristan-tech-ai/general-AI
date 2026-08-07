@@ -60,11 +60,11 @@ def kumpul(pat):
 
 
 out("# Dekomposisi Nilai Rekayasa: Pelatihan atau Ambang?\n")
-out("Matriks 2x2 melaporkan selisih +37,59 poin persentase pada AST dan +43,01 "
-    "poin pada WavLM. Selisih itu membandingkan konfigurasi proposal pada ambang "
-    "0,5 dengan konfigurasi diperbaiki pada ambang prior-matched, sehingga dua "
-    "variabel berubah bersamaan. Bagian ini memisahkan keduanya dari skor yang "
-    "sama persis, tanpa melatih ulang.\n")
+out("Perbandingan antara konfigurasi proposal dan konfigurasi diperbaiki pada "
+    "matriks 2x2 mengubah dua variabel sekaligus, yaitu cara model dilatih dan "
+    "cara ambang keputusan ditetapkan, karena tiap konfigurasi dievaluasi pada "
+    "ambangnya masing-masing. Bagian ini memisahkan keduanya dari skor yang sama "
+    "persis, tanpa melatih ulang apa pun.\n")
 
 BARIS = []
 for model in ["ast", "wavlm", "hubert", "nes2net"]:

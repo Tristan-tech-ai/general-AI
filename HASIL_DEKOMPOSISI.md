@@ -1,27 +1,30 @@
 # Dekomposisi Nilai Rekayasa: Pelatihan atau Ambang?
 
-Matriks 2x2 melaporkan selisih +37,59 poin persentase pada AST dan +43,01 poin pada WavLM. Selisih itu membandingkan konfigurasi proposal pada ambang 0,5 dengan konfigurasi diperbaiki pada ambang prior-matched, sehingga dua variabel berubah bersamaan. Bagian ini memisahkan keduanya dari skor yang sama persis, tanpa melatih ulang.
+Perbandingan antara konfigurasi proposal dan konfigurasi diperbaiki pada matriks 2x2 mengubah dua variabel sekaligus, yaitu cara model dilatih dan cara ambang keputusan ditetapkan, karena tiap konfigurasi dievaluasi pada ambangnya masing-masing. Bagian ini memisahkan keduanya dari skor yang sama persis, tanpa melatih ulang apa pun.
 
 ## Empat sel dari skor yang sama
 
 | Arsitektur | n | A. proposal @ 0,5 | B. proposal @ prior | C. rekayasa @ 0,5 | D. rekayasa @ prior |
 |---|---|---|---|---|---|
-| ast | 1/1 | 73.16 | **92.56** | **65.72** | **89.15** |
-| wavlm | 1/3 | 53.31 | **56.99** | **83.15** | **98.62** |
+| ast | 3/3 | 74.85 | **93.57** | **58.82** | **89.15** |
+| wavlm | 4/4 | 54.18 | **63.40** | **82.24** | **98.55** |
+| hubert | 3/6 | 52.27 | **52.14** | **76.95** | **95.01** |
 
 ## Sumbangan tiap sumbu (poin persentase)
 
 | Arsitektur | Ambang saja (B-A) | Pelatihan saja (C-A) | Interaksi | Total (D-A) |
 |---|---|---|---|---|
-| ast | **+19.39** | **-7.44** | +4.04 | +15.99 |
-| wavlm | **+3.68** | **+29.84** | +11.80 | +45.31 |
+| ast | **+18.72** | **-16.02** | +11.61 | +14.31 |
+| wavlm | **+9.21** | **+28.06** | +7.10 | +44.37 |
+| hubert | **-0.12** | **+24.68** | +18.18 | +42.74 |
 
 ## Daya pisah, yang sama sekali tidak bergantung pada ambang
 
 | Arsitektur | AUC proposal | AUC rekayasa | EER proposal | EER rekayasa | Penurunan EER relatif |
 |---|---|---|---|---|---|
-| ast | 0.9780 | **0.9586** | 7.44 | **10.85** | **-45.7 persen** |
-| wavlm | 0.6569 | **0.9992** | 43.01 | **1.41** | **+96.7 persen** |
+| ast | 0.9824 | **0.9540** | 6.50 | **10.81** | **-66.5 persen** |
+| wavlm | 0.7171 | **0.9989** | 36.63 | **1.47** | **+96.0 persen** |
+| hubert | 0.5605 | **0.9916** | 48.22 | **4.99** | **+89.6 persen** |
 
 ## Bacaan
 

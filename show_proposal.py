@@ -68,7 +68,10 @@ else:
     out("")
 
 # Konfigurasi proposal yang sama, tetapi diuji pada partisi resmi.
-ofs = []
+# Digabungkan per arsitektur, bukan per inisialisasi. Menampilkan tiap
+# inisialisasi sebagai baris terpisah membuat sebaran tampak seperti perbedaan
+# antar model, padahal seluruh baris berasal dari konfigurasi yang sama.
+ofs = defaultdict(lambda: {"a05": [], "apm": [], "auc": [], "eer": []})
 for d in sorted(glob.glob(os.path.join(HERE, "runs", "*_official_*ULRPK*"))):
     fs = os.path.join(d, "test_scores.npy")
     fj = os.path.join(d, "results.json")
@@ -78,19 +81,27 @@ for d in sorted(glob.glob(os.path.join(HERE, "runs", "*_official_*ULRPK*"))):
     y, p, _ = np.load(fs)
     y = y.astype(int)
     m05 = full_metrics(y, p, 0.5)
-    mpm = full_metrics(y, p, prior_matched_threshold(p, 0.5))
-    ofs.append((r["args"]["model"], m05, mpm))
+    g = ofs[r["args"]["model"]]
+    g["a05"].append(m05["accuracy"] * 100)
+    g["apm"].append(full_metrics(y, p, prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+    g["auc"].append(m05["auc"])
+    g["eer"].append(m05["eer"] * 100)
 
 if ofs:
     out("## Konfigurasi proposal yang sama, diuji pada partisi resmi\n")
     out("Perbedaan dengan tabel di atas hanya pada cara data dibagi. Seluruh "
-        "setelan pelatihan identik.\n")
-    out("| model | akurasi @0,5 | akurasi @prior | AUC | EER |")
-    out("|---|---|---|---|---|")
-    for nm, a, b in sorted(ofs, key=lambda t: -t[2]["accuracy"]):
-        out("| %s | %.2f%% | **%.2f%%** | %.4f | %.2f%% |"
-            % (nm, a["accuracy"] * 100, b["accuracy"] * 100, a["auc"],
-               a["eer"] * 100))
+        "setelan pelatihan identik. Angka dalam kurung adalah simpangan baku "
+        "antar inisialisasi acak.\n")
+    out("| model | n | akurasi @0,5 | akurasi @prior | AUC | EER |")
+    out("|---|---|---|---|---|---|")
+    for nm, g in sorted(ofs.items(), key=lambda t: -np.mean(t[1]["apm"])):
+        n = len(g["apm"])
+        sd = np.std(g["apm"], ddof=1) if n > 1 else 0.0
+        pm = ("%.2f%% (%.2f)" % (np.mean(g["apm"]), sd) if n > 1
+              else "%.2f%%" % np.mean(g["apm"]))
+        out("| %s | %d | %.2f%% | **%s** | %.4f | %.2f%% |"
+            % (nm, n, np.mean(g["a05"]), pm, np.mean(g["auc"]),
+               np.mean(g["eer"])))
     out("")
     out("Selisih antara kedua tabel jauh lebih besar daripada selisih antar "
         "arsitektur di dalam masing-masing tabel. Pada split acak seluruh model "

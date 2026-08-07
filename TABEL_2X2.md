@@ -10,28 +10,30 @@ Konfigurasi diperbaiki: learning rate per model dengan encoder dibekukan dan agr
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | 99.69% | **73.16%** | +26.53 pp |
-| Diperbaiki (rekayasa) | 99.75% | **89.15%** | +10.59 pp |
+| Proposal apa adanya | 99.69% | **74.85% (1.47)** | +24.85 pp |
+| Diperbaiki (rekayasa) | 99.75% | **89.15% (3.49)** | +10.59 pp |
 
-**Nilai rekayasa pada protokol resmi: +15.99 poin persentase** (73.16% menjadi 89.15%).
+**Nilai rekayasa pada protokol resmi: +14.31 poin persentase** (74.85% menjadi 89.15%).
 Pada split acak selisihnya hanya +0.06 poin (99.69% menjadi 99.75%), yang menunjukkan bahwa protokol longgar tidak dapat membedakan kedua konfigurasi.
 
 ## wavlm
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | 99.52% | **53.31%** | +46.22 pp |
-| Diperbaiki (rekayasa) | 99.75% | **98.62% (0.64)** | +1.13 pp |
+| Proposal apa adanya | 99.52% | **54.18% (4.08)** | +45.34 pp |
+| Diperbaiki (rekayasa) | 99.75% | **98.55% (0.54)** | +1.20 pp |
 
-**Nilai rekayasa pada protokol resmi: +45.31 poin persentase** (53.31% menjadi 98.62%).
+**Nilai rekayasa pada protokol resmi: +44.37 poin persentase** (54.18% menjadi 98.55%).
 Pada split acak selisihnya hanya +0.22 poin (99.52% menjadi 99.75%), yang menunjukkan bahwa protokol longgar tidak dapat membedakan kedua konfigurasi.
 
 ## hubert
 
 | Konfigurasi | Split acak 60/20/20 | Partisi resmi FoR | Selisih antar split |
 |---|---|---|---|
-| Proposal apa adanya | 99.69% | **belum ada** | n/a |
-| Diperbaiki (rekayasa) | belum ada | **95.34% (0.88)** | n/a |
+| Proposal apa adanya | 99.69% | **52.27% (2.18)** | +47.43 pp |
+| Diperbaiki (rekayasa) | belum ada | **95.01% (0.97)** | n/a |
+
+**Nilai rekayasa pada protokol resmi: +42.74 poin persentase** (52.27% menjadi 95.01%).
 
 ## nes2net
 
@@ -44,7 +46,8 @@ Pada split acak selisihnya hanya +0.22 poin (99.52% menjadi 99.75%), yang menunj
 
 | Arsitektur | Proposal pada partisi resmi | Diperbaiki pada partisi resmi | Selisih |
 |---|---|---|---|
-| ast | 73.16% | **89.15%** | **+15.99 pp** |
-| wavlm | 53.31% | **98.62%** | **+45.31 pp** |
+| ast | 74.85% | **89.15%** | **+14.31 pp** |
+| wavlm | 54.18% | **98.55%** | **+44.37 pp** |
+| hubert | 52.27% | **95.01%** | **+42.74 pp** |
 
-Rerata selisih +30.65 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.
+Rerata selisih +33.81 poin persentase pada protokol yang sama persis. Rekayasa memberi perbaikan nyata, dan perbaikan itu tidak terlihat sama sekali bila hanya melihat kolom split acak.
