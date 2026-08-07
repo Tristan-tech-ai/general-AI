@@ -317,21 +317,32 @@ def chart_ablasi():
         ("Early stopping\npada EER", "runs/ast_official_proposal_b32e10_s42"),
         ("Augmentasi\npenuh", "runs/ast_official_full_b32e10_s42"),
     ]
-    nm, acc = [], []
+    import glob as _g
+    import re as _re
+    nm, acc, sd = [], [], []
     for label, d in TANGGA:
-        f = os.path.join(HERE, d, "test_scores.npy")
-        if not os.path.exists(f):
+        vals = []
+        for dd in sorted(_g.glob(os.path.join(HERE,
+                                              _re.sub(r"_s\d+$", "_s*", d)))):
+            f = os.path.join(dd, "test_scores.npy")
+            if not os.path.exists(f):
+                continue
+            y, p, _ = np.load(f)
+            vals.append(full_metrics(y.astype(int), p,
+                                     prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        if not vals:
             continue
-        y, p, _ = np.load(f)
-        acc.append(full_metrics(y.astype(int), p,
-                                prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        acc.append(float(np.mean(vals)))
+        sd.append(float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0)
         nm.append(label)
     if len(acc) < 2:
         return
 
-    fig, ax = plt.subplots(figsize=(10.5, 5.6))
-    ax.bar(0, acc[0], color="#868E96", width=0.62, zorder=3)
-    ax.text(0, acc[0] + 1.2, f"{acc[0]:.2f}", ha="center", fontsize=10,
+    fig, ax = plt.subplots(figsize=(10.5, 5.9))
+    ax.bar(0, acc[0], color="#868E96", width=0.62, zorder=3,
+           yerr=sd[0], capsize=4,
+           error_kw={"ecolor": "#343A40", "lw": 1.1, "zorder": 5})
+    ax.text(0, acc[0] + sd[0] + 1.4, f"{acc[0]:.2f}", ha="center", fontsize=10,
             weight="bold", color="#495057")
     for i in range(1, len(acc)):
         d = acc[i] - acc[i - 1]
@@ -340,19 +351,23 @@ def chart_ablasi():
                color="#2F9E44" if d >= 0 else "#E03131")
         ax.plot([i - 0.69, i - 0.31], [acc[i - 1]] * 2, color="#ADB5BD",
                 lw=1.1, ls="--", zorder=2)
-        ax.text(i, hi + 1.2, f"{d:+.2f}", ha="center", fontsize=10.5,
+        # Batang galat pada tingkat hasil tiap langkah. Tanpa ini, selisih
+        # yang kecil tampak sama meyakinkannya dengan selisih yang besar.
+        ax.errorbar(i, acc[i], yerr=sd[i], fmt="none", ecolor="#343A40",
+                    lw=1.1, capsize=4, zorder=5)
+        ax.text(i, hi + sd[i] + 1.4, f"{d:+.2f}", ha="center", fontsize=10.5,
                 weight="bold", color="#2F9E44" if d >= 0 else "#E03131")
-        ax.text(i, lo - 3.0, f"{acc[i]:.2f}", ha="center", fontsize=9,
+        ax.text(i, lo - sd[i] - 3.4, f"{acc[i]:.2f}", ha="center", fontsize=9,
                 color="#495057")
     ax.set_xticks(range(len(nm)))
     ax.set_xticklabels(nm, fontsize=9.5)
     ax.set_ylabel("Akurasi pada partisi resmi (persen)")
-    ax.set_ylim(min(acc) - 8, max(acc) + 7)
+    ax.set_ylim(min(acc) - max(sd) - 9, max(acc) + max(sd) + 8)
     ax.grid(axis="y", alpha=0.25, zorder=0)
     ax.set_title("Sumbangan tiap perbaikan pada AST, partisi resmi\n"
-                 "batang merah menandai perbaikan yang merugikan bila "
-                 "berdiri sendiri",
-                 fontsize=12, weight="bold")
+                 "batang merah menandai langkah yang merugikan, batang galat "
+                 "adalah simpangan baku antar inisialisasi",
+                 fontsize=11.5, weight="bold")
     save(fig, "11_tangga_ablasi.png")
 
 
