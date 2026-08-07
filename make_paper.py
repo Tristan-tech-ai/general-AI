@@ -1203,6 +1203,98 @@ def bangun():
         "bahkan memperbaiki recall pada sistem lama yang tidak dikompresi. "
         "Kombinasi keduanya memberi hasil terbaik pada beberapa sumbu sekaligus.", "p"))
 
+    # ---------------- 4.x sapuan parameter band-gain
+    BG = {}
+    for kunci, pat in [
+            ("nol", "runs/wavlm_official_full_b16e10_s*"),
+            ("bawaan", "runs/wavlm_official_fullbg_b16e10_s*"),
+            ("db1", "runs/wavlm_official_fullbgD1_b16e10_s*"),
+            ("db3", "runs/wavlm_official_fullbgD3_b16e10_s*"),
+            ("db6", "runs/wavlm_official_fullbgD6_b16e10_s*"),
+            ("db20", "runs/wavlm_official_fullbgD20_b16e10_s*"),
+            ("n3", "runs/wavlm_official_fullbgN3_b16e10_s*"),
+            ("n12", "runs/wavlm_official_fullbgN12_b16e10_s*"),
+            ("f2000", "runs/wavlm_official_fullbgF2000_b16e10_s*"),
+            ("f4000", "runs/wavlm_official_fullbgF4000_b16e10_s*")]:
+        v = _akurasi_seed(pat)
+        if len(v):
+            BG[kunci] = v
+
+    if len(BG) >= 6:
+        E.append(P("4.1 Sapuan parameter, dan sebuah kurva yang menghilang", "h2"))
+        E.append(P(
+            "Ketiga parameter band-gain, yaitu batas bawah pita, jumlah pita, "
+            "dan besar redaman maksimum, ditetapkan sekali di awal berdasarkan "
+            "penalaran mekanistik dan tidak pernah diuji. Sapuan berikut "
+            "menguji ketiganya satu per satu pada WavLM Large berencoder beku, "
+            "yaitu konfigurasi dengan simpangan baku terkecil dalam penelitian "
+            "ini. Sumbu redaman diberi titik nol berupa konfigurasi yang sama "
+            "persis tanpa band-gain sama sekali, karena tanpa titik itu sumbu "
+            "tersebut tidak dapat ditafsirkan.", "p"))
+        baris = []
+        for k, nm in [("nol", "Tanpa band-gain"), ("db1", "Redaman 1 dB"),
+                      ("db3", "Redaman 3 dB"), ("db6", "Redaman 6 dB"),
+                      ("bawaan", "Redaman 12 dB, bawaan"),
+                      ("db20", "Redaman 20 dB"), ("n3", "3 pita"),
+                      ("n12", "12 pita"), ("f2000", "f_lo 2000 Hz"),
+                      ("f4000", "f_lo 4000 Hz")]:
+            if k not in BG:
+                continue
+            v = BG[k]
+            baris.append([nm, str(len(v)),
+                          (f"{v.mean():.2f} ({v.std(ddof=1):.2f})" if len(v) > 1
+                           else f"{v.mean():.2f}"),
+                          ("" if k == "bawaan" or "bawaan" not in BG
+                           else f"{v.mean() - BG['bawaan'].mean():+.2f}")])
+        E.append(tabel(["Konfigurasi", "n", "Akurasi", "Selisih dari bawaan"],
+                       baris, [6.0 * cm, 1.4 * cm, 4.0 * cm, 4.0 * cm]))
+        E.append(Spacer(1, 6))
+        E.extend(gambar("13_sapuan_bandgain.png", 16 * cm,
+                        "Gambar 8. Sapuan parameter band-gain. Batang galat "
+                        "adalah simpangan baku antar inisialisasi acak, dan "
+                        "hanya ada pada titik yang dijalankan lebih dari "
+                        "sekali."))
+        E.append(P(
+            "Sapuan tahap pertama, dengan satu inisialisasi acak per titik, "
+            "menghasilkan gambaran yang sangat memuaskan. Sumbu jumlah pita "
+            "tampak berpuncak di nilai enam, dengan tiga pita dan dua belas pita "
+            "sama-sama lebih buruk sekitar satu koma tiga poin persentase. Sumbu "
+            "redaman tampak berpuncak di sekitar tiga desibel, jauh lebih lembut "
+            "daripada nilai bawaan dua belas desibel. Sumbu batas bawah pita "
+            "tampak datar. Ketiga bentuk itu cocok dengan mekanisme yang "
+            "mendasari rancangan band-gain, yaitu bahwa penetralan yang terlalu "
+            "kasar gagal menghilangkan isyarat level sedangkan penetralan yang "
+            "terlalu agresif mulai merusak struktur halus.", "p"))
+        E.append(P(
+            "Gambaran itu sebagian besar tidak bertahan. Ketika titik-titiknya "
+            "dijalankan ulang dengan inisialisasi tambahan, selisih pada dua "
+            "belas pita menyusut dari satu koma empat satu poin menjadi nol koma "
+            "dua satu poin, dan keunggulan enam desibel berubah tanda dari "
+            "positif nol koma empat tiga menjadi negatif nol koma satu dua. "
+            "Hanya satu efek yang bertahan, yaitu bahwa tiga pita merugikan, dan "
+            "efek itu pun berada di garis batas setelah koreksi untuk pengujian "
+            "berganda.", "p"))
+        E.append(P(
+            "Peristiwa ini layak dicatat sebagai studi kasus, dan bukan sekadar "
+            "hasil negatif yang perlu dilewati. Kurva yang dihasilkan tahap "
+            "pertama mulus, hampir simetris, konsisten pada tiga panel, dan "
+            "sesuai dengan penjelasan teoretis yang disusun sebelum datanya ada. "
+            "Seluruh ciri yang biasanya dipakai pembaca untuk menilai apakah "
+            "sebuah hasil dapat dipercaya justru terpenuhi. Meskipun demikian, "
+            "sebagian besar strukturnya dihasilkan oleh ragam antar inisialisasi "
+            "acak. Bila penelitian ini berhenti pada tahap pertama dan "
+            "melaporkan bahwa parameter optimal band-gain adalah enam pita "
+            "dengan redaman tiga desibel, tervalidasi oleh bentuk kurva dua "
+            "sisi, kecil kemungkinan ada pembaca yang mencurigainya.", "p"))
+        E.append(P(
+            "Kesimpulan yang dapat dipertanggungjawabkan karena itu jauh lebih "
+            "sederhana. Band-gain memberi manfaat dibandingkan tidak memakainya, "
+            "tetapi hasilnya tidak sensitif terhadap ketiga parameternya pada "
+            "rentang yang diuji, kecuali bahwa jumlah pita sebaiknya tidak "
+            "terlalu sedikit. Ketidaksensitifan itu sebenarnya sifat yang "
+            "menguntungkan bagi sebuah augmentasi, karena berarti penggunanya "
+            "tidak perlu menuning apa pun.", "p"))
+
     # ---------------- 5
     E.append(P("5. Keterbatasan", "h1"))
     E.append(P(
