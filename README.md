@@ -22,10 +22,23 @@ Pada FoR-2sec, **90,7%** sampel `fake` di data latih berasal dari MP3, tetapi
 Energi >6 kHz: real 0,0336 vs fake-dari-MP3 0,0080 (4,18×), tetapi vs
 fake-non-MP3 hanya 1,17×.
 
-**3. Akurasi in-domain berkorelasi NEGATIF dengan deteksi TTS modern.**
-r = −0,542 (n=7). Bukti paling telanjang: `hubert[full]` mencapai akurasi FoR
-**95,3%** tetapi recall hanya **2,3%** pada TTS 2019 yang tidak dikompresi MP3.
-Model itu praktis mendeteksi MP3, bukan deepfake.
+**3. Akurasi in-domain tidak memprediksi deteksi TTS modern.**
+
+> **Klaim korelasi ditarik.** Versi awal melaporkan r = −0,542 (n=7) sebagai
+> hubungan negatif. Dihitung ulang atas **10 konfigurasi** dengan seed
+> dirata-ratakan per konfigurasi, hasilnya **r = −0,048**, uji permutasi
+> **p = 0,895**, selang kepercayaan bootstrap **[−0,664, +0,629]** yang memuat
+> nol. Arah hubungan tidak dapat ditetapkan dari data ini.
+> Rinciannya di [HASIL_UJI_KORELASI.md](HASIL_UJI_KORELASI.md).
+
+Yang tetap berdiri adalah mekanismenya, yang terdokumentasi terpisah dari
+korelasi: audit kebocoran codec (temuan 2), dan kebutaan model terhadap sistem
+yang tidak dikompresi. HuBERT dengan augmentasi penuh mencapai akurasi FoR
+**95,3%** tetapi recall hanya **29,2%** (±29,0) pada TTS 2019 non-MP3. Angka
+2,3% yang sempat dilaporkan adalah satu seed terburuk dari tiga (2,3 / 59,9 /
+25,4); reratanya 29,2% dan sebarannya sangat lebar. Akurasi tinggi pada FoR
+karena itu tidak menjamin apa pun tentang generator lain, tetapi pernyataan
+bahwa keduanya berkorelasi negatif tidak didukung data.
 
 **4. Kegagalan di bawah noise sebagian besar adalah kegagalan KALIBRASI.**
 WavLM pada SNR 10 dB masih ber-AUC **0,962**, yaitu daya pisah nyaris utuh, tetapi
