@@ -171,6 +171,16 @@ else:
     # sampai hampir tidak ada.
     nol = kel.get(("3000", "6", "0"))
     uji = []
+    # Baris terpenting dan paling mudah terlewat: apakah band-gain pada nilai
+    # bawaannya sendiri mengungguli tidak memakai band-gain sama sekali. Tanpa
+    # baris ini, seluruh tabel hanya membandingkan varian band-gain satu sama
+    # lain dan tidak pernah menguji augmentasinya itu sendiri.
+    if dasar and nol and len(dasar) >= 2 and len(nol) >= 2:
+        a = np.array([x["acc"] for x in dasar])
+        c = np.array([x["acc"] for x in nol])
+        uji.append({"titik": "bawaan 12 dB", "acuan": "tanpa band-gain",
+                    "n": f"{len(a)}/{len(c)}", "sel": a.mean() - c.mean(),
+                    "p": welch_p(a, c)})
     for k, v in kel.items():
         if k in (("3000", "6", "12"), ("3000", "6", "0")) or len(v) < 2:
             continue

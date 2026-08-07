@@ -7,11 +7,11 @@ Konfigurasi ini dipilih karena simpangan bakunya terkecil di antara seluruh konf
 | f_lo (Hz) | jumlah pita | redaman maks (dB) | n | Akurasi | Selisih dari bawaan | AUC | EER |
 |---|---|---|---|---|---|---|---|
 | 2000 | 6 | 12 | 1 | 98.90 | +0.25 | 0.9994 | 0.92 |
-| 3000 | 3 | 12 | 2 | 97.38 (0.06) | -1.27 | 0.9960 | 2.57 |
+| 3000 | 3 | 12 | 3 | 97.95 (0.98) | -0.70 | 0.9970 | 2.02 |
 | 3000 (tanpa band-gain) | 6 | 0 | 5 | 98.36 (0.63) | -0.29 | 0.9985 | 1.65 |
 | 3000 | 6 | 1 | 1 | 99.08 | +0.43 | 0.9998 | 0.92 |
 | 3000 | 6 | 3 | 1 | 99.45 | +0.80 | 0.9998 | 0.46 |
-| 3000 | 6 | 6 | 2 | 98.53 (0.78) | -0.12 | 0.9986 | 1.47 |
+| 3000 | 6 | 6 | 3 | 98.71 (0.64) | +0.06 | 0.9988 | 1.23 |
 | 3000 (bawaan) | 6 | 12 | 3 | 98.65 (0.37) | +0.00 | 0.9991 | 1.29 |
 | 3000 | 6 | 20 | 1 | 97.43 | -1.23 | 0.9978 | 2.48 |
 | 3000 | 12 | 12 | 2 | 98.44 (1.69) | -0.21 | 0.9988 | 1.47 |
@@ -25,12 +25,13 @@ Sebuah titik hanya berguna bila mengungguli konfigurasi bawaan dan titik tanpa b
 
 | Titik | Acuan | n | Selisih | p mentah | p Holm | Bacaan |
 |---|---|---|---|---|---|---|
-| f_lo 3000, 6 pita, 6 dB | bawaan 12 dB | 2/3 | -0.12 | 0.8634 | 1.0000 | **belum terbukti berbeda** |
-| f_lo 3000, 6 pita, 6 dB | tanpa band-gain | 2/5 | +0.17 | 0.8204 | 1.0000 | **belum terbukti berbeda** |
+| bawaan 12 dB | tanpa band-gain | 3/5 | +0.29 | 0.4479 | 1.0000 | **belum terbukti berbeda** |
+| f_lo 3000, 6 pita, 6 dB | bawaan 12 dB | 3/3 | +0.06 | 0.8941 | 1.0000 | **belum terbukti berbeda** |
+| f_lo 3000, 6 pita, 6 dB | tanpa band-gain | 3/5 | +0.35 | 0.4903 | 1.0000 | **belum terbukti berbeda** |
 | f_lo 3000, 12 pita, 12 dB | bawaan 12 dB | 2/3 | -0.21 | 0.8873 | 1.0000 | **belum terbukti berbeda** |
 | f_lo 3000, 12 pita, 12 dB | tanpa band-gain | 2/5 | +0.07 | 0.9611 | 1.0000 | **belum terbukti berbeda** |
-| f_lo 3000, 3 pita, 12 dB | bawaan 12 dB | 2/3 | -1.27 | 0.0233 | 0.1398 | **di garis batas** |
-| f_lo 3000, 3 pita, 12 dB | tanpa band-gain | 2/5 | -0.98 | 0.0244 | 0.1398 | **di garis batas** |
+| f_lo 3000, 3 pita, 12 dB | bawaan 12 dB | 3/3 | -0.70 | 0.3422 | 1.0000 | **belum terbukti berbeda** |
+| f_lo 3000, 3 pita, 12 dB | tanpa band-gain | 3/5 | -0.42 | 0.5576 | 1.0000 | **belum terbukti berbeda** |
 
 ## Cakupan
 
