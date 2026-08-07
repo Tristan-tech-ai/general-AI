@@ -4,13 +4,13 @@ Semua langkah memakai AST pada partisi resmi Fake-or-Real, batch 32, seed 42. Ti
 
 Akurasi dilaporkan pada ambang prior-matched untuk seluruh langkah agar sumbu ambang tidak bercampur ke dalam tangga. Sumbangan ambang itu sendiri dipisahkan tersendiri di HASIL_DEKOMPOSISI.md.
 
-| Langkah | Perbaikan yang ditambahkan | Akurasi | Selisih | AUC | EER |
-|---|---|---|---|---|---|
-| L1 | Konfigurasi proposal apa adanya | 92.56 |  | 0.9780 | 7.44 |
-| L2 | Normalisasi loudness | 92.28 | **-0.28** | 0.9769 | 7.54 |
-| L3 | LR per model dan encoder dibekukan | 75.37 | **-16.91** | 0.8361 | 24.36 |
-| L4 | Early stopping pada EER | 84.38 | **+9.01** | 0.9169 | 15.62 |
-| L5 | Augmentasi penuh | 89.15 | **+4.78** | 0.9586 | 10.85 |
+| Langkah | Perbaikan yang ditambahkan | n | Akurasi | Selisih | AUC | EER |
+|---|---|---|---|---|---|---|
+| L1 | Konfigurasi proposal apa adanya | 1 | 92.56 |  | 0.9780 | 7.44 |
+| L2 | Normalisasi loudness | 1 | 92.28 | **-0.28** | 0.9769 | 7.54 |
+| L3 | LR per model dan encoder dibekukan | 1 | 75.37 | **-16.91** | 0.8361 | 24.36 |
+| L4 | Early stopping pada EER | 1 | 84.38 | **+9.01** | 0.9169 | 15.62 |
+| L5 | Augmentasi penuh | 1 | 89.15 | **+4.78** | 0.9586 | 10.85 |
 
 Total kenaikan sepanjang tangga adalah -3.40 poin persentase, dari 92.56 persen menjadi 89.15 persen.
 

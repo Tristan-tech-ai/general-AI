@@ -46,15 +46,32 @@ TANGGA = [
 
 
 def baca(d):
-    f = os.path.join(HERE, d, "test_scores.npy")
-    if not os.path.exists(f):
+    """Rerata atas seluruh inisialisasi acak yang tersedia untuk langkah ini.
+
+    Pola direktori diakhiri _s42 pada versi awal. Agar seed tambahan ikut
+    terhitung, akhiran seed diganti menjadi wildcard.
+    """
+    import glob as _g
+    import re as _re
+    pola = _re.sub(r"_s\d+$", "_s*", d)
+    apm, a05, auc, eer = [], [], [], []
+    for dd in sorted(_g.glob(os.path.join(HERE, pola))):
+        f = os.path.join(dd, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        y, p, _ = np.load(f)
+        y = y.astype(int)
+        m0 = full_metrics(y, p, 0.5)
+        a05.append(m0["accuracy"] * 100)
+        apm.append(full_metrics(y, p, prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        auc.append(m0["auc"])
+        eer.append(m0["eer"] * 100)
+    if not apm:
         return None
-    y, p, _ = np.load(f)
-    y = y.astype(int)
-    m0 = full_metrics(y, p, 0.5)
-    mp = full_metrics(y, p, prior_matched_threshold(p, 0.5))
-    return {"a05": m0["accuracy"] * 100, "apm": mp["accuracy"] * 100,
-            "auc": m0["auc"], "eer": m0["eer"] * 100}
+    return {"a05": np.mean(a05), "apm": np.mean(apm),
+            "auc": np.mean(auc), "eer": np.mean(eer),
+            "n": len(apm),
+            "sd": (np.std(apm, ddof=1) if len(apm) > 1 else 0.0)}
 
 
 out("# Tangga Ablasi: Perbaikan Mana yang Membeli Berapa\n")
@@ -66,15 +83,17 @@ out("Akurasi dilaporkan pada ambang prior-matched untuk seluruh langkah agar "
     "dipisahkan tersendiri di HASIL_DEKOMPOSISI.md.\n")
 
 data, prev = [], None
-out("| Langkah | Perbaikan yang ditambahkan | Akurasi | Selisih | AUC | EER |")
-out("|---|---|---|---|---|---|")
+out("| Langkah | Perbaikan yang ditambahkan | n | Akurasi | Selisih | AUC | EER |")
+out("|---|---|---|---|---|---|---|")
 for kode, nama, d, _ in TANGGA:
     m = baca(d)
     if m is None:
-        out(f"| {kode} | {nama} | belum ada | | | |")
+        out(f"| {kode} | {nama} | | belum ada | | | |")
         continue
     sel = "" if prev is None else f"**{m['apm'] - prev:+.2f}**"
-    out(f"| {kode} | {nama} | {m['apm']:.2f} | {sel} | {m['auc']:.4f} | "
+    akur = (f"{m['apm']:.2f} ({m['sd']:.2f})" if m["n"] > 1
+            else f"{m['apm']:.2f}")
+    out(f"| {kode} | {nama} | {m['n']} | {akur} | {sel} | {m['auc']:.4f} | "
         f"{m['eer']:.2f} |")
     data.append((kode, nama, m, None if prev is None else m["apm"] - prev))
     prev = m["apm"]
