@@ -66,19 +66,28 @@ membedakan model yang bekerja dari model yang sebagian besar kapasitasnya mati.
 
 **9. Learning rate harus menyesuaikan encoder, dan kekeliruannya tidak dapat
 ditambal.** Proposal menetapkan satu learning rate 0,001 untuk seluruh
-arsitektur. Pada partisi resmi, laju itu memberi **92,56%** pada AST (86 juta
-parameter, pra-latih terselia) tetapi menjatuhkan WavLM Large ke **56,99%** dan
-HuBERT Large ke **50,46%**, yaitu setara tebakan koin. Pada HuBERT, seluruh paket
+arsitektur. Pada partisi resmi, dengan tiga inisialisasi acak per sel, laju itu
+memberi **93,57%** (±1,75) pada AST (86 juta parameter, pra-latih terselia)
+tetapi menjatuhkan WavLM Large ke **63,73%** (±5,86) dan HuBERT Large ke
+**52,14%** (±8,08), yaitu mendekati tebakan koin. Pada HuBERT, seluruh paket
 perbaikan lain tidak mampu mengangkatnya dari tingkat tebakan ketika laju itu
 dipertahankan.
 
 **10. Sebagian besar selisih lain larut dalam ragam antar inisialisasi.**
 Setiap sel dijalankan dengan tiga inisialisasi acak, lalu tiap perbandingan diuji
-dengan uji t Welch dan dikoreksi Holm-Bonferroni. Selisih berpuluh poin bertahan;
-selisih berbilang poin tidak. Pada AST, rentang antar inisialisasi mencapai
-**3,67 pp**, lebih lebar daripada selisih antar metodologi, sehingga inisialisasi
-mana yang kebetulan dilaporkan menentukan apakah rekayasa tampak menang 2,75 poin
-atau kalah 0,92 poin.
+dengan uji t Welch dan dikoreksi Holm-Bonferroni. **Tidak satu pun** perbandingan
+antara membekukan dan melatih encoder terbukti berbeda. Pada AST, konfigurasi
+proposal (93,57%) justru sedikit di atas konfigurasi rekayasa (93,38%), dengan
+p = 0,906. Rentang antar inisialisasi pada AST mencapai **7 poin persentase**,
+lebih lebar daripada hampir semua selisih antar konfigurasi yang dibahas,
+sehingga inisialisasi mana yang kebetulan dijalankan lebih dahulu menentukan arah
+kesimpulan.
+
+Kestabilan itu sendiri berbeda tajam antar arsitektur: rentang antar inisialisasi
+pada AST berencoder beku adalah **7,0 pp**, sedangkan pada HuBERT Large hanya
+**0,19 pp**. Dua arsitektur yang dilaporkan berdampingan dalam satu tabel karena
+itu tidak memiliki bobot bukti yang setara meskipun ditulis dengan jumlah desimal
+yang sama.
 
 **11. Koreksi yang dilakukan terhadap penelitian ini sendiri.**
 Lima dugaan yang sempat ditarik ternyata tidak bertahan dan telah dicabut, antara
