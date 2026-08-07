@@ -187,6 +187,59 @@ def _kumpul_ambang(pat):
             "sd": (np.std(apm, ddof=1) if len(apm) > 1 else 0.0)}
 
 
+def _akurasi_seed(pat):
+    """Akurasi prior-matched tiap inisialisasi acak yang cocok dengan pola."""
+    a = []
+    for d in sorted(glob.glob(os.path.join(HERE, pat))):
+        f = os.path.join(d, "test_scores.npy")
+        if not os.path.exists(f):
+            continue
+        y, p, _ = np.load(f)
+        a.append(full_metrics(y.astype(int), p,
+                              prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+    return np.array(a)
+
+
+def _welch_p(a, b):
+    """Nilai p dua sisi uji t Welch. Implementasi sama dengan signifikansi.py,
+    yang sudah dicocokkan terhadap SciPy sampai selisih 1e-10."""
+    from math import lgamma
+    na, nb = len(a), len(b)
+    if na < 2 or nb < 2:
+        return None
+    va, vb = a.var(ddof=1) / na, b.var(ddof=1) / nb
+    if va + vb == 0:
+        return None
+    t = (a.mean() - b.mean()) / np.sqrt(va + vb)
+    df = (va + vb) ** 2 / (va ** 2 / (na - 1) + vb ** 2 / (nb - 1))
+    x = df / (df + t * t)
+    aa, bb = df / 2.0, 0.5
+    if x <= 0:
+        return 0.0
+    if x >= 1:
+        return 1.0
+    lbeta = lgamma(aa) + lgamma(bb) - lgamma(aa + bb)
+    front = np.exp(np.log(x) * aa + np.log(1 - x) * bb - lbeta) / aa
+    f, c, d = 1.0, 1.0, 0.0
+    for i in range(300):
+        m = i // 2
+        if i == 0:
+            num = 1.0
+        elif i % 2 == 0:
+            num = (m * (bb - m) * x) / ((aa + 2 * m - 1) * (aa + 2 * m))
+        else:
+            num = -((aa + m) * (aa + bb + m) * x) / ((aa + 2 * m) * (aa + 2 * m + 1))
+        d = 1.0 + num * d
+        d = 1e-30 if abs(d) < 1e-30 else d
+        d = 1.0 / d
+        c = 1.0 + num / c
+        c = 1e-30 if abs(c) < 1e-30 else c
+        f *= c * d
+        if abs(1.0 - c * d) < 1e-10:
+            break
+    return float(front * (f - 1.0))
+
+
 def ms(v, k, pct=True):
     a = np.array([x[k] for x in v], dtype=float) * (100 if pct else 1)
     a = a[~np.isnan(a)]
@@ -815,6 +868,84 @@ def bangun():
             "seluruh paket rekayasa yang di tempat lain menyumbang puluhan poin "
             "persentase tidak mampu mengangkat model dari tingkat tebakan ketika "
             "learning rate-nya keliru. Keputusan itu harus benar sejak awal.", "p"))
+
+    BANDINGAN = [
+        ("AST, encoder dilatih lawan dibekukan",
+         "runs/ast_official_fullUF_b32e10_s*", "runs/ast_official_full_b32e10_s*"),
+        ("AST, encoder dilatih lawan proposal",
+         "runs/ast_official_fullUF_b32e10_s*",
+         "runs/ast_official_proposalULRPK_b32e20_s*"),
+        ("WavLM, encoder dibekukan lawan dilatih",
+         "runs/wavlm_official_full_b16e10_s*",
+         "runs/wavlm_official_fullUF_b16e10_s*"),
+        ("HuBERT, encoder dilatih lawan dibekukan",
+         "runs/hubert_official_fullUF_b32e10_s*",
+         "runs/hubert_official_full_b32e10_s*"),
+        ("WavLM, rekayasa lawan proposal",
+         "runs/wavlm_official_full_b16e10_s*",
+         "runs/wavlm_official_proposalULRPK_b16e20_s*"),
+        ("HuBERT, rekayasa lawan proposal",
+         "runs/hubert_official_fullUF_b32e10_s*",
+         "runs/hubert_official_proposalULRPK_b32e20_s*"),
+    ]
+    sig = []
+    for nama, pa, pb in BANDINGAN:
+        a, b = _akurasi_seed(pa), _akurasi_seed(pb)
+        if len(a) == 0 or len(b) == 0:
+            continue
+        sel = a.mean() - b.mean()
+        p = _welch_p(a, b)
+        sig.append([nama, f"{len(a)}/{len(b)}", f"{a.mean():.2f}",
+                    f"{b.mean():.2f}", f"{sel:+.2f}",
+                    "n/a" if p is None else f"{p:.3f}",
+                    ("belum dapat diuji" if p is None else
+                     "melampaui ragam" if p < 0.05 else
+                     "belum terbukti berbeda")])
+    if sig:
+        E.append(PageBreak())
+        E.append(P("3.11 Mana yang bertahan setelah ragam antar inisialisasi "
+                   "diukur", "h2"))
+        E.append(P(
+            "Seluruh selisih yang dilaporkan sejauh ini perlu diuji terhadap "
+            "ragamnya sendiri. Tiap sel dijalankan dengan beberapa inisialisasi "
+            "acak, lalu tiap perbandingan diuji dengan uji t Welch yang tidak "
+            "mengandaikan ragam kedua kelompok sama. Perlu ditegaskan bahwa "
+            "ukuran sampelnya kecil, yaitu paling banyak tiga inisialisasi per "
+            "sel, sehingga uji ini berdaya rendah. Nilai p yang besar karena itu "
+            "berarti belum terbukti berbeda, dan bukan terbukti sama.", "p"))
+        E.append(tabel(["Perbandingan", "n", "Rerata A", "Rerata B", "Selisih",
+                        "p", "Bacaan"], sig,
+                       [4.4 * cm, 1.2 * cm, 1.9 * cm, 1.9 * cm, 1.7 * cm,
+                        1.5 * cm, 3.4 * cm]))
+        E.append(Spacer(1, 6))
+        E.append(P(
+            "Hasilnya terbelah bersih menjadi dua kelompok. Kelompok pertama "
+            "adalah perbandingan antara konfigurasi proposal dan konfigurasi "
+            "rekayasa pada kedua model swa-selia berukuran besar. Selisihnya "
+            "berpuluh poin persentase, jauh melampaui simpangan baku antar "
+            "inisialisasi yang berkisar satu sampai dua poin, sehingga "
+            "kesimpulannya tidak mungkin dibalik oleh ragam. Kelompok kedua "
+            "adalah perbandingan antara membekukan dan melatih encoder. "
+            "Selisihnya berbilang poin dan berada pada orde yang sama dengan "
+            "simpangan bakunya sendiri.", "p"))
+        E.append(P(
+            "Untuk kelompok kedua, penelitian ini tidak berhak menyatakan bahwa "
+            "satu perlakuan lebih baik daripada yang lain. Beberapa kesimpulan "
+            "yang sempat ditarik lebih awal, ketika tiap sel baru dijalankan "
+            "sekali, karena itu ditarik kembali. Pernyataan bahwa WavLM Large "
+            "merupakan pengecualian yang sebaiknya dibekukan termasuk di "
+            "antaranya, karena setelah tiga inisialisasi pada kedua sisi nilai "
+            "p-nya 0,313.", "p"))
+        E.append(P(
+            "Pengalaman ini sekaligus menjadi contoh konkret bagi anjuran yang "
+            "diajukan penelitian ini sendiri, yaitu bahwa hasil sebaiknya "
+            "dilaporkan beserta simpangan baku atas beberapa inisialisasi. Pada "
+            "AST, rentang antar inisialisasi mencapai 3,67 poin persentase, "
+            "yang lebih lebar daripada selisih antar metodologi. Bergantung pada "
+            "inisialisasi mana yang kebetulan dilaporkan, penelitian yang sama "
+            "dapat menyimpulkan bahwa rekayasa menang 2,75 poin atau kalah 0,92 "
+            "poin. Kedua laporan itu akan terdengar sama meyakinkannya dan "
+            "sama-sama tidak berdasar.", "p"))
 
     E.append(PageBreak())
     # ---------------- 4
