@@ -98,17 +98,23 @@ out("Klaim mengenai band-gain dinyatakan pada dua sumbu, yaitu recall terhadap "
     "sebaran itu sendiri. Tabel berikut melakukan pengujian tersebut dengan uji "
     "t Welch dan koreksi Holm-Bonferroni.\n")
 
+# RawBoost diuji dengan cara yang sama. Klaim bahwa RawBoost menurunkan
+# generalisasi dipakai dalam penelitian ini sebagai pembanding yang menonjolkan
+# band-gain, sehingga tidak sah bila hanya band-gain yang diuji sementara
+# pembandingnya diterima apa adanya.
 uji = []
 for arch in ["nes2net", "wavlm", "hubert"]:
-    mb, ob = ambil(f"{arch}_official_fullbg")
-    mn, on = ambil(f"{arch}_official_full")
-    for nama, a, b in [("recall TTS 2025-2026", mb, mn),
-                       ("recall TTS 2019 non-MP3", ob, on)]:
-        if len(a) < 2 or len(b) < 2:
-            continue
-        uji.append({"arch": arch, "sumbu": nama, "n": f"{len(a)}/{len(b)}",
-                    "dengan": a, "tanpa": b, "sel": a.mean() - b.mean(),
-                    "p": welch_p(a, b)})
+    dasar_m, dasar_o = ambil(f"{arch}_official_full")
+    for pref, label in [("fullbg", "band-gain"), ("fullrb", "RawBoost"),
+                        ("fullbgrb", "band-gain + RawBoost")]:
+        mb, ob = ambil(f"{arch}_official_{pref}")
+        for nama, a, b in [("recall TTS 2025-2026", mb, dasar_m),
+                           ("recall TTS 2019 non-MP3", ob, dasar_o)]:
+            if len(a) < 2 or len(b) < 2:
+                continue
+            uji.append({"arch": arch, "sumbu": nama, "tambahan": label,
+                        "n": f"{len(a)}/{len(b)}", "dengan": a, "tanpa": b,
+                        "sel": a.mean() - b.mean(), "p": welch_p(a, b)})
 uji = [u for u in uji if u["p"] is not None]
 
 if not uji:
@@ -121,17 +127,35 @@ else:
         jl = max(jl, u["ph"])
         u["ph"] = jl
 
-    out("| Arsitektur | Sumbu | n | Tanpa band-gain | Dengan band-gain | "
+    out("| Arsitektur | Tambahan | Sumbu | n | Tanpa | Dengan | "
         "Selisih | p mentah | p Holm | Bacaan |")
-    out("|---|---|---|---|---|---|---|---|---|")
+    out("|---|---|---|---|---|---|---|---|---|---|")
     for u in uji:
         bacaan = ("melampaui ragam" if u["ph"] < 0.05 else
                   "di garis batas" if u["ph"] < 0.15 else
                   "belum terbukti berbeda")
-        out(f"| {u['arch']} | {u['sumbu']} | {u['n']} | "
+        out(f"| {u['arch']} | {u['tambahan']} | {u['sumbu']} | {u['n']} | "
             f"{u['tanpa'].mean():.2f} ({u['tanpa'].std(ddof=1):.2f}) | "
             f"{u['dengan'].mean():.2f} ({u['dengan'].std(ddof=1):.2f}) | "
             f"{u['sel']:+.2f} | {u['p']:.4f} | {u['ph']:.4f} | **{bacaan}** |")
+    out("")
+
+    # Perbandingan sebaran. Inilah satu-satunya sumbu yang masih menunjukkan
+    # pola konsisten setelah reratanya gagal diuji.
+    out("## Sebaran, bukan rerata\n")
+    out("Rerata tidak dapat dibedakan, tetapi sebarannya berbeda secara "
+        "konsisten. Tabel berikut membandingkan simpangan baku antar "
+        "inisialisasi acak.\n")
+    out("| Arsitektur | Sumbu | Simpangan tanpa tambahan | "
+        "Simpangan dengan band-gain | Rasio |")
+    out("|---|---|---|---|---|")
+    for u in uji:
+        if u["tambahan"] != "band-gain":
+            continue
+        st, sd_ = u["tanpa"].std(ddof=1), u["dengan"].std(ddof=1)
+        rasio = f"{st / sd_:.1f}x lebih kecil" if sd_ > 0 and st > sd_ else (
+            f"{sd_ / st:.1f}x lebih besar" if st > 0 else "n/a")
+        out(f"| {u['arch']} | {u['sumbu']} | {st:.2f} | {sd_:.2f} | {rasio} |")
     out("")
 
     lolos = [u for u in uji if u["ph"] < 0.05]
@@ -147,12 +171,22 @@ else:
         "persentase yang sempat dilaporkan sebagai keunggulan band-gain "
         "sebenarnya ditentukan hampir seluruhnya oleh satu inisialisasi yang "
         "buruk.\n")
+    out("Hal yang sama berlaku bagi pembandingnya. Klaim bahwa RawBoost "
+        "menurunkan generalisasi juga tidak bertahan, dengan selisih 7,33 dan "
+        "21,44 poin persentase yang keduanya berada di dalam ragam. Menguji "
+        "band-gain sambil menerima klaim pembandingnya apa adanya akan menjadi "
+        "pemilihan yang tidak sah, sehingga keduanya diuji dengan cara yang "
+        "sama dan keduanya sama-sama tidak terbukti.\n")
+    out("Satu pola tetap terlihat, yaitu pada sebarannya dan bukan pada "
+        "reratanya. Pada lima dari enam perbandingan, band-gain menghasilkan "
+        "simpangan baku yang lebih kecil, dalam dua kasus sekitar lima setengah "
+        "kali lebih kecil. Pada satu perbandingan polanya terbalik. Pola ini "
+        "dilaporkan sebagai pengamatan deskriptif dan tidak diuji secara formal, "
+        "karena pengujian kesamaan ragam pada tiga inisialisasi memiliki daya "
+        "yang bahkan lebih rendah daripada pengujian rerata.\n")
     out("Konsekuensinya, klaim mengenai keunggulan generalisasi band-gain harus "
         "ditarik sebagai temuan dan dinyatakan ulang sebagai pengamatan yang "
-        "belum diuji. Yang masih dapat dinyatakan adalah bahwa band-gain tidak "
-        "merusak, sedangkan RawBoost menurunkan recall pada kedua sumbu dengan "
-        "besaran yang lebih konsisten. Perbandingan itu pun perlu diuji dengan "
-        "cara yang sama sebelum dipakai.\n")
+        "belum diuji.\n")
     out("Sumbu recall menuntut jumlah inisialisasi yang jauh lebih banyak "
         "daripada tiga. Dengan simpangan baku belasan poin persentase, "
         "mendeteksi selisih 10 poin secara meyakinkan membutuhkan puluhan "

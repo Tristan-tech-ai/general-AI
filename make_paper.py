@@ -1197,11 +1197,63 @@ def bangun():
         E.append(P("Nes2Net-X, tiga seed per strategi, arsitektur dan data "
                    "identik. Rerata diikuti simpangan baku dalam kurung.", "cap"))
     E.append(P(
-        "Perbandingan tersebut menunjukkan bahwa RawBoost menaikkan akurasi pada "
-        "dataset tetapi menurunkan kemampuan generalisasi, sedangkan band-gain "
-        "menaikkan akurasi dengan penurunan generalisasi yang jauh lebih kecil dan "
-        "bahkan memperbaiki recall pada sistem lama yang tidak dikompresi. "
-        "Kombinasi keduanya memberi hasil terbaik pada beberapa sumbu sekaligus.", "p"))
+        "Pada tahap awal penelitian, perbandingan tersebut ditafsirkan sebagai "
+        "bukti bahwa RawBoost menaikkan akurasi pada dataset tetapi menurunkan "
+        "kemampuan generalisasi, sedangkan band-gain menaikkan akurasi dengan "
+        "penurunan generalisasi yang jauh lebih kecil dan bahkan memperbaiki "
+        "recall pada sistem lama yang tidak dikompresi. Tafsiran itu tidak "
+        "bertahan setelah selisihnya diuji terhadap ragam antar inisialisasi, "
+        "dan bagian berikut menjelaskan mengapa.", "p"))
+    E.append(P("4.1 Klaim yang tidak bertahan setelah diuji", "h2"))
+    E.append(P(
+        "Angka pada tabel di atas merupakan rerata atas tiga inisialisasi acak, "
+        "namun selisihnya tidak pernah diuji terhadap sebaran itu sendiri. "
+        "Pengujian dilakukan dengan uji t Welch dan koreksi Holm-Bonferroni atas "
+        "dua belas perbandingan yang mencakup tiga arsitektur serta ketiga "
+        "strategi augmentasi. Tidak satu pun di antaranya bertahan. Seluruh "
+        "nilai p terkoreksi mencapai batas atas satu koma nol, termasuk untuk "
+        "selisih yang besarannya mencapai dua puluh sembilan poin persentase.", "p"))
+    E.append(P(
+        "Penyebabnya terlihat langsung pada simpangan bakunya. Recall terhadap "
+        "sistem text-to-speech jauh lebih tidak stabil daripada akurasi pada "
+        "Fake-or-Real. Nes2Net-X tanpa band-gain menghasilkan recall 93,8 dan "
+        "96,9 dan 55,7 persen pada sistem lama yang tidak dikompresi, dengan "
+        "simpangan baku 22,95 poin persentase. Keunggulan sepuluh poin yang "
+        "sempat dilaporkan sebagai keunggulan band-gain pada sumbu itu "
+        "ditentukan hampir seluruhnya oleh satu inisialisasi yang buruk. HuBERT "
+        "Large menunjukkan pola yang sama dengan simpangan baku 28,96 poin.", "p"))
+    E.append(P(
+        "Pengujian yang sama diterapkan pada RawBoost, dan hasilnya juga tidak "
+        "bertahan. Penurunan 7,33 poin pada sistem terbaru dan 21,44 poin pada "
+        "sistem lama sama-sama berada di dalam ragam. Menguji band-gain sambil "
+        "menerima klaim mengenai pembandingnya apa adanya akan merupakan "
+        "pemilihan yang tidak sah, sehingga keduanya diuji dengan cara yang sama "
+        "dan keduanya sama-sama gagal.", "p"))
+    E.append(P(
+        "Satu pola tetap terlihat, tetapi pada sebaran dan bukan pada rerata. "
+        "Pada lima dari enam perbandingan, band-gain menghasilkan simpangan baku "
+        "yang lebih kecil daripada konfigurasi tanpa band-gain, dalam dua kasus "
+        "sekitar lima setengah kali lebih kecil, yaitu dari 22,95 menjadi 4,19 "
+        "pada Nes2Net-X dan dari 28,96 menjadi 5,23 pada HuBERT Large. Pada satu "
+        "perbandingan polanya terbalik. Pola ini dilaporkan sebagai pengamatan "
+        "deskriptif dan tidak diuji secara formal, karena pengujian kesamaan "
+        "ragam pada tiga inisialisasi memiliki daya yang bahkan lebih rendah "
+        "daripada pengujian rerata.", "p"))
+    E.append(P(
+        "Kesimpulan yang dapat dipertanggungjawabkan mengenai band-gain karena "
+        "itu terbatas pada dua hal. Pertama, augmentasi ini tidak merugikan. "
+        "Kedua, hasil yang diberikannya cenderung lebih dapat diulang antar "
+        "inisialisasi. Klaim mengenai keunggulan rerata pada sumbu generalisasi "
+        "ditarik sebagai temuan dan dinyatakan ulang sebagai pengamatan yang "
+        "belum diuji.", "p"))
+    E.append(P(
+        "Keterbatasan anggaran komputasi perlu dinyatakan bersama kesimpulan "
+        "ini. Dengan simpangan baku berpuluh poin persentase pada sumbu recall, "
+        "mendeteksi selisih sepuluh poin secara meyakinkan membutuhkan puluhan "
+        "inisialisasi acak per konfigurasi, bukan tiga. Penelitian ini tidak "
+        "memiliki anggaran untuk itu. Hal tersebut berarti klaim mengenai "
+        "band-gain tidak dapat dibuktikan maupun disangkal di sini, dan kedua "
+        "pernyataan itu berbeda dari pernyataan bahwa klaimnya salah.", "p"))
 
     # ---------------- 4.x sapuan parameter band-gain
     BG = {}
@@ -1221,7 +1273,7 @@ def bangun():
             BG[kunci] = v
 
     if len(BG) >= 6:
-        E.append(P("4.1 Sapuan parameter, dan sebuah kurva yang menghilang", "h2"))
+        E.append(P("4.2 Sapuan parameter, dan sebuah kurva yang menghilang", "h2"))
         E.append(P(
             "Ketiga parameter band-gain, yaitu batas bawah pita, jumlah pita, "
             "dan besar redaman maksimum, ditetapkan sekali di awal berdasarkan "
