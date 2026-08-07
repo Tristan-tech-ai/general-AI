@@ -785,6 +785,12 @@ def bangun():
                             for nm, v in sel],
                            [7.0 * cm, 1.4 * cm, 3.2 * cm, 2.4 * cm, 2.2 * cm]))
             E.append(Spacer(1, 6))
+        E.extend(gambar("12_matriks_encoder.png", 15.5 * cm,
+                        "Gambar 7. Perlakuan encoder terbaik berbeda menurut "
+                        "arsitektur. Tiga batang pertama tiap kelompok memakai "
+                        "paket rekayasa yang sama dan hanya berbeda pada "
+                        "perlakuan encoder. Garis merah menandai tingkat tebakan "
+                        "acak."))
         E.append(P(
             "Dua pola yang berbeda perlu dipisahkan. Pola pertama konsisten pada "
             "seluruh arsitektur yang diuji, yaitu bahwa besaran learning rate "
