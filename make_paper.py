@@ -1067,6 +1067,34 @@ def bangun():
             "memiliki nilai tersendiri yang terpisah dari akurasi rerata, "
             "sehingga pemilihan di antara keduanya bukan semata soal angka mana "
             "yang lebih besar.", "p"))
+        if A["wavlm_proposal"] and A["hubert_proposal"]:
+            E.append(P(
+                "Pengamatan yang paling menjelaskan justru datang dari sel "
+                "konfigurasi proposal pada kedua model swa-selia berukuran besar. "
+                "Simpangan bakunya "
+                f"{A['wavlm_proposal']['sd']:.2f} poin persentase pada WavLM "
+                f"Large dan {A['hubert_proposal']['sd']:.2f} pada HuBERT Large, "
+                "yaitu beberapa kali lipat lebih besar daripada sel mana pun yang "
+                "memakai learning rate yang sesuai. Pada HuBERT Large, ketiga "
+                "inisialisasi menghasilkan 45,04 sampai 60,94 persen, yaitu "
+                "rentang hampir 16 poin persentase.", "p"))
+            E.append(P(
+                "Sebaran selebar itu konsisten dengan mekanisme yang diusulkan. "
+                "Learning rate yang terlalu tinggi untuk encoder yang "
+                "bersangkutan membuat pelatihan tidak stabil, sehingga tempat "
+                "model berakhir sangat bergantung pada titik awalnya. Kegagalan "
+                "yang diakibatkannya karena itu bukan hanya besar tetapi juga "
+                "tidak terduga, dan itulah yang membuatnya berbahaya dalam "
+                "praktik. Sebuah penelitian yang menjalankan konfigurasi ini "
+                "sekali saja dapat memperoleh 60,94 persen dan menyimpulkan "
+                "bahwa modelnya lemah, atau memperoleh 45,04 persen dan "
+                "menyimpulkan bahwa modelnya tidak berfungsi, tanpa menyadari "
+                "bahwa keduanya adalah konfigurasi yang sama.", "p"))
+            E.append(P(
+                "Sebaran ini juga menjelaskan mengapa dua perbandingan dengan "
+                "selisih terbesar dalam tabel di atas justru berhenti tepat di "
+                "atas ambang setelah koreksi. Yang membatasi bukan kecilnya "
+                "efek, melainkan liarnya kelompok pembanding.", "p"))
         E.append(P(
             "Pengalaman ini sekaligus menjadi contoh konkret bagi anjuran yang "
             "diajukan penelitian ini sendiri, yaitu bahwa hasil sebaiknya "
