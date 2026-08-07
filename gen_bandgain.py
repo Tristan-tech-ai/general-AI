@@ -80,6 +80,45 @@ for d in sorted(glob.glob(os.path.join(HERE, "runs", "wavlm_official_fullbg*")))
     kel.setdefault(kunci, []).append(v)
 
 
+def welch_p(a, b):
+    """Nilai p dua sisi uji t Welch, implementasi sama dengan signifikansi.py
+    yang sudah dicocokkan terhadap SciPy sampai selisih 1e-10."""
+    from math import lgamma
+    if len(a) < 2 or len(b) < 2:
+        return None
+    va, vb = a.var(ddof=1) / len(a), b.var(ddof=1) / len(b)
+    if va + vb == 0:
+        return None
+    t = (a.mean() - b.mean()) / np.sqrt(va + vb)
+    df = (va + vb) ** 2 / (va ** 2 / (len(a) - 1) + vb ** 2 / (len(b) - 1))
+    x = df / (df + t * t)
+    aa, bb = df / 2.0, 0.5
+    if x <= 0:
+        return 0.0
+    if x >= 1:
+        return 1.0
+    lbeta = lgamma(aa) + lgamma(bb) - lgamma(aa + bb)
+    front = np.exp(np.log(x) * aa + np.log(1 - x) * bb - lbeta) / aa
+    f, c, d = 1.0, 1.0, 0.0
+    for i in range(300):
+        m = i // 2
+        if i == 0:
+            num = 1.0
+        elif i % 2 == 0:
+            num = (m * (bb - m) * x) / ((aa + 2 * m - 1) * (aa + 2 * m))
+        else:
+            num = -((aa + m) * (aa + bb + m) * x) / ((aa + 2 * m) * (aa + 2 * m + 1))
+        d = 1.0 + num * d
+        d = 1e-30 if abs(d) < 1e-30 else d
+        d = 1.0 / d
+        c = 1.0 + num / c
+        c = 1e-30 if abs(c) < 1e-30 else c
+        f *= c * d
+        if abs(1.0 - c * d) < 1e-10:
+            break
+    return float(front * (f - 1.0))
+
+
 def gab(v):
     a = np.array([x["acc"] for x in v])
     return {"acc": a.mean(), "sd": (a.std(ddof=1) if len(a) > 1 else 0.0),
@@ -125,12 +164,52 @@ else:
             f"{terbaik[0][1]} pita dan redaman {terbaik[0][2]} dB, yaitu "
             f"{terbaik[1]['acc']:.2f} persen atau "
             f"{terbaik[1]['acc'] - b['acc']:+.2f} poin persentase.\n")
-        out("Selisih itu belum dapat dinyatakan bermakna. Sapuan ini memakai "
-            "satu inisialisasi acak per titik, sedangkan simpangan baku "
-            f"konfigurasi bawaannya sendiri {b['sd']:.2f} poin persentase pada "
-            f"{b['n']} inisialisasi. Titik terbaik perlu diulang dengan "
-            "beberapa inisialisasi sebelum dapat dibandingkan secara sah, dan "
-            "itu berlaku juga bila selisihnya tampak besar.\n")
+
+    # Pengujian terhadap dua acuan sekaligus: konfigurasi bawaan dan titik nol.
+    # Sebuah titik hanya berguna bila mengungguli keduanya. Mengungguli bawaan
+    # saja tidak cukup, karena bisa jadi band-gain memang sebaiknya dilemahkan
+    # sampai hampir tidak ada.
+    nol = kel.get(("3000", "6", "0"))
+    uji = []
+    for k, v in kel.items():
+        if k in (("3000", "6", "12"), ("3000", "6", "0")) or len(v) < 2:
+            continue
+        a = np.array([x["acc"] for x in v])
+        for nama_acuan, acuan in [("bawaan 12 dB", dasar), ("tanpa band-gain", nol)]:
+            if not acuan or len(acuan) < 2:
+                continue
+            c = np.array([x["acc"] for x in acuan])
+            uji.append({"titik": f"f_lo {k[0]}, {k[1]} pita, {k[2]} dB",
+                        "acuan": nama_acuan, "n": f"{len(a)}/{len(c)}",
+                        "sel": a.mean() - c.mean(), "p": welch_p(a, c)})
+    uji = [u for u in uji if u["p"] is not None]
+    if uji:
+        for rank, u in enumerate(sorted(uji, key=lambda x: x["p"])):
+            u["ph"] = min(1.0, u["p"] * (len(uji) - rank))
+        jl = 0.0
+        for u in sorted(uji, key=lambda x: x["p"]):
+            jl = max(jl, u["ph"])
+            u["ph"] = jl
+        out("## Pengujian terhadap dua acuan\n")
+        out("Sebuah titik hanya berguna bila mengungguli konfigurasi bawaan dan "
+            "titik tanpa band-gain sekaligus. Mengungguli bawaan saja tidak "
+            "cukup, karena hal itu juga akan terjadi bila band-gain sebaiknya "
+            "dilemahkan sampai hampir tidak ada.\n")
+        out("| Titik | Acuan | n | Selisih | p mentah | p Holm | Bacaan |")
+        out("|---|---|---|---|---|---|---|")
+        for u in uji:
+            bacaan = ("melampaui ragam" if u["ph"] < 0.05 else
+                      "di garis batas" if u["ph"] < 0.15 else
+                      "belum terbukti berbeda")
+            out(f"| {u['titik']} | {u['acuan']} | {u['n']} | {u['sel']:+.2f} | "
+                f"{u['p']:.4f} | {u['ph']:.4f} | **{bacaan}** |")
+        out("")
+    else:
+        out("Belum ada titik selain bawaan yang memiliki lebih dari satu "
+            "inisialisasi acak, sehingga belum ada yang dapat diuji. Sapuan "
+            "dengan satu inisialisasi per titik hanya menunjukkan bentuk kurva, "
+            "bukan besaran yang dapat dipertanggungjawabkan, dan itu berlaku "
+            "juga bila selisihnya tampak besar.\n")
 
 if lewat:
     out("## Cakupan\n")
