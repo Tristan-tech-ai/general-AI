@@ -775,17 +775,32 @@ def bangun():
             "melainkan bahwa keputusan ini seharusnya dipilih per arsitektur "
             "menggunakan data validasi dan tidak ditetapkan di muka.", "p"))
         E.append(P(
-            "Satu hasil tambahan layak dicatat karena membela nilai paket "
-            "rekayasa dari sudut yang berbeda. Ketika WavLM Large dilatih pada "
-            "laju 0,001 yang merusak itu, konfigurasi proposal jatuh ke 56,99 "
-            "persen sedangkan paket rekayasa dengan laju yang sama tetap "
-            "bertahan di 80,06 persen. Selisih 23,07 poin persentase itu "
-            "menunjukkan bahwa early stopping, augmentasi penuh, dan agregasi "
-            "berbobot antar lapisan berfungsi sebagai jaring pengaman terhadap "
-            "pilihan learning rate yang buruk. Paket itu tidak menyelamatkan "
-            "model sepenuhnya, tetapi mengubah kegagalan total menjadi kegagalan "
-            "yang masih dapat diperbaiki. Nilai semacam ini tidak terlihat bila "
-            "yang dilaporkan hanya akurasi puncak.", "p"))
+            "Satu dugaan tambahan sempat disusun dan kemudian gugur, dan "
+            "kegugurannya dilaporkan di sini karena termasuk bagian dari "
+            "temuan. Pada WavLM Large yang dilatih dengan laju 0,001 yang "
+            "merusak itu, konfigurasi proposal jatuh ke 56,99 persen sedangkan "
+            "paket rekayasa dengan laju yang sama bertahan di 80,06 persen. "
+            "Selisih 23,07 poin persentase itu semula ditafsirkan sebagai bukti "
+            "bahwa early stopping, augmentasi penuh, dan agregasi berbobot antar "
+            "lapisan berfungsi sebagai jaring pengaman terhadap pilihan learning "
+            "rate yang buruk.", "p"))
+        E.append(P(
+            "HuBERT Large membantah tafsir tersebut. Pada arsitektur itu, "
+            "konfigurasi proposal dengan laju 0,001 mencapai 50,46 persen "
+            "sedangkan paket rekayasa dengan laju yang sama justru turun ke 43,66 "
+            "persen dengan area under curve 0,4837, yaitu sedikit di bawah "
+            "tebakan acak sehingga urutan skornya bahkan terbalik. Paket rekayasa "
+            "tidak memberikan perlindungan apa pun di sini. Kesimpulan yang dapat "
+            "dipertahankan karena itu lebih sempit daripada yang semula ditulis, "
+            "yaitu bahwa perlindungan tersebut teramati pada WavLM Large dan "
+            "tidak dapat digeneralisasi.", "p"))
+        E.append(P(
+            "Hasil ini justru memperkuat pesan utama bagian ini dari arah yang "
+            "lain. Learning rate yang tidak sesuai dengan encoder tidak dapat "
+            "ditambal oleh perbaikan lain di dalam pipeline. Pada HuBERT Large, "
+            "seluruh paket rekayasa yang di tempat lain menyumbang puluhan poin "
+            "persentase tidak mampu mengangkat model dari tingkat tebakan ketika "
+            "learning rate-nya keliru. Keputusan itu harus benar sejak awal.", "p"))
 
     E.append(PageBreak())
     # ---------------- 4
@@ -888,13 +903,14 @@ def bangun():
         "sebaiknya dipilih per arsitektur dengan data validasi dan tidak "
         "ditetapkan seragam di muka.", "p"))
     E.append(P(
-        "Nilai paket rekayasa juga terlihat pada sumbu yang berbeda dari akurasi "
-        "puncak. Ketika learning rate yang merusak tetap dipaksakan pada WavLM "
-        "Large, konfigurasi proposal jatuh ke 56,99 persen sedangkan paket "
-        "rekayasa bertahan di 80,06 persen. Early stopping, augmentasi penuh, dan "
-        "agregasi berbobot antar lapisan berfungsi sebagai jaring pengaman "
-        "terhadap pilihan hyperparameter yang buruk. Ketahanan semacam ini tidak "
-        "terbaca sama sekali bila yang dilaporkan hanya angka terbaik.", "p"))
+        "Pesan praktis yang paling kokoh dari seluruh rangkaian percobaan ini "
+        "adalah bahwa learning rate yang tidak sesuai dengan encoder tidak dapat "
+        "ditambal oleh perbaikan lain di dalam pipeline. Pada HuBERT Large dengan "
+        "laju 0,001, seluruh paket rekayasa yang di tempat lain menyumbang "
+        "puluhan poin persentase tidak mampu mengangkat model dari tingkat "
+        "tebakan acak. Perlindungan parsial yang sempat teramati pada WavLM Large "
+        "ternyata tidak berulang, sehingga tidak dapat dinyatakan sebagai sifat "
+        "umum paket tersebut.", "p"))
     E.append(P(
         "Implikasi praktisnya adalah bahwa pemilihan model sebaiknya tidak "
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "

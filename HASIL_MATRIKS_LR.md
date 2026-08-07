@@ -26,7 +26,7 @@ Seluruh angka diukur pada partisi resmi Fake-or-Real dengan ambang prior-matched
 |---|---|---|---|---|
 | Encoder dibekukan | 1 | 93.93 | 0.9903 | 6.07 |
 | Encoder dilatih, laju wajar per model | 1 | **98.16** | 0.9978 | 1.84 |
-| Encoder dilatih, laju 0,001 | | belum ada | | |
+| Encoder dilatih, laju 0,001 | 1 | 43.66 | 0.4837 | 55.97 |
 | Proposal apa adanya, laju 0,001 seragam | 1 | 50.46 | 0.5325 | 50.37 |
 
 ## Bacaan
