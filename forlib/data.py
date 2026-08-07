@@ -264,9 +264,15 @@ def apply_reverb(x: np.ndarray, rng: np.random.Generator, sr: int = SR) -> np.nd
 class AugmentConfig:
     def __init__(self, codec=0.5, noise=0.5, reverb=0.25, gain=0.3,
                  snr_range=(0.0, 30.0), enabled=True,
-                 rawboost=0.0, rawboost_algo=4, band_gain=0.0):
+                 rawboost=0.0, rawboost_algo=4, band_gain=0.0,
+                 bg_f_lo=3000.0, bg_n_bands=6, bg_db_range=(-12.0, 3.0)):
         # band_gain: netralkan pintasan level-HF tanpa merusak struktur halus HF
         self.band_gain = band_gain
+        # Parameter bentuk band-gain, dipisahkan supaya dapat dituning tanpa
+        # mengubah kode augmentasinya.
+        self.bg_f_lo = bg_f_lo
+        self.bg_n_bands = bg_n_bands
+        self.bg_db_range = bg_db_range
         self.codec = codec
         self.noise = noise
         self.reverb = reverb
@@ -297,7 +303,13 @@ def augment_waveform(x: np.ndarray, cfg: AugmentConfig,
     # band-gain lebih dulu: ia beroperasi pada spektrum sumber, sebelum
     # degradasi kanal menambahkan warnanya sendiri
     if getattr(cfg, "band_gain", 0.0) > 0 and rng.random() < cfg.band_gain:
-        x = band_gain_augment(x, rng)
+        # Parameter band-gain dapat ditimpa dari konfigurasi supaya dapat
+        # dituning. Nilai bawaannya sama dengan tanda tangan fungsinya.
+        x = band_gain_augment(
+            x, rng,
+            f_lo=getattr(cfg, "bg_f_lo", 3000.0),
+            n_bands=getattr(cfg, "bg_n_bands", 6),
+            db_range=getattr(cfg, "bg_db_range", (-12.0, 3.0)))
     # urutan meniru rantai degradasi nyata: ruang -> codec -> noise -> level
     if rng.random() < cfg.reverb:
         x = apply_reverb(x, rng)

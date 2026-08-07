@@ -132,6 +132,14 @@ def main():
     ap.add_argument("--patience", type=int, default=5)
     ap.add_argument("--unfreeze", action="store_true",
                     help="fine-tune encoder SSL (default: beku)")
+    ap.add_argument("--bg-f-lo", type=float, default=None,
+                    help="batas bawah pita band-gain dalam Hz (bawaan 3000)")
+    ap.add_argument("--bg-bands", type=int, default=None,
+                    help="jumlah pita band-gain (bawaan 6)")
+    ap.add_argument("--bg-db", type=float, default=None,
+                    help="besar redaman maksimum band-gain dalam dB, "
+                         "rentangnya menjadi minus nilai ini sampai +3 "
+                         "(bawaan 12)")
     ap.add_argument("--enc-lr", type=float, default=None,
                     help="timpa learning rate encoder saja, head tetap memakai "
                          "nilai bawaan per model; berguna untuk memisahkan "
@@ -158,6 +166,11 @@ def main():
            # memakai tag yang sama dan saling menimpa tanpa peringatan
            f"{'UF' if args.unfreeze else ''}"
            f"{('ENC' + str(args.enc_lr)) if args.enc_lr is not None else ''}"
+           # penanda parameter band-gain, tanpa ini tiap kombinasi tuning akan
+           # menimpa hasil kombinasi sebelumnya
+           f"{('F' + str(int(args.bg_f_lo))) if args.bg_f_lo is not None else ''}"
+           f"{('N' + str(args.bg_bands)) if args.bg_bands is not None else ''}"
+           f"{('D' + str(int(args.bg_db))) if args.bg_db is not None else ''}"
            f"_b{args.batch}e{args.epochs}_s{args.seed}")
     outdir = os.path.join(HERE, args.out, tag)
     os.makedirs(outdir, exist_ok=True)
@@ -172,6 +185,14 @@ def main():
     print(f"split={args.split}  train={len(tr_rows)}  val={len(va_rows)}  test={len(te_rows)}")
 
     aug = get_augment(args.augment)
+    # Parameter bentuk band-gain dapat ditimpa dari baris perintah supaya dapat
+    # dituning tanpa menambah preset baru untuk tiap kombinasi.
+    if args.bg_f_lo is not None:
+        aug.bg_f_lo = args.bg_f_lo
+    if args.bg_bands is not None:
+        aug.bg_n_bands = args.bg_bands
+    if args.bg_db is not None:
+        aug.bg_db_range = (-abs(args.bg_db), 3.0)
     ds_tr = FoRDataset(tr_rows, aug, args.normalize, seed=args.seed)
     # Validasi teraugmentasi: menyamakan distribusi validasi dengan distribusi
     # latih teraugmentasi, supaya EER validasi menjadi proksi yang lebih baik
