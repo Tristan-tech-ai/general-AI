@@ -1287,13 +1287,43 @@ def bangun():
             "dengan redaman tiga desibel, tervalidasi oleh bentuk kurva dua "
             "sisi, kecil kemungkinan ada pembaca yang mencurigainya.", "p"))
         E.append(P(
+            "Satu perbandingan lagi diperlukan untuk menutup persoalan ini, dan "
+            "perbandingan itu paling mudah terlewat. Seluruh pengujian di atas "
+            "membandingkan varian band-gain satu sama lain, sehingga tidak "
+            "satu pun di antaranya menguji augmentasi itu sendiri. Ketika "
+            "konfigurasi bawaan diuji terhadap konfigurasi yang sama tanpa "
+            "band-gain sama sekali, selisihnya hanya nol koma dua sembilan poin "
+            "persentase dengan nilai p terkoreksi satu koma nol. Pada arsitektur "
+            "ini dan pada sumbu ini, band-gain tidak menunjukkan manfaat yang "
+            "terdeteksi.", "p"))
+        E.append(P(
+            "Pernyataan itu perlu dibatasi dengan tepat agar tidak dibaca "
+            "melampaui yang ditunjukkannya. Klaim mengenai band-gain pada bagian "
+            "sebelumnya bukan mengenai akurasi pada Fake-or-Real, melainkan "
+            "mengenai recall terhadap sistem text-to-speech generasi terbaru dan "
+            "terhadap sistem lama yang tidak dikompresi, diukur pada Nes2Net-X. "
+            "Hasil sapuan ini tidak membantah klaim tersebut karena mengukur "
+            "sumbu yang berbeda pada arsitektur yang berbeda. Yang ditunjukkannya "
+            "adalah batas, yaitu bahwa manfaat band-gain tidak muncul pada "
+            "akurasi in-domain WavLM Large.", "p"))
+        E.append(P(
+            "Batas itu justru sejalan dengan argumen utama penelitian ini. "
+            "Augmentasi yang dirancang untuk memperbaiki generalisasi lintas "
+            "generator tidak seharusnya diharapkan menaikkan akurasi pada "
+            "dataset asalnya, dan bagian 3.5 menunjukkan bahwa kedua besaran itu "
+            "bahkan berkorelasi negatif. Menuntut band-gain menaikkan keduanya "
+            "sekaligus berarti mengabaikan temuan tersebut.", "p"))
+        E.append(P(
             "Kesimpulan yang dapat dipertanggungjawabkan karena itu jauh lebih "
-            "sederhana. Band-gain memberi manfaat dibandingkan tidak memakainya, "
-            "tetapi hasilnya tidak sensitif terhadap ketiga parameternya pada "
-            "rentang yang diuji, kecuali bahwa jumlah pita sebaiknya tidak "
-            "terlalu sedikit. Ketidaksensitifan itu sebenarnya sifat yang "
-            "menguntungkan bagi sebuah augmentasi, karena berarti penggunanya "
-            "tidak perlu menuning apa pun.", "p"))
+            "sederhana daripada yang dijanjikan tahap pertama. Pada akurasi "
+            "in-domain, baik band-gain maupun ketiga parameternya tidak "
+            "menunjukkan efek yang bertahan setelah ragam antar inisialisasi "
+            "diperhitungkan. Ketidaksensitifan terhadap parameter sendiri "
+            "merupakan sifat yang menguntungkan bagi sebuah augmentasi, karena "
+            "penggunanya tidak perlu menuning apa pun, namun sifat itu hanya "
+            "berguna bila augmentasinya memang bermanfaat pada sumbu yang "
+            "dituju, dan pengujian pada sumbu tersebut belum dilakukan untuk "
+            "arsitektur ini.", "p"))
 
     # ---------------- 5
     E.append(P("5. Keterbatasan", "h1"))
