@@ -165,13 +165,27 @@ for h in hasil:
 out("")
 
 out("## Bacaan\n")
-out("Perbandingan yang melibatkan konfigurasi proposal pada kedua model "
-    "swa-selia berukuran besar terpisah sangat jauh, yaitu puluhan poin "
-    "persentase, sehingga kesimpulannya tidak mungkin dibalik oleh ragam antar "
-    "inisialisasi. Sebaliknya, perbandingan antara membekukan dan melatih "
-    "encoder menghasilkan selisih yang berada pada orde yang sama dengan "
-    "simpangan bakunya sendiri. Untuk kelompok kedua ini, penelitian ini tidak "
-    "berhak menyatakan bahwa satu perlakuan lebih baik daripada yang lain.\n")
+out("Tabel ini memuat satu situasi yang mudah disalahbaca ke dua arah "
+    "sekaligus, dan karena itu perlu dijelaskan dengan hati-hati.\n")
+out("Dua perbandingan dengan selisih terbesar, yaitu 34,90 dan 45,34 poin "
+    "persentase, berhenti pada nilai p terkoreksi 0,0520. Angka itu tepat di "
+    "atas ambang 0,05 yang lazim dipakai. Menyimpulkan dari situ bahwa selisih "
+    "45 poin persentase tidak nyata jelas keliru. Penyebab nilai p tersebut "
+    "bukan efek yang kecil melainkan derajat bebas yang sangat sedikit. Dengan "
+    "tiga inisialisasi per sel, uji t Welch hanya memiliki sekitar dua derajat "
+    "bebas, sementara sel konfigurasi proposal juga memiliki simpangan baku yang "
+    "besar. Nilai p mentahnya 0,0087 dan 0,0090, dan koreksi Holm atas enam "
+    "perbandingan menaikkannya menjadi tepat di atas ambang.\n")
+out("Kesalahan ke arah sebaliknya juga perlu dihindari. Nilai p yang lolos "
+    "ambang tidak akan membuat selisih itu lebih nyata daripada sekarang, dan "
+    "besaran efek sudah lebih dari tujuh kali simpangan baku gabungannya. Yang "
+    "sebenarnya dibutuhkan bukan penafsiran yang lebih longgar melainkan "
+    "inisialisasi tambahan, dan itu dijadwalkan pada run_seeds4.ps1.\n")
+out("Sebaliknya, perbandingan antara membekukan dan melatih encoder "
+    "menghasilkan selisih yang berada pada orde yang sama dengan simpangan "
+    "bakunya sendiri. Untuk kelompok itu, penelitian ini tidak berhak "
+    "menyatakan bahwa satu perlakuan lebih baik daripada yang lain, dan "
+    "menambah inisialisasi belum tentu mengubahnya.\n")
 out("Konsekuensinya bagi keseluruhan penelitian cukup besar dan perlu "
     "dinyatakan terus terang. Beberapa kesimpulan yang sempat ditarik lebih "
     "awal, ketika tiap sel baru dijalankan sekali, ternyata tidak bertahan "
