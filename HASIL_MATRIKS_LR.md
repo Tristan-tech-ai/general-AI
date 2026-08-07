@@ -20,10 +20,21 @@ Seluruh angka diukur pada partisi resmi Fake-or-Real dengan ambang prior-matched
 | Encoder dilatih, laju 0,001 | 1 | 80.06 | 0.8963 | 19.94 |
 | Proposal apa adanya, laju 0,001 seragam | 1 | 56.99 | 0.6569 | 43.01 |
 
+## HuBERT Large, 300 juta parameter, swa-selia
+
+| Perlakuan encoder | n | Akurasi | AUC | EER |
+|---|---|---|---|---|
+| Encoder dibekukan | 1 | 93.93 | 0.9903 | 6.07 |
+| Encoder dilatih, laju wajar per model | 1 | **98.16** | 0.9978 | 1.84 |
+| Encoder dilatih, laju 0,001 | | belum ada | | |
+| Proposal apa adanya, laju 0,001 seragam | 1 | 50.46 | 0.5325 | 50.37 |
+
 ## Bacaan
 
 Pada AST, melatih encoder pada laju wajar lebih baik daripada membekukannya, dengan selisih +4.04 poin persentase.
 
 Pada WavLM Large, melatih encoder pada laju wajar lebih buruk daripada membekukannya, dengan selisih -2.48 poin persentase.
+
+Pada HuBERT Large, melatih encoder pada laju wajar lebih baik daripada membekukannya, dengan selisih +4.23 poin persentase.
 
 Arah pengaruhnya tidak sama antar arsitektur. Tidak ada satu perlakuan encoder yang benar untuk semuanya. Inilah sebabnya baik penyeragaman learning rate pada proposal maupun penyeragaman pembekuan encoder pada konfigurasi rekayasa sama-sama menghasilkan kerugian pada arsitektur yang tidak cocok dengan pilihan tersebut. Keputusan ini seharusnya ditetapkan per arsitektur dan dipilih menggunakan data validasi, bukan diseragamkan di muka.

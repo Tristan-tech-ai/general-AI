@@ -733,22 +733,35 @@ def bangun():
                            [7.0 * cm, 1.4 * cm, 3.2 * cm, 2.4 * cm, 2.2 * cm]))
             E.append(Spacer(1, 6))
         E.append(P(
-            "Arah pengaruhnya berlawanan. Pada AST, melatih encoder pada laju "
-            "wajar lebih baik daripada membekukannya sebesar 4,04 poin "
-            "persentase. Pada WavLM Large, melatih encoder pada laju wajar justru "
-            "lebih buruk daripada membekukannya sebesar 2,48 poin. Tidak ada satu "
-            "perlakuan yang benar untuk keduanya.", "p"))
+            "Dua pola yang berbeda perlu dipisahkan. Pola pertama konsisten pada "
+            "seluruh arsitektur yang diuji, yaitu bahwa besaran learning rate "
+            "harus disesuaikan dengan encodernya. Laju 0,001 yang ditetapkan "
+            "proposal menghancurkan kedua model swa-selia berukuran 300 juta "
+            "parameter sampai mendekati tebakan acak, yaitu 56,99 persen pada "
+            "WavLM Large dan 50,46 persen pada HuBERT Large, sementara laju yang "
+            "sama justru membantu AST yang berukuran 86 juta parameter. Pola ini "
+            "terlihat pada dua model yang tujuan dan korpus pra-pelatihannya "
+            "berbeda, sehingga cukup kuat untuk dilaporkan.", "p"))
         E.append(P(
-            "Penjelasan yang paling masuk akal berkaitan dengan jarak antara "
-            "tugas pra-pelatihan dan tugas akhir. Pra-pelatihan WavLM Large sudah "
-            "menyertakan denoising dan pemodelan ucapan yang tumpang tindih, "
-            "sehingga representasinya sudah cukup selaras dengan tugas ini dan "
-            "melatihnya kembali pada dataset yang kecil serta mengandung bias "
-            "kompresi justru merusaknya. AST dilatih secara terselia pada "
-            "AudioSet untuk klasifikasi peristiwa suara umum, yang jauh lebih "
-            "jauh dari deteksi sintesis, sehingga masih tersisa banyak yang dapat "
-            "diperbaiki lewat fine-tuning. Penjelasan ini disusun setelah melihat "
-            "data dan karena itu bersifat dugaan, bukan simpulan.", "p"))
+            "Pola kedua tidak konsisten, dan penulis semula keliru "
+            "menggeneralisasikannya. Bila learning rate sudah wajar, melatih "
+            "encoder lebih baik daripada membekukannya pada AST sebesar 4,04 poin "
+            "persentase dan pada HuBERT Large sebesar 4,23 poin, tetapi lebih "
+            "buruk pada WavLM Large sebesar 2,48 poin. Dugaan awal bahwa model "
+            "swa-selia berukuran besar sebaiknya dibekukan karena "
+            "representasinya sudah selaras dengan tugas ternyata tidak bertahan. "
+            "HuBERT Large berukuran sama dan sama-sama swa-selia, namun berperilaku "
+            "seperti AST dan bukan seperti WavLM. Yang tersisa dari dugaan itu "
+            "hanyalah pengamatan bahwa WavLM Large merupakan pengecualian, dan "
+            "penelitian ini tidak memiliki bukti yang cukup untuk menjelaskan "
+            "mengapa. Pra-pelatihan WavLM yang menyertakan denoising merupakan "
+            "kandidat penjelasan, namun itu tetap dugaan yang belum diuji.", "p"))
+        E.append(P(
+            "Perlu dicatat pula bahwa sel WavLM yang dilatih baru dijalankan "
+            "dengan satu inisialisasi acak, sedangkan sel WavLM yang dibekukan "
+            "memakai tiga. Selisih 2,48 poin itu memang beberapa kali lipat "
+            "simpangan bakunya, namun pengujian dengan lebih banyak inisialisasi "
+            "tetap diperlukan sebelum pengecualian ini dapat dinyatakan mantap.", "p"))
         E.append(P(
             "Temuan ini menempatkan kedua metodologi pada posisi yang setara. "
             "Proposal menyeragamkan learning rate 0,001 untuk seluruh arsitektur, "

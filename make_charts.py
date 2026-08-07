@@ -356,6 +356,72 @@ def chart_ablasi():
     save(fig, "11_tangga_ablasi.png")
 
 
+def chart_matriks_lr():
+    """Arah pengaruh perlakuan encoder berbeda antar arsitektur.
+
+    Tiga batang pertama tiap kelompok memakai paket rekayasa yang sama persis
+    dan hanya berbeda pada perlakuan encoder, sehingga tingginya dapat
+    dibandingkan langsung. Batang keempat adalah konfigurasi proposal apa
+    adanya, disertakan sebagai acuan.
+    """
+    import glob as _g
+    from forlib.metrics import full_metrics, prior_matched_threshold
+
+    PERLAKUAN = [
+        ("Encoder beku", "runs/{m}_official_full_b{b}e10_s*", "#1864AB"),
+        ("Dilatih, laju wajar", "runs/{m}_official_fullUF_b{b}e10_s*", "#2F9E44"),
+        ("Dilatih, laju 0,001", "runs/{m}_official_fullUFENC0.001_b{b}e10_s*",
+         "#E8590C"),
+        ("Proposal apa adanya", "runs/{m}_official_proposalULRPK_b{b}e20_s*",
+         "#868E96"),
+    ]
+    ARS = [("ast", 32, "AST\n86 M, terselia"),
+           ("wavlm", 16, "WavLM Large\n300 M, swa-selia"),
+           ("hubert", 32, "HuBERT Large\n300 M, swa-selia")]
+
+    data = []
+    for m, b, lbl in ARS:
+        vals = []
+        for _, pat, _ in PERLAKUAN:
+            acc = []
+            for d in sorted(_g.glob(os.path.join(HERE, pat.format(m=m, b=b)))):
+                f = os.path.join(d, "test_scores.npy")
+                if not os.path.exists(f):
+                    continue
+                y, p, _x = np.load(f)
+                acc.append(full_metrics(y.astype(int), p,
+                                        prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+            vals.append(np.mean(acc) if acc else None)
+        if any(v is not None for v in vals):
+            data.append((lbl, vals))
+    if not data:
+        return
+
+    fig, ax = plt.subplots(figsize=(12, 5.8))
+    n, w = len(PERLAKUAN), 0.2
+    for j, (nm, _, cl) in enumerate(PERLAKUAN):
+        xs = [i + (j - (n - 1) / 2) * w for i in range(len(data))]
+        ys = [(d[1][j] if d[1][j] is not None else 0) for d in data]
+        ax.bar(xs, ys, width=w * 0.92, color=cl, label=nm, zorder=3)
+        for x, y in zip(xs, ys):
+            if y:
+                ax.text(x, y + 1.0, f"{y:.1f}", ha="center", fontsize=8.5,
+                        weight="bold", color=cl)
+    ax.axhline(50, color="#E03131", lw=1.1, ls=":", zorder=2)
+    ax.text(-0.48, 51.2, "tebakan acak", fontsize=8.5, color="#E03131",
+            ha="left")
+    ax.set_xticks(range(len(data)))
+    ax.set_xticklabels([d[0] for d in data], fontsize=10)
+    ax.set_ylabel("Akurasi pada partisi resmi (persen)")
+    ax.set_ylim(40, 108)
+    ax.grid(axis="y", alpha=0.25, zorder=0)
+    ax.legend(fontsize=9, ncol=2, loc="lower left", framealpha=0.95)
+    ax.set_title("Perlakuan encoder terbaik berbeda menurut arsitektur\n"
+                 "laju seragam 0,001 menghancurkan kedua model swa-selia besar",
+                 fontsize=12.5, weight="bold")
+    save(fig, "12_matriks_encoder.png")
+
+
 def main():
     print("membuat grafik ...")
     rec = load_for()
@@ -366,6 +432,7 @@ def main():
     chart_datasets(rec)
     chart_2x2()
     chart_ablasi()
+    chart_matriks_lr()
     print(f"\nselesai -> {os.path.relpath(OUT, HERE)}/")
 
 
