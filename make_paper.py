@@ -1584,7 +1584,7 @@ def bangun():
         "gangguan noise sebagian besar merupakan kegagalan kalibrasi ambang, bukan "
         "kegagalan pengenalan, sehingga dapat dipulihkan tanpa mengubah model. "
         "Sistem text-to-speech komersial terbaru masih dapat dideteksi pada tingkat "
-        "97 sampai 99 persen dengan tingkat alarm palsu 5 persen, tetapi hanya oleh "
+        "91 sampai 99 persen dengan tingkat alarm palsu 5 persen, tetapi hanya oleh "
         "arsitektur dan strategi augmentasi tertentu, dan bukan oleh model yang "
         "menempati peringkat teratas pada dataset.", "p"))
     E.append(P(
@@ -1684,7 +1684,12 @@ def bangun():
           "yang justru turun 6,80 poin persentase."],
          ["Early stopping menyumbang perbaikan yang terbukti",
           "Vonisnya berayun menurut jumlah inisialisasi, yaitu 0,048 lalu 0,239 "
-          "lalu 0,072, sehingga daya ujinya tidak cukup untuk memutuskan."]],
+          "lalu 0,072, sehingga daya ujinya tidak cukup untuk memutuskan."],
+         ["Sistem text-to-speech terbaru terdeteksi pada 97 sampai 99 persen",
+          "Keempat angka yang dikutip merupakan nilai dari inisialisasi acak "
+          "yang sama, yaitu yang terbaik untuk keempat sistem. Rerata atas tiga "
+          "inisialisasi menghasilkan rentang 91 sampai 99 persen, dengan "
+          "simpangan baku mencapai 10,1 poin pada salah satu sistem."]],
         [7.4 * cm, 8.6 * cm]))
     E.append(Spacer(1, 6))
     E.append(P(

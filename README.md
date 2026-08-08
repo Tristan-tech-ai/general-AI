@@ -52,8 +52,20 @@ spesifisitas **0,00%** karena seluruh 544 berkas asli ditandai palsu, dan AUC
 secara struktural tidak dapat menangkap mode kegagalan ini.
 
 **6. Suara AI 2026 masih terdeteksi, dengan arsitektur yang tepat.**
-Pada spesifisitas 95%: ElevenLabs-v3 97,7% · Chatterbox 99,3% ·
-OpenAI TTS-1 HD 99,7% · Higgs-Audio-V2 97,3% (Nes2Net-X + augmentasi penuh).
+Pada spesifisitas 95%, Nes2Net-X + augmentasi penuh, rerata 3 seed:
+
+| sistem TTS | per seed | rerata | simpangan |
+|---|---|---|---|
+| OpenAI TTS-1 HD | 99,7 / 99,7 / 96,3 | **98,6%** | ±1,9 |
+| Chatterbox | 99,3 / 98,3 / 88,0 | **95,2%** | ±6,3 |
+| ElevenLabs-v3 | 97,7 / 96,0 / 91,7 | **95,1%** | ±3,1 |
+| Higgs-Audio-V2 | 97,3 / 96,3 / 79,3 | **91,0%** | ±10,1 |
+
+> **Angka versi awal dikoreksi.** Versi sebelumnya melaporkan 97,7 / 99,3 /
+> 99,7 / 97,3, yang seluruhnya merupakan nilai **seed 42** yaitu seed terbaik
+> untuk keempat sistem. Rentang yang benar adalah **91 sampai 99 persen**,
+> bukan 97 sampai 99 persen, dan Higgs-Audio-V2 memiliki simpangan ±10,1 poin
+> sehingga satu inisialisasi saja tidak cukup untuk mencirikannya.
 
 **7. Usulan: augmentasi band-gain.**
 Dua isyarat berbeda hidup di pita frekuensi tinggi yang sama, yaitu *level* energi
