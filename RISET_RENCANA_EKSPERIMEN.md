@@ -1,4 +1,24 @@
 # RENCANA EKSPERIMEN E0–E9, Ketahanan Noise & Akurasi Maksimum pada FoR-2sec
+
+> **CATATAN. Dokumen ini memuat angka yang kemudian ditarik.**
+>
+> Berkas ini adalah catatan riset dari tahap sebelumnya dan sengaja tidak
+> disunting, supaya jalannya penelitian tetap dapat ditelusuri. Beberapa angka
+> di dalamnya sudah tidak berlaku:
+>
+> - Selisih **99,94 lawan 50,00 persen** antara kedua protokol. Kedua run
+>   pembandingnya ternyata berbeda lama pelatihan (enam epoch lawan satu epoch),
+>   sehingga bukan perbandingan terkontrol. Pada konfigurasi seragam, hanya
+>   **6,92 poin** dari selisih itu berasal dari protokol, dan **42,52 poin**
+>   berasal dari ambang keputusan. Lihat [HASIL_TEMUAN1.md](HASIL_TEMUAN1.md).
+> - Recall HuBERT **2,3 persen** pada TTS 2019 non-MP3 adalah inisialisasi
+>   terburuk dari tiga. Reratanya **29,2 persen** dengan simpangan 29,0.
+> - Korelasi **r = -0,542** dan **r = -0,980** sudah ditarik seluruhnya.
+>
+> Status terkini seluruh temuan ada pada tabel verifikasi di
+> [README.md](README.md), dan daftar lengkap klaim yang ditarik ada pada
+> Lampiran A di PAPER.pdf.
+
 ### Disusun terhadap kondisi nyata repo `C:\Users\Tristan\Downloads\general-ai` (24 run tersimpan, dataset lokal, GPU terverifikasi)
 
 ---

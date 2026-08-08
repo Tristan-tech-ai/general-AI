@@ -1758,6 +1758,26 @@ def bangun():
         "ternyata tidak berulang, sehingga tidak dapat dinyatakan sebagai sifat "
         "umum paket tersebut.", "p"))
     E.append(P(
+        "Satu hal perlu dinyatakan terus terang mengenai hubungan antara hasil "
+        "ini dan pertanyaan yang semula diajukan. Penelitian ini berjudul "
+        "perbandingan performa antar arsitektur deep learning, dan seluruh "
+        "rancangan awalnya disusun untuk menjawab arsitektur mana yang terbaik. "
+        "Kedua temuan yang akhirnya bertahan tidak menyangkut pilihan arsitektur "
+        "sama sekali. Yang pertama menyangkut penetapan ambang keputusan, yang "
+        "berlaku sama pada seluruh arsitektur yang diuji. Yang kedua menyangkut "
+        "kesesuaian learning rate dengan ukuran encoder, yang merupakan keputusan "
+        "pelatihan dan bukan sifat arsitekturnya.", "p"))
+    E.append(P(
+        "Perbandingan antar arsitektur itu sendiri, setelah diuji terhadap ragam "
+        "antar inisialisasi acak, tidak menghasilkan pemeringkatan yang dapat "
+        "dipertahankan. Pada split acak kelima arsitektur berkerumun dalam "
+        "rentang sepertiga poin persentase. Pada partisi resmi selisihnya besar, "
+        "tetapi sebagian besar selisih itu ditentukan oleh kesesuaian learning "
+        "rate dan bukan oleh kemampuan arsitekturnya. Menjawab pertanyaan awal "
+        "secara jujur karena itu berarti menyatakan bahwa pertanyaan tersebut "
+        "kurang tepat sasaran pada dataset ini, bukan menyodorkan satu arsitektur "
+        "sebagai pemenang.", "p"))
+    E.append(P(
         "Implikasi praktisnya adalah bahwa pemilihan model sebaiknya tidak "
         "didasarkan pada akurasi dataset tunggal, dan bahwa pelaporan hasil "
         "sebaiknya menyertakan spesifisitas pada korpus asing serta simpangan baku "

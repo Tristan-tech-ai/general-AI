@@ -1,5 +1,25 @@
 # Panen Temuan Riset Multi-Agent
 
+> **CATATAN. Dokumen ini memuat angka yang kemudian ditarik.**
+>
+> Berkas ini adalah catatan riset dari tahap sebelumnya dan sengaja tidak
+> disunting, supaya jalannya penelitian tetap dapat ditelusuri. Beberapa angka
+> di dalamnya sudah tidak berlaku:
+>
+> - Selisih **99,94 lawan 50,00 persen** antara kedua protokol. Kedua run
+>   pembandingnya ternyata berbeda lama pelatihan (enam epoch lawan satu epoch),
+>   sehingga bukan perbandingan terkontrol. Pada konfigurasi seragam, hanya
+>   **6,92 poin** dari selisih itu berasal dari protokol, dan **42,52 poin**
+>   berasal dari ambang keputusan. Lihat [HASIL_TEMUAN1.md](HASIL_TEMUAN1.md).
+> - Recall HuBERT **2,3 persen** pada TTS 2019 non-MP3 adalah inisialisasi
+>   terburuk dari tiga. Reratanya **29,2 persen** dengan simpangan 29,0.
+> - Korelasi **r = -0,542** dan **r = -0,980** sudah ditarik seluruhnya.
+>
+> Status terkini seluruh temuan ada pada tabel verifikasi di
+> [README.md](README.md), dan daftar lengkap klaim yang ditarik ada pada
+> Lampiran A di PAPER.pdf.
+
+
 Diekstrak dari `journal.jsonl` run `wf_b19d7541-a60`: **1599 temuan unik** dari **169 dimensi riset**, 46 verdict refutasi.
 
 > Tahap sintesis workflow gagal karena batas sesi, jadi dokumen ini adalah panen mentah yang terurut, bukan sintesis. Label `novelty` dan `expected_gain` adalah **klaim agent**, belum diverifikasi kecuali ada verdict yang menyertainya.
