@@ -72,14 +72,18 @@ def load_for():
         f = os.path.join(d, "test_scores.npy")
         if not os.path.exists(f):
             continue
+        # Konfigurasi ikut menjadi bagian kunci. Tanpa ini, run dengan jumlah
+        # epoch atau batch yang berbeda tergabung dalam satu titik grafik dan
+        # sebarannya tergambar sebagai ragam antar inisialisasi acak.
         m = re.match(r"^(.+?)_(official|random|clean_val|wavval)_([a-z]+?)(AV)?"
-                     r"(?:_b\d+e\d+)?_s(\d+)$", os.path.basename(d))
+                     r"(_b\d+e\d+)?_s(\d+)$", os.path.basename(d))
         if not m:
             continue
         y, p, _ = np.load(f)
         y = y.astype(int)
         met = full_metrics(y, p, prior_matched_threshold(p, 0.5))
-        rec[(m.group(1), m.group(2), m.group(3))].append(met)
+        cfg = (m.group(5) or "_lama").lstrip("_")
+        rec[(m.group(1), m.group(2), m.group(3) + "@" + cfg)].append(met)
     return rec
 
 
@@ -121,29 +125,67 @@ def chart_for(rec):
 
 
 def chart_split(rec):
-    """Grafik 2: efek protokol split — temuan metodologis utama."""
-    models = sorted({k[0] for k in rec if k[1] == "random"})
-    if not models:
+    """Grafik 2: efek protokol split, dipisahkan dari efek ambang keputusan.
+
+    Versi sebelumnya menggambarkan selisih pada ambang tetap 0,5 dan memberinya
+    judul yang menyatakan bahwa protokol menentukan hasil. Selisih itu ternyata
+    sebagian besar berasal dari ambang keputusan, bukan dari protokol, sehingga
+    grafik ini kini menampilkan keduanya berdampingan.
+    """
+    import glob as _g
+    from forlib.metrics import full_metrics, prior_matched_threshold
+
+    def ambil(split):
+        a05, apm = [], []
+        for d in sorted(_g.glob(os.path.join(
+                HERE, "runs", f"cnn_asp_{split}_none_b32e10_s*"))):
+            f = os.path.join(d, "test_scores.npy")
+            if not os.path.exists(f):
+                continue
+            y, p, _ = np.load(f)
+            y = y.astype(int)
+            a05.append(full_metrics(y, p, 0.5)["accuracy"] * 100)
+            apm.append(full_metrics(y, p,
+                                    prior_matched_threshold(p, 0.5))["accuracy"] * 100)
+        return np.array(a05), np.array(apm)
+
+    r05, rpm = ambil("random")
+    o05, opm = ambil("official")
+    if len(r05) == 0 or len(o05) == 0:
         return
-    fig, ax = plt.subplots(figsize=(7.5, 4.6))
-    for i, m in enumerate(models):
-        r = np.mean([x["accuracy"] for x in rec.get((m, "random", "none"), [])] or [np.nan]) * 100
-        o = np.mean([x["accuracy"] for x in rec.get((m, "official", "none"), [])] or [np.nan]) * 100
-        ax.plot([0, 1], [r, o], "-o", color=col(m), lw=2.5, ms=9, label=lab(m))
-        ax.annotate(f"{r:.1f}%", (0, r), textcoords="offset points",
-                    xytext=(-8, 6), ha="right", fontsize=10, color=col(m))
-        ax.annotate(f"{o:.1f}%", (1, o), textcoords="offset points",
-                    xytext=(8, 6), ha="left", fontsize=10, color=col(m))
-        ax.annotate(f"−{r-o:.1f} pp", (0.5, (r + o) / 2), ha="center",
-                    fontsize=11, color="#E03131", fontweight="bold")
+
+    fig, ax = plt.subplots(figsize=(8.5, 5.0))
+    sd = lambda z: z.std(ddof=1) if len(z) > 1 else 0.0
+    for ys, nm, cl, ls in [((r05, o05), "Ambang tetap 0,5", "#E03131", "--"),
+                           ((rpm, opm), "Ambang prior-matched", "#1864AB", "-")]:
+        a, b = ys
+        ax.errorbar([0, 1], [a.mean(), b.mean()], yerr=[sd(a), sd(b)],
+                    fmt="-o", ls=ls, color=cl, lw=2.5, ms=9, capsize=4,
+                    ecolor="#343A40", label=nm, zorder=3)
+        # Kedua garis berangkat dari titik yang hampir sama pada split acak,
+        # sehingga labelnya digeser vertikal agar tidak saling menimpa.
+        ax.annotate(f"{a.mean():.1f}", (0, a.mean()),
+                    xytext=(-10, 7 if ls == "--" else -7),
+                    textcoords="offset points", ha="right", va="center",
+                    fontsize=10, color=cl, weight="bold")
+        ax.annotate(f"{b.mean():.1f}", (1, b.mean()), xytext=(10, 0),
+                    textcoords="offset points", ha="left", va="center",
+                    fontsize=10, color=cl, weight="bold")
+        ax.annotate(f"turun {a.mean() - b.mean():.1f} pp",
+                    (0.5, (a.mean() + b.mean()) / 2), ha="center",
+                    xytext=(0, 8), textcoords="offset points",
+                    fontsize=10, color=cl, style="italic")
     ax.set_xticks([0, 1])
     ax.set_xticklabels(["Split acak 60/20/20\n(rencana proposal)",
                         "Partisi resmi FoR\n(lintas-domain)"])
-    ax.set_xlim(-0.35, 1.35)
-    ax.set_ylabel("Akurasi test (%)")
-    ax.set_title("Protokol split menentukan hasil, bukan model\n"
-                 "arsitektur, data, dan hyperparameter identik",
-                 loc="left", fontsize=11)
+    ax.set_xlim(-0.4, 1.4)
+    ax.set_ylabel("Akurasi test (persen)")
+    ax.grid(axis="y", alpha=0.25, zorder=0)
+    ax.legend(fontsize=9, loc="lower left", framealpha=0.95)
+    ax.set_title("Sebagian besar selisih berasal dari ambang, bukan protokol\n"
+                 "CNN + ASP tanpa augmentasi, konfigurasi seragam, tiga "
+                 "inisialisasi acak",
+                 loc="left", fontsize=11, weight="bold")
     save(fig, "02_efek_split.png")
 
 
