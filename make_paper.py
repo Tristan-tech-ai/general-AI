@@ -1384,6 +1384,57 @@ def bangun():
             "nol koma nol enam, dan kerugian tiga pita menyusut dari satu koma "
             "tiga dua menjadi nol koma tujuh nol. Setelah koreksi untuk sebelas "
             "perbandingan, tidak satu pun berada di bawah ambang.", "p"))
+        pra = _akurasi_seed("runs/wavlm_official_fullbgD3_b16e10_s*")
+        nol_ = _akurasi_seed("runs/wavlm_official_full_b16e10_s*")
+        if len(pra) >= 3 and len(nol_) >= 3:
+            pp = _welch_p(pra, nol_)
+            E.append(P("4.3 Sebuah pengujian pra-registrasi yang gagal", "h2"))
+            E.append(P(
+                "Satu titik dalam sapuan menyisakan sinyal, yaitu redaman tiga "
+                "desibel, yang mengungguli konfigurasi tanpa band-gain sebesar "
+                "nol koma sembilan poin persentase dengan nilai p mentah nol "
+                "koma nol tiga tujuh. Nilai itu berada di bawah ambang sebelum "
+                "koreksi tetapi menjadi nol koma empat nol delapan setelah "
+                "dikoreksi untuk sebelas perbandingan. Titik semacam itu tidak "
+                "dapat diklaim dari sapuannya sendiri, karena memilih satu titik "
+                "terbaik dari sebelas setelah melihat hasilnya merupakan bentuk "
+                "pemilihan yang justru dikritik penelitian ini.", "p"))
+            E.append(P(
+                "Cara yang sah untuk menindaklanjutinya adalah pengujian "
+                "terpisah dengan hipotesis tunggal yang ditetapkan sebelum "
+                "datanya ada. Hipotesis tersebut dirumuskan sebagai berikut, "
+                "yaitu bahwa redaman tiga desibel mengungguli konfigurasi tanpa "
+                "band-gain, lalu dituliskan ke dalam skrip eksekusi dan "
+                "disimpan ke riwayat versi sebelum satu pun proses pelatihan "
+                "dimulai. Karena hipotesisnya tunggal, pengujiannya tidak "
+                "memerlukan koreksi banding ganda.", "p"))
+            E.append(tabel(
+                ["Konfigurasi", "n", "Akurasi", "Selisih", "p dua sisi"],
+                [["Band-gain, redaman 3 dB", str(len(pra)),
+                  f"{pra.mean():.2f} ({pra.std(ddof=1):.2f})", "", ""],
+                 ["Tanpa band-gain", str(len(nol_)),
+                  f"{nol_.mean():.2f} ({nol_.std(ddof=1):.2f})",
+                  f"{pra.mean() - nol_.mean():+.2f}",
+                  "n/a" if pp is None else f"{pp:.4f}"]],
+                [5.4 * cm, 1.4 * cm, 4.0 * cm, 2.6 * cm, 2.6 * cm]))
+            E.append(Spacer(1, 6))
+            E.append(P(
+                "Hipotesis tersebut tidak didukung, dan arah selisihnya bahkan "
+                "berlawanan dengan yang diperkirakan. Sinyal yang tampak pada "
+                "sapuan berasal dari tiga inisialisasi yang kebetulan "
+                "menguntungkan, dan inisialisasi keempat sebesar 94,94 persen "
+                "cukup untuk membalik keseluruhannya.", "p"))
+            E.append(P(
+                "Hasil negatif ini dilaporkan dengan lengkap justru karena "
+                "sifatnya. Nilai sebuah pengujian pra-registrasi terletak pada "
+                "ketidakmungkinan penulisnya menyesuaikan rumusan setelah "
+                "melihat hasil, dan nilai itu hanya nyata bila hasil yang tidak "
+                "menyenangkan juga dilaporkan. Selama penelitian ini, delapan "
+                "pola yang tampak meyakinkan runtuh setelah data ditambahkan. "
+                "Perbedaan antara kedelapan kejadian itu dan kejadian ini adalah "
+                "bahwa kali ini tebakannya dicatat lebih dahulu, sehingga "
+                "kegagalannya dapat dipastikan alih-alih ditafsirkan ulang.", "p"))
+
         E.append(P(
             "Satu titik menyisakan sinyal yang layak dicatat tanpa diklaim. "
             "Redaman tiga desibel mengungguli konfigurasi tanpa band-gain "
