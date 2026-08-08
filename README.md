@@ -130,12 +130,19 @@ membedakan model yang bekerja dari model yang sebagian besar kapasitasnya mati.
 
 **9. Learning rate harus menyesuaikan encoder, dan kekeliruannya tidak dapat
 ditambal.** Proposal menetapkan satu learning rate 0,001 untuk seluruh
-arsitektur. Pada partisi resmi, dengan tiga inisialisasi acak per sel, laju itu
-memberi **93,57%** (±1,75) pada AST (86 juta parameter, pra-latih terselia)
-tetapi menjatuhkan WavLM Large ke **63,73%** (±5,86) dan HuBERT Large ke
-**52,14%** (±8,08), yaitu mendekati tebakan koin. Pada HuBERT, seluruh paket
-perbaikan lain tidak mampu mengangkatnya dari tingkat tebakan ketika laju itu
-dipertahankan.
+arsitektur. Pada partisi resmi, laju itu memberi **93,57%** (±1,75, n=3) pada
+AST (86 juta parameter, pra-latih terselia) tetapi menjatuhkan kedua model
+300 juta parameter ke sekitar tebakan koin:
+
+| Arsitektur | Laju 0,001 seragam | Laju per model | Selisih | p Holm |
+|---|---|---|---|---|
+| WavLM Large | 63,29% (±4,19) n=5 | **98,36%** (±0,63) n=5 | **+35,07** | **0,0002** |
+| HuBERT Large | 51,64% (±6,47) n=5 | **96,19%** (±2,37) n=5 | **+44,56** | **0,0002** |
+
+Pada HuBERT, seluruh paket perbaikan lain tidak mampu mengangkatnya dari tingkat
+tebakan ketika laju itu dipertahankan: konfigurasi rekayasa dengan laju 0,001
+justru turun ke **43,66%** dengan AUC **0,4837**, yaitu di bawah tebakan acak.
+Ini satu-satunya temuan kuantitatif yang lolos uji dengan selisih berpuluh poin.
 
 **10. Sebagian besar selisih lain larut dalam ragam antar inisialisasi.**
 Setiap sel dijalankan dengan tiga inisialisasi acak, lalu tiap perbandingan diuji
@@ -172,7 +179,7 @@ dirangkum di sini supaya pembaca tidak perlu mempercayai ringkasan.
 | # | Temuan | Dasar | Status |
 |---|---|---|---|
 | 1 | Protokol split menentukan hasil | n=3 konfigurasi seragam | **ditarik sebagian**, hanya 6,92 dari 49,94 poin berasal dari protokol dan itu pun p = 0,0822; sebab utamanya ambang (42,52 poin), sehingga temuan ini menyatu dengan nomor 4 |
-| 2 | Kebocoran provenance codec MP3 | hitungan berkas langsung | **lolos**, 6326/6978 latih = 90,7% dan 0/544 uji = 0,0%, tanpa ragam |
+| 2 | Kebocoran provenance codec MP3 | hitungan berkas langsung ([audit_codec_report.md](audit_codec_report.md)) | **lolos**, 6326/6978 latih = 90,7% dan 0/544 uji = 0,0%, tanpa ragam |
 | 3 | Akurasi in-domain vs TTS modern | n=10 konfigurasi | **ditarik**, r = −0,048, p = 0,895 |
 | 4 | Kegagalan noise adalah kegagalan kalibrasi | n=3, uji berpasangan | **lolos**, p mentah 0,0232 dan 0,0084; p Holm 0,325 dan 0,134 |
 | 5 | SOTA publik runtuh di luar domain | evaluasi zero-shot | **lolos**, tanpa pelatihan dan tanpa augmentasi acak sehingga deterministik |
