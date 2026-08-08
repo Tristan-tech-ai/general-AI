@@ -844,16 +844,44 @@ def bangun():
             "daripada titik tolaknya meskipun mengandung dua langkah yang "
             "masing-masing nyata.", "p"))
         E.append(P(
-            "Bagian ini sempat dilaporkan secara keliru dua kali selama "
-            "penelitian, dan keduanya dicatat di sini. Versi pertama menyajikan "
-            "selisih dari satu inisialisasi sebagai pengukuran sumbangan tiap "
-            "perbaikan, padahal ragam antar inisialisasi pada AST mencapai "
-            "beberapa poin persentase. Versi kedua, setelah dua inisialisasi "
-            "tersedia, menyatakan bahwa tidak satu pun langkah bertahan setelah "
-            "koreksi. Inisialisasi ketiga menunjukkan bahwa pernyataan itu juga "
-            "terlalu jauh, karena dua langkah terbesar ternyata bertahan. Kedua "
-            "kekeliruan itu berasal dari sumber yang sama, yaitu menarik "
-            "kesimpulan sebelum sebarannya diketahui.", "p"))
+            "Bagian ini sempat dilaporkan secara keliru beberapa kali selama "
+            "penelitian, dan riwayatnya dicatat di sini karena riwayat itu "
+            "sendiri merupakan temuan. Setiap kali satu inisialisasi acak "
+            "ditambahkan, vonis pengujian berubah. Tabel berikut menampilkan "
+            "nilai p terkoreksi untuk kedua langkah dengan selisih terbesar, "
+            "sebagai fungsi dari jumlah inisialisasi yang tersedia saat itu.", "p"))
+        E.append(tabel(
+            ["Langkah", "n sama dengan 3", "n sama dengan 4", "n sama dengan 5"],
+            [["L3, encoder dibekukan", "0,018 melampaui ragam",
+              "0,100 belum terbukti", "0,022 melampaui ragam"],
+             ["L4, early stopping", "0,048 melampaui ragam",
+              "0,239 belum terbukti", "0,072 di garis batas"]],
+            [4.6 * cm, 4.0 * cm, 4.0 * cm, 4.0 * cm]))
+        E.append(Spacer(1, 6))
+        E.append(P(
+            "Kedua barisnya berayun, dan ayunan itu bukan gejala konvergensi. "
+            "Bila kesimpulan berganti pada setiap penambahan satu pengamatan, "
+            "pernyataan yang dapat dipertanggungjawabkan bukanlah bahwa efeknya "
+            "ada maupun bahwa efeknya tidak ada, melainkan bahwa penelitian ini "
+            "tidak memiliki daya uji yang cukup untuk memutuskan. Pada AST, "
+            "simpangan baku antar inisialisasi berkisar lima sampai enam poin "
+            "persentase, dan lima inisialisasi masih terlalu sedikit untuk "
+            "memisahkan selisih pada orde tersebut.", "p"))
+        E.append(P(
+            "Perlu disadari bahwa ketiga vonis itu akan terbaca sama "
+            "meyakinkannya bila dilaporkan sendirian. Sebuah naskah yang "
+            "kebetulan berhenti pada tiga inisialisasi akan melaporkan bahwa "
+            "kedua langkah terbukti. Naskah yang berhenti pada empat akan "
+            "melaporkan bahwa tidak satu pun terbukti. Naskah yang berhenti pada "
+            "lima akan melaporkan bahwa satu terbukti dan satu di garis batas. "
+            "Ketiganya berasal dari eksperimen yang sama dan tidak ada yang "
+            "keliru dalam pelaksanaannya. Yang membedakan hanyalah kapan "
+            "penulisnya berhenti mengumpulkan data.", "p"))
+        E.append(P(
+            "Karena alasan itu, yang dilaporkan di sini adalah seluruh urutannya "
+            "dan bukan salah satu titiknya. Pembaca yang hanya menerima angka "
+            "terakhir memperoleh gambaran yang lebih meyakinkan daripada yang "
+            "ditopang datanya.", "p"))
         E.append(P(
             "Perlu dicatat bahwa versi tangga ini berbeda jauh dari versi yang "
             "sempat disusun lebih awal dalam penelitian. Pada versi awal, titik "
