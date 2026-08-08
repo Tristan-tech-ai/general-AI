@@ -1,4 +1,4 @@
-# Analisis Error Tersisa — Ensemble HuBERT Terbaik
+# Analisis Error Tersisa, Ensemble HuBERT Terbaik
 
 Ensemble 3 run HuBERT Large (augmentasi per-epoch), split resmi.
 Akurasi **99.63%**, EER 0.37%, **4 berkas salah dari 1088**.

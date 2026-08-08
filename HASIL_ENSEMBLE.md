@@ -95,7 +95,7 @@ Seluruh run split resmi + augmentasi codec, ambang prior-matched, test set 1088 
 | cnn_asp + cnnlstm + hubert + wav2vec2 + wavlm | **98.16%** | 1.84% | 0.9972 | 20/1088 |
 | ast + cnn_asp + cnnlstm + hubert + wav2vec2 + wavlm | **98.53%** | 1.47% | 0.9982 | 16/1088 |
 
-**Seluruh 21 run digabung:** 98.53%  EER 1.29%  AUC 0.9978  salah 16/1088
+**Seluruh 21 run digabung:** 98.53% EER 1.29% AUC 0.9978 salah 16/1088
 
 ## 4. Terbaik
 
@@ -112,4 +112,4 @@ Seluruh run split resmi + augmentasi codec, ambang prior-matched, test set 1088 
 
 Skor `real` yang salah: [0.0726, 0.0655]
 Skor `fake` yang salah: [0.0502, 0.0305]
-**Terbalik urutannya: YA — tidak ada ambang yang bisa memperbaikinya**
+**Terbalik urutannya: YA, tidak ada ambang yang bisa memperbaikinya**

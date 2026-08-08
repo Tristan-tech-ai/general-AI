@@ -1,6 +1,6 @@
 # Probe: Apakah FoR-2sec Memisahkan Codec, Bukan Deepfake?
 
-## P1 — Provenance nama berkas
+## P1, Provenance nama berkas
 
 | kelas | total | mengandung `.mp3` | persen |
 |---|---|---|---|
@@ -9,7 +9,7 @@
 
 AUC dari fitur tunggal `'.mp3' ada di nama berkas`: **0.9248**
 
-## P2/P3 — Cutoff spektral (batas atas pita frekuensi)
+## P2/P3, Cutoff spektral (batas atas pita frekuensi)
 
 | kelas | cutoff −60 dB (Hz) | cutoff −40 dB (Hz) |
 |---|---|---|
@@ -20,16 +20,16 @@ AUC `cutoff60` sebagai fitur tunggal: **0.2845**
 
 AUC `cutoff40` sebagai fitur tunggal: **0.3564**
 
-## P4 — Klasifikasi HANYA dari profil 32-bin energi spektral
+## P4, Klasifikasi HANYA dari profil 32-bin energi spektral
 
-Tidak ada informasi fonetik, tidak ada fase, tidak ada temporal — hanya *bentuk* spektrum rata-rata.
+Tidak ada informasi fonetik, tidak ada fase, tidak ada temporal, hanya *bentuk* spektrum rata-rata.
 
 | model | akurasi test |
 |---|---|
 | LogReg (32 bin spektral) | **55.51%** |
 | RandomForest (32 bin spektral) | **69.39%** |
 
-## P5 — Setelah pintasan dinetralkan (buang seluruh pita > 4 kHz)
+## P5, Setelah pintasan dinetralkan (buang seluruh pita > 4 kHz)
 
 | model | akurasi test (hanya 0–4 kHz) | Δ vs pita penuh |
 |---|---|---|

@@ -21,7 +21,7 @@
 
 Selama pelatihan, 90,7% sampel fake adalah turunan MP3 dengan energi pita
 tinggi yang tertekan. Model belajar aturan **"HF rendah ⇒ fake"**.
-Pada pengujian, TIDAK ADA fake yang berasal dari MP3 — aturan itu menjadi
+Pada pengujian, TIDAK ADA fake yang berasal dari MP3, aturan itu menjadi
 tidak berlaku, bahkan menyesatkan.
 
 ## 3. Uji intervensi: apakah normalisasi pita menyembuhkan?

@@ -1,6 +1,6 @@
 # Dua Probe Novelty
 
-## Probe A — Inversi polaritas lintas korpus
+## Probe A, Inversi polaritas lintas korpus
 
 AUC < 0,5 berarti model memberi skor 'palsu' lebih tinggi kepada audio ASLI. Ini bukan sekadar performa buruk; ini pembalikan arah keputusan.
 
@@ -13,9 +13,9 @@ Yang terbalik (AUC < 0,5): **3**
 | ?[none] | for-rerec | **0.3137** | 0.6863 |
 | ?[codec] | for-rerec | **0.4997** | 0.5003 |
 
-Inversi terjadi HANYA pada model yang dilatih di korpus lain lalu diuji lintas korpus. Model yang dilatih pada FoR tidak menunjukkannya di FoR — jadi ini spesifik pergeseran domain, bukan cacat arsitektur.
+Inversi terjadi HANYA pada model yang dilatih di korpus lain lalu diuji lintas korpus. Model yang dilatih pada FoR tidak menunjukkannya di FoR, jadi ini spesifik pergeseran domain, bukan cacat arsitektur.
 
-## Probe B — Ketergantungan pintasan sebagai prediktor generalisasi
+## Probe B, Ketergantungan pintasan sebagai prediktor generalisasi
 
 Proksi ketergantungan pintasan: recall pada TTS **2019 non-MP3** (Tacotron2, SpeedySpeech, VITS). Model yang belajar jejak MP3 dari FoR akan buta terhadap TTS lama yang TIDAK dikompresi MP3.
 

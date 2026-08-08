@@ -1,4 +1,4 @@
-# HuBERT Large — 8 Seed + Ensemble Kumulatif
+# HuBERT Large, 8 Seed + Ensemble Kumulatif
 
 Split resmi FoR, augmentasi codec per-epoch, batch 16, 10 epoch, ambang prior-matched.
 
@@ -30,9 +30,9 @@ Split resmi FoR, augmentasi codec per-epoch, batch 16, 10 epoch, ambang prior-ma
 | 7 | **99.82%** | 0.18% | 0.9999 | 2/1088 |
 | 8 | **99.82%** | 0.18% | 0.9999 | 2/1088 |
 
-**Seluruh 8 seed (tanpa seleksi apa pun — ini angka yang sah):** **99.82%**, EER 0.18%, AUC 0.9999, **2 salah dari 1088**
+**Seluruh 8 seed (tanpa seleksi apa pun, ini angka yang sah):** **99.82%**, EER 0.18%, AUC 0.9999, **2 salah dari 1088**
 
-> Kolom kumulatif di atas mengurutkan seed menurut akurasi **test**, jadi puncaknya (99.82% pada 5 seed) adalah angka oracle — tidak sah dilaporkan sebagai hasil. Angka yang sah adalah baris 'seluruh 8 seed'.
+> Kolom kumulatif di atas mengurutkan seed menurut akurasi **test**, jadi puncaknya (99.82% pada 5 seed) adalah angka oracle, tidak sah dilaporkan sebagai hasil. Angka yang sah adalah baris 'seluruh 8 seed'.
 
 ## Sisa 2 error
 

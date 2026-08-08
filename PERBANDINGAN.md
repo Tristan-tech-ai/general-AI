@@ -1,4 +1,4 @@
-# Perbandingan Arsitektur — split `official`, augmentasi `codec`
+# Perbandingan Arsitektur, split `official`, augmentasi `codec`
 
 Test set: **1088** berkas. 1 berkas = 0.092 pp.
 

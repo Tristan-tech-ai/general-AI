@@ -14,19 +14,19 @@ Total berkas dianalisis: **17870** (gagal dibaca: 0)
 
 - Sampling rate: `{16000: 17870}`
 - Kanal: `{1: 17870}`
-- Durasi: min=2.000s  median=2.000s  maks=2.000s  std=0.0000s
-  - real: mean=2.0000s std=0.0000s
-  - fake: mean=2.0000s std=0.0000s
+- Durasi: min=2.000s median=2.000s maks=2.000s std=0.0000s
+ - real: mean=2.0000s std=0.0000s
+ - fake: mean=2.0000s std=0.0000s
 
-## 3. T3 — Duplikat eksak & kebocoran lintas split
+## 3. T3, Duplikat eksak & kebocoran lintas split
 
 - Grup duplikat byte-identik: **0** (total 0 berkas)
 - Duplikat yang MELINTASI split (kebocoran train/test): **0**
 - Duplikat dengan label berbeda (konflik label): **0**
 
-  ✅ Tidak ada duplikat byte-identik yang melintasi split.
+ ✅ Tidak ada duplikat byte-identik yang melintasi split.
 
-## 4. T1/T2/T4 — Daya diskriminatif fitur non-semantik
+## 4. T1/T2/T4, Daya diskriminatif fitur non-semantik
 
 AUC 0,5 = tidak informatif; AUC → 1,0 atau → 0,0 = sangat memisahkan kelas.
 **AUC tinggi pada fitur trivial = pintasan (shortcut) dataset.**
@@ -63,12 +63,12 @@ Dilatih pada split `training` resmi, diuji pada split `testing` resmi.
 
 Fitur trivial tunggal paling diskriminatif: **`rms`** (AUC 0.6980)
 
-## 5. T5 — Pola nama berkas (jejak sumber / pembicara)
+## 5. T5, Pola nama berkas (jejak sumber / pembicara)
 
-**real** — 8935 berkas. Contoh: `file1000.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10003.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10006.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`
-  prefiks unik: 8800; 8 terbanyak: [('file1039.wav', 2), ('file1075.wav', 2), ('file1097.wav', 2), ('file117.wav', 2), ('file1177.wav', 2), ('file1180.wav', 2), ('file1196.wav', 2), ('file121.wav', 2)]
-**fake** — 8935 berkas. Contoh: `file10005.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10007.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10009.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`
-  prefiks unik: 8921; 8 terbanyak: [('file1010.wav', 2), ('file1097.wav', 2), ('file1339.wav', 2), ('file1354.wav', 2), ('file1408.wav', 2), ('file155.wav', 2), ('file1703.wav', 2), ('file2162.wav', 2)]
+**real**, 8935 berkas. Contoh: `file1000.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10003.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10006.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`
+ prefiks unik: 8800; 8 terbanyak: [('file1039.wav', 2), ('file1075.wav', 2), ('file1097.wav', 2), ('file117.wav', 2), ('file1177.wav', 2), ('file1180.wav', 2), ('file1196.wav', 2), ('file121.wav', 2)]
+**fake**, 8935 berkas. Contoh: `file10005.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10007.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`, `file10009.mp3.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav`
+ prefiks unik: 8921; 8 terbanyak: [('file1010.wav', 2), ('file1097.wav', 2), ('file1339.wav', 2), ('file1354.wav', 2), ('file1408.wav', 2), ('file155.wav', 2), ('file1703.wav', 2), ('file2162.wav', 2)]
 
 ## 6. Resolusi statistik test set
 

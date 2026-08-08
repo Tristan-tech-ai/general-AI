@@ -1,4 +1,4 @@
-# Grid SNR — Ketahanan terhadap Noise Lingkungan yang Belum Pernah Dilihat
+# Grid SNR, Ketahanan terhadap Noise Lingkungan yang Belum Pernah Dilihat
 
 Model dilatih dengan augmentasi **colored noise sintetis**; diuji dengan **DEMAND** (6 lingkungan nyata: dapur, taman, kantor, kafetaria, lalu lintas, bus). Kedua korpus sepenuhnya terpisah.
 

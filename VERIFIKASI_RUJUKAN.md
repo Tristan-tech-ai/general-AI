@@ -2,7 +2,7 @@
 
 *Menuntaskan butir wajib #7 di [LANJUTAN.md](LANJUTAN.md). Saya sebelumnya menandai
 klaim tentang literatur sebagai **belum terverifikasi** dan melarangnya masuk naskah.
-Berikut hasil verifikasinya — dan sebagian membantah hipotesis saya sendiri.*
+Berikut hasil verifikasinya, dan sebagian membantah hipotesis saya sendiri.*
 
 ---
 
@@ -14,15 +14,14 @@ Berikut hasil verifikasinya — dan sebagian membantah hipotesis saya sendiri.*
 | Ahmad dkk., FoR baselines (SVM ~93%) | **Split resmi, speaker-disjoint** | ❌ **Terbantah** |
 | Ref [19] MFAAN (94,47%) | Tidak dinyatakan di abstrak | ⚠️ Belum terverifikasi |
 
-**Kesimpulan yang harus ditulis di naskah:** praktik di literatur FoR **beragam** —
-sebagian memakai split acak, sebagian memakai partisi resmi. Klaim menyeluruh bahwa
+**Kesimpulan yang harus ditulis di naskah:** praktik di literatur FoR **beragam**, sebagian memakai split acak, sebagian memakai partisi resmi. Klaim menyeluruh bahwa
 "hasil terpublikasi pada FoR mengukur kebocoran domain" **tidak dapat dipertahankan**
 dan harus dicabut. Yang dapat dipertahankan adalah klaim per-paper dan klaim
 mekanistik.
 
 ---
 
-## 1. Ref [20] — Hybrid CNN-LSTM, 94,7% ✅ hipotesis terkonfirmasi
+## 1. Ref [20], Hybrid CNN-LSTM, 94,7% ✅ hipotesis terkonfirmasi
 
 *"Hybrid CNN-LSTM Architectures for Deepfake Audio Detection Using MFCC and
 Spectrogram Analysis", American Journal of Mathematical and Computer Modelling,
@@ -53,7 +52,7 @@ mekanisme**, bukan head-to-head. Ini harus dinyatakan sebagai catatan kaki.
 
 ---
 
-## 2. Ahmad, Ahmed & Imtiaz — FoR baselines ❌ hipotesis saya terbantah
+## 2. Ahmad, Ahmed & Imtiaz, FoR baselines ❌ hipotesis saya terbantah
 
 *"Classical Machine Learning Baselines for Deepfake Audio Detection on the
 Fake-or-Real Dataset", Clarkson University.* [arXiv:2604.13400](https://arxiv.org/abs/2604.13400)
@@ -70,7 +69,7 @@ Kutipan langsung:
 | | |
 |---|---|
 | Varian | for-2sec (dinyatakan 44,1 kHz) dan for-rerec (16 kHz) |
-| Split | **partisi resmi, speaker-disjoint** — eksplisit |
+| Split | **partisi resmi, speaker-disjoint**, eksplisit |
 | Ukuran | ~31.138 klip; 24.913 latih / 6.225 uji |
 | Hasil terbaik | **RBF SVM ~93% akurasi, ~7% EER**; model linier ~75% |
 
@@ -102,7 +101,7 @@ Ini **independen mengonfirmasi pengukuran kita**: audit kita menemukan centroid 
 853,82 Hz vs fake 584,24 Hz, dan energi >6 kHz real 3,2× lebih tinggi.
 
 **Tetapi penafsirannya berbeda, dan di sinilah kontribusi kita.** Mereka
-mengatribusikan selisih itu pada penyebab *alami* — sibilan dan noise mikrofon pada
+mengatribusikan selisih itu pada penyebab *alami*, sibilan dan noise mikrofon pada
 wicara manusia. Audit kita menunjukkan penyebabnya sebagian besar **artefak
 provenance codec**:
 
@@ -113,17 +112,17 @@ provenance codec**:
 | real vs fake pada test set (0% MP3) | **1,33×** |
 
 Bila selisih HF benar-benar berasal dari sibilan dan noise mikrofon, ia akan tetap
-besar pada fake yang tidak melalui MP3. Ternyata tidak — turun dari 4,18× ke 1,17×.
+besar pada fake yang tidak melalui MP3. Ternyata tidak, turun dari 4,18× ke 1,17×.
 **Sekitar tiga perempat selisih HF pada data latih dapat diatribusikan ke MP3, bukan
 ke sintesis.**
 
 Ini pernyataan yang dapat difalsifikasi, didukung data, dan **berbeda dari tafsir yang
-sudah dipublikasikan** — kandidat kontribusi ilmiah yang jauh lebih kuat daripada
+sudah dipublikasikan**, kandidat kontribusi ilmiah yang jauh lebih kuat daripada
 sekadar membandingkan empat arsitektur.
 
 ---
 
-## 3. Ref [19] MFAAN — belum terverifikasi ⚠️
+## 3. Ref [19] MFAAN, belum terverifikasi ⚠️
 
 *"MFAAN: Unveiling Audio Deepfakes with a Multi-Feature Authenticity Network",
 IEEE 2023.* [arXiv:2311.03509](https://arxiv.org/abs/2311.03509)
@@ -139,24 +138,22 @@ dan protokol split **tidak dinyatakan di abstrak**. Perlu membaca PDF lengkap.
 
 ### Yang harus DICABUT
 
-Rumusan yang saya usulkan sebelumnya di [TEMUAN_GROUND_TRUTH.md](TEMUAN_GROUND_TRUTH.md) §5 —
-*"indikasi kuat bahwa sebagian besar hasil terpublikasi pada FoR memakai split acak"* —
-**tidak dapat dipertahankan.** Minimal satu paper terverifikasi memakai partisi resmi.
+Rumusan yang saya usulkan sebelumnya di [TEMUAN_GROUND_TRUTH.md](TEMUAN_GROUND_TRUTH.md) §5, *"indikasi kuat bahwa sebagian besar hasil terpublikasi pada FoR memakai split acak"*, **tidak dapat dipertahankan.** Minimal satu paper terverifikasi memakai partisi resmi.
 
 ### Yang dapat dipertahankan sepenuhnya
 
 1. **Klaim mekanistik** (murni dari eksperimen kita, tidak bergantung pada paper lain):
-   > Dengan model, fitur, dan data identik, split acak menghasilkan akurasi 16,69 poin
-   > lebih tinggi daripada partisi resmi pada FoR-2sec.
+ > Dengan model, fitur, dan data identik, split acak menghasilkan akurasi 16,69 poin
+ > lebih tinggi daripada partisi resmi pada FoR-2sec.
 
 2. **Klaim per-paper** untuk ref [20], dengan kutipan langsung.
 
 3. **Klaim atribusi codec**, yang menantang tafsir Ahmad dkk. dengan data.
 
 4. **Klaim pelaporan variansi**: tidak satu pun dari ketiga paper melaporkan
-   simpangan baku atas beberapa seed, padahal eksperimen kita menemukan variansi
-   antar-seed ±3,50 pp — cukup besar untuk menelan sebagian besar selisih yang
-   dilaporkan antar-metode.
+ simpangan baku atas beberapa seed, padahal eksperimen kita menemukan variansi
+ antar-seed ±3,50 pp, cukup besar untuk menelan sebagian besar selisih yang
+ dilaporkan antar-metode.
 
 ### Tabel perbandingan yang jujur untuk naskah
 
@@ -165,9 +162,9 @@ Rumusan yang saya usulkan sebelumnya di [TEMUAN_GROUND_TRUTH.md](TEMUAN_GROUND_T
 | Ahmad dkk. (SVM RBF) | for-2sec 44,1 kHz | **resmi, speaker-disjoint** | 6.225 | ~93% (EER ~7%) |
 | Ref [20] (CNN-LSTM) | tidak dinyatakan | **acak 80/20** | 3.000 | 94,7% |
 | Ref [19] MFAAN | tidak dinyatakan | ⚠️ belum diverifikasi | ? | 94,47% |
-| **Penelitian ini** — split acak | for-2sec 16 kHz | acak 60/20/20 | 3.574 | **99,75%** |
-| **Penelitian ini** — split resmi | for-2sec 16 kHz | **resmi** | 1.088 | **92,3% ± 3,0** |
-| **Penelitian ini** — ensemble, split resmi | for-2sec 16 kHz | **resmi** | 1.088 | **97,61%** |
+| **Penelitian ini**, split acak | for-2sec 16 kHz | acak 60/20/20 | 3.574 | **99,75%** |
+| **Penelitian ini**, split resmi | for-2sec 16 kHz | **resmi** | 1.088 | **92,3% ± 3,0** |
+| **Penelitian ini**, ensemble, split resmi | for-2sec 16 kHz | **resmi** | 1.088 | **97,61%** |
 
 Kolom "Protokol split" adalah kolom terpenting dalam tabel ini, dan tidak ada di
 tabel state-of-the-art proposal (hal. 8–11). Menambahkannya saja sudah merupakan

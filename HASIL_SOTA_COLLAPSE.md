@@ -24,8 +24,8 @@ Diuji ZERO-SHOT pada FoR-2sec (1.088 berkas seimbang), tanpa adaptasi apa pun.
 
 AUC = **0.0233**, EER = **91.08%**
 
-AUC di bawah 0,5 berarti pengurutan skornya **TERBALIK**: model memberi skor 'palsu' LEBIH TINGGI kepada audio ASLI daripada audio palsu. Bila polaritas dibalik, AUC menjadi **0.9767** — jadi model tetap sangat diskriminatif, hanya arahnya terbalik pada korpus ini.
+AUC di bawah 0,5 berarti pengurutan skornya **TERBALIK**: model memberi skor 'palsu' LEBIH TINGGI kepada audio ASLI daripada audio palsu. Bila polaritas dibalik, AUC menjadi **0.9767**, jadi model tetap sangat diskriminatif, hanya arahnya terbalik pada korpus ini.
 
 ## Tafsir
 
-Implikasi untuk klaim kebaruan: literatur anti-spoofing melaporkan EER *dalam domain*, yang tidak menangkap keruntuhan kalibrasi lintas korpus seperti ini. Mengukurnya eksplisit — recall DAN spesifisitas pada korpus asing, bukan hanya EER in-domain — adalah celah evaluasi yang nyata.
+Implikasi untuk klaim kebaruan: literatur anti-spoofing melaporkan EER *dalam domain*, yang tidak menangkap keruntuhan kalibrasi lintas korpus seperti ini. Mengukurnya eksplisit, recall DAN spesifisitas pada korpus asing, bukan hanya EER in-domain, adalah celah evaluasi yang nyata.
