@@ -4,12 +4,12 @@ Seluruh angka berasal dari berkas hasil di repositori dan dapat direproduksi. Fo
 
 ## 1. Efek protokol pembagian data
 
-Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.
+Dua baris pertama memakai model, data, dan hyperparameter yang identik, yaitu sepuluh epoch dengan batch tiga puluh dua, sehingga hanya cara pembagian datanya yang berbeda. Angka dilaporkan pada ambang prior-matched. Pada ambang tetap 0,5, keduanya menjadi 99,93 dan 50,03 persen, dan selisih yang jauh lebih besar itu berasal dari kalibrasi ambang, bukan dari protokol. Pemecahannya ada di HASIL_TEMUAN1.md.
 
 | Konfigurasi | Split | n | Akurasi | EER |
 |---|---|---|---|---|
-| CNN+ASP tanpa augmentasi | acak 60/20/20 | 1 | **99.75** | 0.03 |
-| CNN+ASP tanpa augmentasi | resmi FoR | 1 | **71.88** | 28.12 |
+| CNN+ASP tanpa augmentasi | acak 60/20/20 | 3 | **99.48** | 0.03 |
+| CNN+ASP tanpa augmentasi | resmi FoR | 3 | **92.56** | 7.38 |
 | Replikasi proposal: ast | resmi FoR | 3 | **74.85** (1.47) | 6.50 |
 | Replikasi proposal: wavlm | resmi FoR | 5 | **53.40** (3.94) | 36.73 |
 | Replikasi proposal: hubert | resmi FoR | 5 | **51.47** (1.89) | 48.60 |
@@ -25,16 +25,16 @@ Metrik replikasi proposal dilaporkan pada ambang 0,5 seperti yang tersirat di pr
 
 | Arsitektur | Augmentasi | n | Akurasi | EER |
 |---|---|---|---|---|
-| wavlm | fullbgrb | 3 | **98.90** (0.18) | 1.10 |
-| wavlm | fullbg | 3 | **98.65** (0.37) | 1.29 |
-| nes2net | fullrb | 3 | **98.50** (0.41) | 1.44 |
-| wavlm | full | 5 | **98.36** (0.63) | 1.65 |
-| nes2net | fullbgrb | 3 | **97.46** (2.10) | 2.54 |
-| wavlm | fullUF | 3 | **97.30** (1.71) | 2.70 |
-| hubert | codec | 8 | **97.29** (2.16) | 2.71 |
-| nes2net | fullbg | 3 | **97.12** (2.77) | 2.88 |
-| nes2net | soft | 3 | **96.75** (0.77) | 3.25 |
-| wavlm | codec | 3 | **96.51** (2.41) | 3.55 |
+| wavlm | fullbgrb@b16e10 | 3 | **98.90** (0.18) | 1.10 |
+| wavlm | fullbg@b16e10 | 3 | **98.65** (0.37) | 1.29 |
+| nes2net | fullrb@b16e10 | 3 | **98.50** (0.41) | 1.44 |
+| wavlm | full@b16e10 | 5 | **98.36** (0.63) | 1.65 |
+| nes2net | fullbgrb@b16e10 | 3 | **97.46** (2.10) | 2.54 |
+| wavlm | fullUF@b16e10 | 3 | **97.30** (1.71) | 2.70 |
+| hubert | codec@b16e10 | 8 | **97.29** (2.16) | 2.71 |
+| nes2net | fullbg@b16e10 | 3 | **97.12** (2.77) | 2.88 |
+| nes2net | soft@b16e10 | 3 | **96.75** (0.77) | 3.25 |
+| wavlm | codec@b16e10 | 3 | **96.51** (2.41) | 3.55 |
 
 ## 3. Deteksi TTS komersial 2025-2026
 
@@ -42,16 +42,16 @@ Diukur pada spesifisitas 95 persen yang disamakan untuk semua model, memakai 1.5
 
 | Arsitektur | Augmentasi | n | Recall TTS 2025-2026 |
 |---|---|---|---|
-| nes2net | full | 3 | **94.97** (5.34) |
-| nes2net | fullbgrb | 3 | **93.67** (3.47) |
-| nes2net | fullbg | 3 | **93.50** (4.77) |
-| wavlm | fullbgrb | 3 | **92.69** (4.68) |
-| wavlm | fullbg | 3 | **92.56** (2.15) |
-| hubert | fullbg | 3 | **91.33** (4.04) |
-| wavlm | full | 3 | **88.39** (7.29) |
-| nes2net | fullrb | 3 | **87.64** (6.41) |
-| hubert | full | 3 | **85.67** (6.11) |
-| nes2net | soft | 3 | **80.94** (15.78) |
+| nes2net | full@b16e10 | 3 | **94.97** (5.34) |
+| nes2net | fullbgrb@b16e10 | 3 | **93.67** (3.47) |
+| nes2net | fullbg@b16e10 | 3 | **93.50** (4.77) |
+| wavlm | fullbgrb@b16e10 | 3 | **92.69** (4.68) |
+| wavlm | fullbg@b16e10 | 3 | **92.56** (2.15) |
+| hubert | fullbg@b16e10 | 3 | **91.33** (4.04) |
+| wavlm | full@b16e10 | 3 | **88.39** (7.29) |
+| nes2net | fullrb@b16e10 | 3 | **87.64** (6.41) |
+| hubert | full@b16e10 | 3 | **85.67** (6.11) |
+| nes2net | soft@b16e10 | 3 | **80.94** (15.78) |
 
 ## 4. Ketahanan terhadap noise
 
@@ -71,11 +71,23 @@ Noise DEMAND, korpus yang tidak dipakai saat pelatihan.
 
 ## 5. Angka kunci untuk dikutip
 
+Hanya angka yang sudah lolos verifikasi yang dicantumkan di sini. Angka yang sempat dikutip namun kemudian ditarik didaftar terpisah di bawahnya, supaya tidak terpakai lagi tanpa sengaja.
+
 | Klaim | Angka | Sumber |
 |---|---|---|
-| Sampel palsu di data latih FoR yang berasal MP3 | 90,7 persen | audit_report.md |
+| Sampel palsu di data latih FoR yang berasal MP3 | 90,7 persen | probe_codec_report.md |
 | Sampel palsu di data uji FoR yang berasal MP3 | 0 persen | probe_codec_report.md |
-| Selisih akurasi akibat protokol split saja | sekitar 50 poin | probe_split_report.md |
-| Korelasi akurasi FoR dengan recall TTS modern | r = -0,542 | HASIL_NOVELTY_PROBE.md |
 | Spesifisitas model SOTA publik di luar domain | 0,00 persen | HASIL_SOTA_COLLAPSE.md |
-| Korelasi ceiling band-gain (3 arsitektur) | r = -0,980 | HASIL_LINTAS_ARSITEKTUR.md |
+| Selisih akibat ambang keputusan pada partisi resmi | 42,52 poin | HASIL_TEMUAN1.md |
+| Selisih akibat protokol split saja | 6,92 poin, p = 0,0822 | HASIL_TEMUAN1.md |
+| WavLM rekayasa lawan proposal, partisi resmi | +35,07 poin, p Holm 0,0002 | HASIL_SIGNIFIKANSI.md |
+| HuBERT rekayasa lawan proposal, partisi resmi | +44,56 poin, p Holm 0,0002 | HASIL_SIGNIFIKANSI.md |
+
+### Angka yang sudah ditarik, jangan dipakai lagi
+
+| Klaim yang ditarik | Alasan |
+|---|---|
+| Selisih protokol sekitar 50 poin | menggabungkan tiga sebab, protokol hanya 6,92 poin |
+| r = -0,542 antara akurasi FoR dan recall TTS modern | dihitung ulang menjadi -0,048 dengan p = 0,895 |
+| r = -0,980 hipotesis ceiling | n = 3 hanya punya enam permutasi sehingga p minimum 0,33 |
+| Band-gain memperbaiki recall TTS-2019 sebesar 10 poin | dua belas perbandingan, seluruhnya p Holm 1,0000 |

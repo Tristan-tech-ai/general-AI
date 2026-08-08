@@ -76,8 +76,12 @@ def ci_bootstrap(x, y, n_boot=20000):
 
 
 def parse(tag):
-    m = re.match(r"^(.+?)_official_([a-zA-Z0-9.]+?)(?:_b\d+e\d+)?_s(\d+)$", tag)
-    return None if not m else (m.group(1), m.group(2), m.group(3))
+    m = re.match(r"^(.+?)_official_([a-zA-Z0-9.]+?)(_b\d+e\d+)?_s(\d+)$", tag)
+    # Konfigurasi ikut menjadi bagian kunci supaya titik data pada korelasi
+    # tidak mencampur run dengan jumlah epoch yang berbeda.
+    return (None if not m else
+            (m.group(1), m.group(2) + "@" + (m.group(3) or "_lama").lstrip("_"),
+             m.group(4)))
 
 
 out("# Apakah Korelasi yang Dilaporkan Bertahan pada Ukuran Sampelnya?\n")

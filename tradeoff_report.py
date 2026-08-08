@@ -31,8 +31,12 @@ OLD_NONMP3 = ["tts_models_en_ljspeech_tacotron2-DDC",
 
 
 def parse(tag):
-    m = re.match(r"^(.+?)_official_([a-z]+?)(?:_b\d+e\d+)?_s(\d+)$", tag)
-    return None if not m else (m.group(1), m.group(2), m.group(3))
+    m = re.match(r"^(.+?)_official_([a-z]+?)(_b\d+e\d+)?_s(\d+)$", tag)
+    # Konfigurasi ikut menjadi bagian kunci, lihat catatan di parse() pada
+    # make_paper.py mengenai penggabungan konfigurasi yang berbeda.
+    return (None if not m else
+            (m.group(1), m.group(2) + "@" + (m.group(3) or "_lama").lstrip("_"),
+             m.group(4)))
 
 
 foracc = {}

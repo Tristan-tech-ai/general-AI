@@ -8,16 +8,16 @@ Titik data: 10 konfigurasi, yaitu pasangan arsitektur dan strategi augmentasi, m
 
 | Konfigurasi | Akurasi FoR | Recall TTS 2025-2026 |
 |---|---|---|
-| wavlm + fullbgrb | 98.90 | 92.69 |
-| wavlm + fullbg | 98.65 | 92.56 |
-| wavlm + full | 98.62 | 88.39 |
-| nes2net + fullrb | 98.50 | 87.64 |
-| nes2net + fullbgrb | 97.46 | 93.67 |
-| nes2net + fullbg | 97.12 | 93.50 |
-| nes2net + soft | 96.75 | 80.94 |
-| hubert + fullbg | 95.71 | 91.33 |
-| hubert + full | 95.34 | 85.67 |
-| nes2net + full | 93.75 | 94.97 |
+| wavlm + fullbgrb@b16e10 | 98.90 | 92.69 |
+| wavlm + fullbg@b16e10 | 98.65 | 92.56 |
+| wavlm + full@b16e10 | 98.62 | 88.39 |
+| nes2net + fullrb@b16e10 | 98.50 | 87.64 |
+| nes2net + fullbgrb@b16e10 | 97.46 | 93.67 |
+| nes2net + fullbg@b16e10 | 97.12 | 93.50 |
+| nes2net + soft@b16e10 | 96.75 | 80.94 |
+| hubert + fullbg@b16e10 | 95.71 | 91.33 |
+| hubert + full@b16e10 | 95.34 | 85.67 |
+| nes2net + full@b16e10 | 93.75 | 94.97 |
 
 Koefisien korelasi Pearson r = -0.048 dengan n = 10. Nilai p dua sisi dari uji permutasi acak adalah 0.8951.
 Selang kepercayaan bootstrap 95 persen membentang dari -0.664 sampai 0.629.

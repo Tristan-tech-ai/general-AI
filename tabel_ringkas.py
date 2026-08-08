@@ -24,8 +24,14 @@ def out(s=""):
 
 def parse(tag):
     m = re.match(r"^(.+?)_(official|random|clean_val|wavval)_([a-zA-Z]+?)"
-                 r"(?:_b\d+e\d+)?_s(\d+)$", tag)
-    return None if not m else (m.group(1), m.group(2), m.group(3), m.group(4))
+                 r"(_b\d+e\d+)?_s(\d+)$", tag)
+    # Konfigurasi ikut menjadi bagian kunci. Tanpa ini, run dengan jumlah epoch
+    # atau batch yang berbeda tergabung menjadi satu kelompok dan sebarannya
+    # terlaporkan sebagai ragam antar inisialisasi acak.
+    return (None if not m else
+            (m.group(1), m.group(2),
+             m.group(3) + "@" + (m.group(4) or "_lama").lstrip("_"),
+             m.group(5)))
 
 
 # ---------- FoR ----------
@@ -77,11 +83,16 @@ out("Seluruh angka berasal dari berkas hasil di repositori dan dapat "
 
 # ---------- 1 ----------
 out("## 1. Efek protokol pembagian data\n")
-out("Model, data, dan hyperparameter identik. Hanya cara pembagian data berbeda.\n")
+out("Dua baris pertama memakai model, data, dan hyperparameter yang identik, "
+    "yaitu sepuluh epoch dengan batch tiga puluh dua, sehingga hanya cara "
+    "pembagian datanya yang berbeda. Angka dilaporkan pada ambang prior-matched. "
+    "Pada ambang tetap 0,5, keduanya menjadi 99,93 dan 50,03 persen, dan selisih "
+    "yang jauh lebih besar itu berasal dari kalibrasi ambang, bukan dari "
+    "protokol. Pemecahannya ada di HASIL_TEMUAN1.md.\n")
 out("| Konfigurasi | Split | n | Akurasi | EER |")
 out("|---|---|---|---|---|")
-for key, nm in [(("cnn_asp", "random", "none"), "CNN+ASP tanpa augmentasi"),
-                (("cnn_asp", "official", "none"), "CNN+ASP tanpa augmentasi")]:
+for key, nm in [(("cnn_asp", "random", "none@b32e10"), "CNN+ASP tanpa augmentasi"),
+                (("cnn_asp", "official", "none@b32e10"), "CNN+ASP tanpa augmentasi")]:
     if key in FOR:
         m, s, n = agg(FOR[key], "accuracy")
         e, _, _ = agg(FOR[key], "eer")
@@ -161,14 +172,26 @@ out("")
 
 # ---------- 5 ----------
 out("## 5. Angka kunci untuk dikutip\n")
+out("Hanya angka yang sudah lolos verifikasi yang dicantumkan di sini. Angka "
+    "yang sempat dikutip namun kemudian ditarik didaftar terpisah di bawahnya, "
+    "supaya tidak terpakai lagi tanpa sengaja.\n")
 out("| Klaim | Angka | Sumber |")
 out("|---|---|---|")
-out("| Sampel palsu di data latih FoR yang berasal MP3 | 90,7 persen | audit_report.md |")
+out("| Sampel palsu di data latih FoR yang berasal MP3 | 90,7 persen | probe_codec_report.md |")
 out("| Sampel palsu di data uji FoR yang berasal MP3 | 0 persen | probe_codec_report.md |")
-out("| Selisih akurasi akibat protokol split saja | sekitar 50 poin | probe_split_report.md |")
-out("| Korelasi akurasi FoR dengan recall TTS modern | r = -0,542 | HASIL_NOVELTY_PROBE.md |")
 out("| Spesifisitas model SOTA publik di luar domain | 0,00 persen | HASIL_SOTA_COLLAPSE.md |")
-out("| Korelasi ceiling band-gain (3 arsitektur) | r = -0,980 | HASIL_LINTAS_ARSITEKTUR.md |")
+out("| Selisih akibat ambang keputusan pada partisi resmi | 42,52 poin | HASIL_TEMUAN1.md |")
+out("| Selisih akibat protokol split saja | 6,92 poin, p = 0,0822 | HASIL_TEMUAN1.md |")
+out("| WavLM rekayasa lawan proposal, partisi resmi | +35,07 poin, p Holm 0,0002 | HASIL_SIGNIFIKANSI.md |")
+out("| HuBERT rekayasa lawan proposal, partisi resmi | +44,56 poin, p Holm 0,0002 | HASIL_SIGNIFIKANSI.md |")
+out("")
+out("### Angka yang sudah ditarik, jangan dipakai lagi\n")
+out("| Klaim yang ditarik | Alasan |")
+out("|---|---|")
+out("| Selisih protokol sekitar 50 poin | menggabungkan tiga sebab, protokol hanya 6,92 poin |")
+out("| r = -0,542 antara akurasi FoR dan recall TTS modern | dihitung ulang menjadi -0,048 dengan p = 0,895 |")
+out("| r = -0,980 hipotesis ceiling | n = 3 hanya punya enam permutasi sehingga p minimum 0,33 |")
+out("| Band-gain memperbaiki recall TTS-2019 sebesar 10 poin | dua belas perbandingan, seluruhnya p Holm 1,0000 |")
 out("")
 
 open(os.path.join(HERE, "TABEL_RINGKAS.md"), "w", encoding="utf-8").write("\n".join(L))
