@@ -15,8 +15,17 @@ Wav2Vec2, AST, HuBERT, dan CNN-LSTM dalam Klasifikasi Suara Deepfake dan Suara A
 
 Versi awal temuan ini menyatakan sebaliknya: split acak memberi **99,94%** dan
 partisi resmi **50,00%**, selisih **49,94 poin**, disimpulkan sepenuhnya berasal
-dari skema pembagian data. Pemecahan dengan 3 seed pada konfigurasi seragam
-menunjukkan selisih itu punya **tiga sebab**, dan protokol adalah yang terkecil:
+dari skema pembagian data pada "arsitektur, data, dan hyperparameter yang
+identik".
+
+> **Hyperparameternya tidak identik.** Run split acak dijalankan **6 epoch**;
+> run partisi resmi dijalankan **1 epoch**. Keduanya dari tahap paling awal
+> penelitian, ketika nama direktori belum memuat penanda batch dan epoch,
+> sehingga perbedaan itu tidak terlihat dari nama berkas dan tidak pernah
+> diperiksa. Perbandingan aslinya bukan perbandingan terkontrol.
+
+Pemecahan dengan 3 seed pada konfigurasi seragam menunjukkan selisih itu punya
+**tiga sebab**, dan protokol adalah yang terkecil:
 
 | Sebab | Besaran | Dapat diperbaiki tanpa mengubah protokol |
 |---|---|---|

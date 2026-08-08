@@ -92,9 +92,22 @@ def gambar(nama, lebar=15.5 * cm, cap=""):
 
 # ---------------------------------------------------------------- data
 def parse(tag):
-    m = re.match(r"^(.+?)_(official|random|clean_val|wavval)_([a-zA-Z]+?)"
-                 r"(?:_b\d+e\d+)?_s(\d+)$", tag)
-    return None if not m else (m.group(1), m.group(2), m.group(3), m.group(4))
+    """Memecah nama direktori run menjadi komponennya.
+
+    BUG YANG DIPERBAIKI: versi sebelumnya membuang bagian batch dan epoch dari
+    kunci, sehingga run dengan konfigurasi pelatihan yang berbeda tergabung
+    menjadi satu kelompok dan sebarannya dilaporkan sebagai ragam antar
+    inisialisasi acak. Beberapa run dari tahap awal penelitian tidak memuat
+    penanda tersebut pada namanya dan memakai jumlah epoch yang sangat berbeda,
+    dalam satu kasus hanya satu epoch. Konfigurasi kini menjadi bagian dari
+    kunci, sehingga penggabungan semacam itu tidak dapat terjadi lagi.
+    """
+    m = re.match(r"^(.+?)_(official|random|clean_val|wavval)_([a-zA-Z0-9.]+?)"
+                 r"(_b\d+e\d+)?_s(\d+)$", tag)
+    if not m:
+        return None
+    cfg = (m.group(4) or "_lama").lstrip("_")
+    return (m.group(1), m.group(2), m.group(3) + "@" + cfg, m.group(5))
 
 
 def kumpul_for():
@@ -442,7 +455,8 @@ def bangun():
         "pernyataan sama-sama merupakan peringatan, namun menunjuk sebab yang "
         "berbeda dan menuntut perbaikan yang berbeda pula.", "p"))
     b = []
-    for k in [("cnn_asp", "random", "none"), ("cnn_asp", "official", "none")]:
+    for k in [("cnn_asp", "random", "none@b32e10"),
+              ("cnn_asp", "official", "none@b32e10")]:
         if k in FOR:
             nm = "Acak 60/20/20" if k[1] == "random" else "Partisi resmi"
             b.append([nm, ms(FOR[k], "acc"), ms(FOR[k], "eer"),

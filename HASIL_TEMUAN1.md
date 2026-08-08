@@ -1,11 +1,13 @@
 # Pemecahan Temuan Pembuka
 
-Temuan pertama menyatakan bahwa protokol pembagian data menentukan hasil, dengan bukti selisih hampir lima puluh poin persentase. Tabel berikut memisahkan selisih itu menjadi sebab-sebabnya. Perbandingan hanya dilakukan antar run yang konfigurasinya identik.
+Temuan pertama menyatakan bahwa protokol pembagian data menentukan hasil, dengan bukti selisih hampir lima puluh poin persentase pada arsitektur, data, dan hyperparameter yang disebut identik. Tabel berikut memisahkan selisih itu menjadi sebab-sebabnya.
+
+Pernyataan bahwa hyperparameternya identik ternyata tidak benar. Run yang menghasilkan angka pada split acak dijalankan selama enam epoch, sedangkan run yang menghasilkan angka pada partisi resmi dijalankan selama **satu** epoch. Keduanya berasal dari tahap paling awal penelitian, ketika nama direktori belum memuat penanda batch dan epoch, sehingga perbedaan itu tidak terlihat dari nama berkasnya dan tidak pernah diperiksa. Perbandingan aslinya karena itu bukan perbandingan terkontrol sama sekali. Baris ketiga dan keempat menjalankan keduanya pada konfigurasi yang seragam.
 
 | Konfigurasi dan split | n | Akurasi @0,5 | Akurasi @prior | AUC |
 |---|---|---|---|---|
-| 6 epoch batch 64, split acak | 1 | 99.94 | 99.75 | 1.0000 |
-| 6 epoch batch 64, partisi resmi | 1 | 50.00 | 71.88 | 0.7946 |
+| run asli, 6 epoch batch 64, split acak | 1 | 99.94 | 99.75 | 1.0000 |
+| run asli, 1 epoch batch 64, partisi resmi | 1 | 50.00 | 71.88 | 0.7946 |
 | 10 epoch batch 32, split acak | 3 | 99.93 (0.07) | 99.48 (0.47) | 1.0000 |
 | 10 epoch batch 32, partisi resmi | 3 | 50.03 (0.05) | 92.56 (3.72) | 0.9756 |
 

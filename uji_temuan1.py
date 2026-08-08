@@ -97,9 +97,18 @@ BARU_O = kumpul("runs/cnn_asp_official_none_b32e10_s*")
 
 out("# Pemecahan Temuan Pembuka\n")
 out("Temuan pertama menyatakan bahwa protokol pembagian data menentukan hasil, "
-    "dengan bukti selisih hampir lima puluh poin persentase. Tabel berikut "
-    "memisahkan selisih itu menjadi sebab-sebabnya. Perbandingan hanya "
-    "dilakukan antar run yang konfigurasinya identik.\n")
+    "dengan bukti selisih hampir lima puluh poin persentase pada arsitektur, "
+    "data, dan hyperparameter yang disebut identik. Tabel berikut memisahkan "
+    "selisih itu menjadi sebab-sebabnya.\n")
+out("Pernyataan bahwa hyperparameternya identik ternyata tidak benar. Run yang "
+    "menghasilkan angka pada split acak dijalankan selama enam epoch, sedangkan "
+    "run yang menghasilkan angka pada partisi resmi dijalankan selama **satu** "
+    "epoch. Keduanya berasal dari tahap paling awal penelitian, ketika nama "
+    "direktori belum memuat penanda batch dan epoch, sehingga perbedaan itu "
+    "tidak terlihat dari nama berkasnya dan tidak pernah diperiksa. "
+    "Perbandingan aslinya karena itu bukan perbandingan terkontrol sama sekali. "
+    "Baris ketiga dan keempat menjalankan keduanya pada konfigurasi yang "
+    "seragam.\n")
 
 
 def baris(m, lbl):
@@ -113,8 +122,8 @@ def baris(m, lbl):
 
 out("| Konfigurasi dan split | n | Akurasi @0,5 | Akurasi @prior | AUC |")
 out("|---|---|---|---|---|")
-out(baris(LAMA_R, "6 epoch batch 64, split acak"))
-out(baris(LAMA_O, "6 epoch batch 64, partisi resmi"))
+out(baris(LAMA_R, "run asli, 6 epoch batch 64, split acak"))
+out(baris(LAMA_O, "run asli, 1 epoch batch 64, partisi resmi"))
 out(baris(BARU_R, "10 epoch batch 32, split acak"))
 out(baris(BARU_O, "10 epoch batch 32, partisi resmi"))
 out("")
