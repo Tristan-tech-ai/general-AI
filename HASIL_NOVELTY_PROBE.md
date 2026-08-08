@@ -32,7 +32,9 @@ Proksi ketergantungan pintasan: recall pada TTS **2019 non-MP3** (Tacotron2, Spe
 - Korelasi **akurasi FoR** vs recall TTS modern: **r = -0.542**
 - Korelasi **recall TTS-2019 non-MP3** vs recall TTS modern: **r = +0.467**
 
-**Akurasi FoR berkorelasi NEGATIF kuat (r = -0.542) dengan kemampuan mendeteksi TTS modern.** Ini bukan sekadar 'kurang prediktif' — arahnya terbalik. Memilih model berdasarkan akurasi FoR berarti secara sistematis memilih model yang paling bergantung pada pintasan codec, dan justru paling buruk pada suara AI generasi baru.
+> **KLAIM INI SUDAH DITARIK.** Angka r = -0,542 dihitung atas tujuh run tanpa merata-ratakan seed per konfigurasi. Dihitung ulang atas sepuluh konfigurasi dengan seed dirata-ratakan, hasilnya **r = -0,048**, uji permutasi **p = 0,895**, selang bootstrap **[-0,664, +0,629]** yang memuat nol. Lihat [HASIL_UJI_KORELASI.md](HASIL_UJI_KORELASI.md).
+>
+> Yang tetap berdiri adalah pernyataan yang lebih lemah, yaitu bahwa akurasi FoR **tidak memprediksi** kemampuan mendeteksi TTS modern. Pernyataan itu ditopang audit kebocoran codec yang dihitung langsung dari berkas, bukan oleh koefisien korelasi. Pernyataan bahwa keduanya berkorelasi negatif secara sistematis tidak didukung data.
 
 Mekanismenya sudah terdokumentasi di proyek ini: 90,7% sampel palsu di data latih FoR berasal dari MP3. Akurasi FoR yang tinggi sebagian diperoleh dengan mengeksploitasi jejak itu, dan jejak itu tidak ada pada TTS modern.
 

@@ -35,9 +35,13 @@ Hipotesis yang diajukan sebelum menjalankan HuBERT: band-gain memperbaiki sumbu 
 
 Korelasi antara titik awal dan besar perbaikan: **r = -0.980**
 
-Polanya monoton dan sangat kuat: makin rendah titik awal, makin besar perbaikannya. Ini konsisten dengan hipotesis ceiling dan mendukung bahwa band-gain memang bekerja lewat penghapusan ketergantungan pintasan, bukan lewat efek yang khas satu arsitektur.
+Polanya monoton: makin rendah titik awal, makin besar perbaikannya. Arah ini konsisten dengan hipotesis ceiling.
 
-> Catatan kehati-hatian: hipotesis ini disusun setelah melihat hasil Nes2Net dan WavLM, lalu diuji pada HuBERT dengan prediksi yang dituliskan lebih dulu. Konfirmasinya karena itu bermakna, tetapi hanya berbasis tiga arsitektur.
+> **Koefisien ini tidak dapat diuji, dan angkanya menyesatkan.** Dengan tiga titik data, uji permutasi lengkap hanya memiliki enam susunan yang mungkin, sehingga nilai p terkecil yang dapat dihasilkannya sekitar **0,33** berapa pun kuatnya pola. Koefisien -0,980 pada n=3 karena itu tidak membawa informasi yang dapat dipertanggungjawabkan; tiga titik hampir selalu dapat didekati garis lurus.
+>
+> Selain itu, ketiga "perubahan" yang menjadi sumbu y sendiri tidak terbukti berbeda dari nol. Uji Welch atas keenam perbandingan band-gain memberi p Holm = 1,0000 untuk seluruhnya, termasuk +29,2 pp pada HuBERT dan +10,0 pp pada Nes2Net. Lihat [HASIL_UJI_KLAIM_BANDGAIN.md](HASIL_UJI_KLAIM_BANDGAIN.md). Mengorelasikan tiga besaran yang masing-masing tidak terbukti berbeda dari nol tidak dapat menghasilkan kesimpulan yang sah.
+>
+> Hipotesis ceiling karena itu tetap berstatus hipotesis. Ia disusun setelah melihat Nes2Net dan WavLM lalu diuji pada HuBERT dengan prediksi yang dituliskan lebih dulu, dan prediksinya memang tepat arah. Nilai itu yang dipertahankan, bukan koefisiennya.
 
 ## Kombinasi band-gain + RawBoost (Nes2Net-X)
 
