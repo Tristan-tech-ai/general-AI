@@ -1589,8 +1589,8 @@ def bangun():
         "menempati peringkat teratas pada dataset.", "p"))
     E.append(P(
         "Pertanyaan apakah rekayasa metodologi dalam penelitian ini mengungguli "
-        "rencana awalnya dijawab dengan tiga inisialisasi acak per sel dan uji "
-        "yang dikoreksi untuk banding ganda. Jawabannya sebagian besar negatif, "
+        "rencana awalnya dijawab dengan tiga sampai lima inisialisasi acak per "
+        "sel dan uji yang dikoreksi untuk banding ganda. Jawabannya sebagian besar negatif, "
         "dan itu perlu dinyatakan terus terang. Pada AST, konfigurasi proposal "
         f"mencapai {_sn(A['ast_proposal'])} sedangkan konfigurasi rekayasa dengan "
         f"encoder yang dilatih mencapai {_sn(A['ast_dilatih'])}, yaitu selisih "
@@ -1635,6 +1635,74 @@ def bangun():
         "terbaca sama meyakinkannya. Praktik melaporkan satu angka dari satu "
         "inisialisasi karena itu bukan sekadar kurang teliti, melainkan cukup "
         "untuk membalik arah kesimpulan sebuah penelitian.", "p"))
+
+    # ---------------- Lampiran: daftar klaim yang ditarik
+    E.append(PageBreak())
+    E.append(P("Lampiran A. Klaim yang Ditarik Selama Penelitian", "h1"))
+    E.append(P(
+        "Naskah ini melewati beberapa versi, dan sejumlah pernyataan yang sempat "
+        "tercantum di dalamnya kemudian ditarik setelah diuji. Daftar berikut "
+        "memuat seluruhnya beserta alasan penarikannya. Daftar ini disertakan "
+        "karena riwayat commit repositori memuat versi-versi tersebut secara "
+        "terbuka, sehingga pembaca yang menelusurinya akan menemukannya sendiri. "
+        "Menjelaskannya di sini lebih berguna daripada membiarkannya ditemukan "
+        "tanpa konteks.", "p"))
+    E.append(tabel(
+        ["Klaim yang sempat dinyatakan", "Alasan penarikan"],
+        [["Nilai rekayasa mencapai +37,59 poin persentase pada AST",
+          "Baseline pembandingnya lumpuh karena bug yang membuat encoder tidak "
+          "pernah menerima gradien. Setelah diperbaiki, selisihnya hilang."],
+         ["Akurasi in-domain berkorelasi negatif dengan generalisasi, "
+          "r sama dengan negatif 0,542 atas tujuh model",
+          "Dihitung ulang atas sepuluh konfigurasi dengan inisialisasi "
+          "dirata-ratakan, koefisiennya menjadi negatif 0,048 dengan p sama "
+          "dengan 0,895 dan selang kepercayaan yang memuat nol."],
+         ["Hipotesis ceiling didukung korelasi r sama dengan negatif 0,980",
+          "Pada tiga titik data, uji permutasi lengkap hanya memiliki enam "
+          "susunan sehingga p minimum sekitar 0,33. Ketiga besaran pada sumbu "
+          "tegaknya sendiri juga tidak terbukti berbeda dari nol."],
+         ["Band-gain memperbaiki recall terhadap sistem lama non-MP3 "
+          "sebesar 10,0 poin persentase",
+          "Dua belas perbandingan pada tiga arsitektur diuji, seluruhnya "
+          "menghasilkan p terkoreksi 1,0000. Selisih tersebut ditentukan oleh "
+          "satu inisialisasi yang buruk."],
+         ["RawBoost menurunkan kemampuan generalisasi",
+          "Diuji dengan cara yang sama dan juga tidak bertahan. Menguji "
+          "band-gain sambil menerima klaim pembandingnya akan menjadi pemilihan "
+          "yang tidak sah."],
+         ["Parameter optimal band-gain adalah enam pita dengan redaman 3 dB",
+          "Struktur berpuncak pada sapuan hilang setelah tiap titik diberi tiga "
+          "inisialisasi. Pengujian pra-registrasi terhadap titik terbaik "
+          "menghasilkan selisih berlawanan arah dengan p sama dengan 0,875."],
+         ["Model swa-selia berukuran besar sebaiknya dibekukan",
+          "HuBERT Large berukuran sama dan sama-sama swa-selia namun berperilaku "
+          "seperti AST. Setelah lima inisialisasi, tidak satu pun perbandingan "
+          "beku lawan dilatih terbukti berbeda."],
+         ["Paket rekayasa berfungsi sebagai jaring pengaman terhadap "
+          "learning rate yang buruk",
+          "Teramati pada WavLM Large namun tidak berulang pada HuBERT Large, "
+          "yang justru turun 6,80 poin persentase."],
+         ["Early stopping menyumbang perbaikan yang terbukti",
+          "Vonisnya berayun menurut jumlah inisialisasi, yaitu 0,048 lalu 0,239 "
+          "lalu 0,072, sehingga daya ujinya tidak cukup untuk memutuskan."]],
+        [7.4 * cm, 8.6 * cm]))
+    E.append(Spacer(1, 6))
+    E.append(P(
+        "Satu pola menyatukan hampir seluruh baris di atas. Setiap klaim lahir "
+        "dari pengukuran yang benar, disusun dengan penalaran yang masuk akal, "
+        "dan menghasilkan angka yang tampak meyakinkan. Yang membatalkannya "
+        "bukan kesalahan perhitungan melainkan penambahan data. Delapan kali "
+        "dalam penelitian ini, sebuah pola yang tampak jelas menghilang setelah "
+        "satu atau dua inisialisasi acak ditambahkan.", "p"))
+    E.append(P(
+        "Yang bertahan setelah seluruh pengujian tersebut hanya dua kelompok. "
+        "Kelompok pertama adalah temuan yang tidak bergantung pada pengujian "
+        "statistik sama sekali, yaitu audit kebocoran provenance codec yang "
+        "dihitung langsung dari berkas, kebutaan protokol split acak terhadap "
+        "kerusakan besar, dan keruntuhan model anti-spoofing publik di luar "
+        "domainnya. Kelompok kedua adalah selisih yang besarannya berpuluh poin "
+        "persentase, yaitu pengaruh besaran learning rate terhadap encoder. "
+        "Segala sesuatu yang selisihnya berbilang poin tidak bertahan.", "p"))
 
     doc = SimpleDocTemplate(OUT, pagesize=A4,
                             leftMargin=2.4 * cm, rightMargin=2.4 * cm,
