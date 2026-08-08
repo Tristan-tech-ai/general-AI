@@ -13,7 +13,10 @@ from forlib.metrics import full_metrics, prior_matched_threshold
 g = defaultdict(list)
 for d in sorted(glob.glob("runs/*")):
     f = os.path.join(d, "test_scores.npy")
-    m = re.match(r"^(.+?)_official_([a-z]+?)(?:_b\d+e\d+)?_s(\d+)$",
+    # Konfigurasi ikut menjadi bagian kunci. Tanpa ini, run dengan jumlah epoch
+    # atau batch yang berbeda tergabung menjadi satu kelompok dan sebarannya
+    # terlaporkan sebagai ragam antar inisialisasi acak.
+    m = re.match(r"^(.+?)_official_([a-z]+?)(_b\d+e\d+)?_s(\d+)$",
                  os.path.basename(d))
     if not (os.path.exists(f) and m):
         continue
@@ -21,7 +24,8 @@ for d in sorted(glob.glob("runs/*")):
     if len(y) != 1088:
         continue
     met = full_metrics(y.astype(int), p, prior_matched_threshold(p, 0.5))
-    g[(m.group(1), m.group(2))].append((m.group(3), met["accuracy"] * 100,
+    kunci_aug = m.group(2) + "@" + (m.group(3) or "_lama").lstrip("_")
+    g[(m.group(1), kunci_aug)].append((m.group(4), met["accuracy"] * 100,
                                         met["eer"] * 100))
 
 print(f"{'arsitektur':22s} {'augmentasi':10s} {'n':>2s} {'akurasi':>9s} "

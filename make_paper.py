@@ -1610,7 +1610,7 @@ def bangun():
         "Keempat, sejumlah kesimpulan sementara dalam penelitian ini pernah keliru "
         "dan telah dikoreksi setelah pengukuran ulang. Riwayat koreksi tersebut "
         "sengaja dipertahankan dalam dokumentasi pendukung agar dapat ditelusuri.", "p"))
-    E.append(P("5.1 Satu pola kegagalan yang berulang enam kali", "h2"))
+    E.append(P("5.1 Satu pola kegagalan yang berulang tujuh kali", "h2"))
     E.append(P(
         "Kekeliruan yang muncul selama penelitian ini ternyata sebagian besar "
         "berasal dari satu pola yang sama, dan pola itu layak dinyatakan "
@@ -1659,7 +1659,35 @@ def bangun():
         "menyesatkan bukan kesalahan melainkan asumsi yang benar pada saat "
         "dibuat.", "p"))
     E.append(P(
-        "Yang menyatukan keenamnya bukan kecerobohan pada satu titik, melainkan "
+        "Kejadian ketujuh ditemukan ketika kejadian keenam ditelusuri lebih "
+        "jauh, dan merupakan yang paling merusak di antara seluruhnya. "
+        "Pemeriksaan terhadap seluruh direktori hasil menunjukkan bahwa kedua "
+        "run yang menghasilkan angka pembuka penelitian ini tidak hanya berbeda "
+        "dari eksperimen lain, tetapi juga berbeda satu sama lain. Run pada "
+        "split acak dijalankan selama enam epoch, sedangkan run pada partisi "
+        "resmi dijalankan selama satu epoch. Naskah menyatakan bahwa keduanya "
+        "memakai arsitektur, data, dan hyperparameter yang identik.", "p"))
+    E.append(P(
+        "Yang gagal pada kejadian ini bukan angkanya melainkan klaim "
+        "keterkontrolannya. Selisih empat puluh sembilan koma sembilan empat "
+        "poin persentase memang terukur dan dapat direproduksi, namun ia bukan "
+        "selisih antara dua protokol pembagian data pada model yang sama. "
+        "Perbedaan lama pelatihan sebesar enam kali lipat tidak terlihat dari "
+        "nama direktorinya, karena penanda batch dan epoch baru ditambahkan ke "
+        "penamaan setelah kedua run tersebut selesai. Selama berbulan-bulan, dua "
+        "run yang tampak sepadan dari namanya sebenarnya tidak sepadan sama "
+        "sekali.", "p"))
+    E.append(P(
+        "Penelusuran yang sama menemukan bahwa lima kelompok hasil memuat lebih "
+        "dari satu konfigurasi pelatihan, dan bahwa lima skrip pelaporan "
+        "membuang penanda konfigurasi ketika membentuk kunci pengelompokan. "
+        "Akibatnya, sebaran antar konfigurasi dilaporkan sebagai sebaran antar "
+        "inisialisasi acak pada beberapa tabel. Salah satu kelompok yang "
+        "tercampur menggabungkan dua langkah yang berbeda dari tangga ablasi "
+        "yang sama. Seluruhnya telah diperbaiki dengan menjadikan konfigurasi "
+        "sebagai bagian dari kunci.", "p"))
+    E.append(P(
+        "Yang menyatukan ketujuhnya bukan kecerobohan pada satu titik, melainkan "
         "ketiadaan mekanisme yang memberi tahu bahwa ada yang berubah. Tidak ada "
         "galat yang dilempar, tidak ada peringatan yang dicetak, dan hasilnya "
         "tetap berupa angka yang tampak masuk akal. Sebagai tanggapan, seluruh "
@@ -1785,9 +1813,15 @@ def bangun():
           "berasal dari skema pembagian data",
           "Selisih itu memiliki tiga sebab. Sebesar 42,52 poin berasal dari "
           "ambang keputusan, 20,68 poin dari model yang kurang terlatih pada "
-          "run aslinya yang memakai enam epoch, dan hanya 6,92 poin dari "
-          "protokol. Sisa itu pun belum terbukti berbeda dari nol dengan p "
-          "sebesar 0,0822."],
+          "run aslinya, dan hanya 6,92 poin dari protokol. Sisa itu pun belum "
+          "terbukti berbeda dari nol dengan p sebesar 0,0822."],
+         ["Kedua run pembanding memakai arsitektur, data, dan hyperparameter "
+          "yang identik",
+          "Run pada split acak dijalankan selama enam epoch dan run pada "
+          "partisi resmi selama satu epoch. Perbedaan itu tidak terlihat dari "
+          "nama direktorinya karena penanda batch dan epoch baru ditambahkan "
+          "setelah kedua run selesai. Perbandingan aslinya bukan perbandingan "
+          "terkontrol."],
          ["Sistem text-to-speech terbaru terdeteksi pada 97 sampai 99 persen",
           "Keempat angka yang dikutip merupakan nilai dari inisialisasi acak "
           "yang sama, yaitu yang terbaik untuk keempat sistem. Rerata atas tiga "
