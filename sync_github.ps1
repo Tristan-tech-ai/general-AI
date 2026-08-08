@@ -6,6 +6,17 @@ param([string]$Pesan = "")
 
 Set-Location $PSScriptRoot
 
+# Pengaman sebelum apa pun dikirim: pastikan tidak ada kelompok run yang memuat
+# lebih dari satu konfigurasi pelatihan tanpa alasan tercatat. Penggabungan
+# semacam itu melaporkan ragam antar konfigurasi sebagai ragam antar
+# inisialisasi acak, dan sudah menyebabkan tujuh kekeliruan dalam penelitian ini.
+py cek_konfigurasi.py
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "DIHENTIKAN: ada kelompok run dengan konfigurasi tercampur."
+    Write-Output "Perbaiki atau daftarkan pengecualiannya sebelum menyinkronkan."
+    exit 1
+}
+
 # regenerasi grafik & laporan agar yang dikirim selalu mutakhir
 py make_charts.py 2>&1 | Out-Null
 if (Test-Path generations_results.json) { py gen_report.py 2>&1 | Out-Null }
