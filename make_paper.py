@@ -1571,7 +1571,7 @@ def bangun():
         "Keempat, sejumlah kesimpulan sementara dalam penelitian ini pernah keliru "
         "dan telah dikoreksi setelah pengukuran ulang. Riwayat koreksi tersebut "
         "sengaja dipertahankan dalam dokumentasi pendukung agar dapat ditelusuri.", "p"))
-    E.append(P("5.1 Satu pola kegagalan yang berulang lima kali", "h2"))
+    E.append(P("5.1 Satu pola kegagalan yang berulang enam kali", "h2"))
     E.append(P(
         "Kekeliruan yang muncul selama penelitian ini ternyata sebagian besar "
         "berasal dari satu pola yang sama, dan pola itu layak dinyatakan "
@@ -1600,7 +1600,27 @@ def bangun():
         "yang seharusnya menunjukkan bahwa split acak menggelembungkan angka "
         "justru menampilkan angka yang membantahnya.", "p"))
     E.append(P(
-        "Yang menyatukan kelimanya bukan kecerobohan pada satu titik, melainkan "
+        "Kejadian keenam berlangsung setelah bagian ini selesai ditulis, dan "
+        "karena itu paling layak dicatat. Untuk memberi inisialisasi tambahan "
+        "pada temuan pembuka, sebuah skrip disusun yang menjalankan konfigurasi "
+        "yang sama dengan seed berbeda. Konfigurasi yang dituliskan ke dalam "
+        "skrip itu adalah konfigurasi baku yang dipakai seluruh eksperimen lain, "
+        "yaitu sepuluh epoch dengan batch tiga puluh dua. Run aslinya ternyata "
+        "memakai enam epoch dengan batch enam puluh empat, karena dijalankan "
+        "pada tahap paling awal penelitian sebelum penanda batch dan epoch "
+        "ditambahkan ke nama direktori.", "p"))
+    E.append(P(
+        "Bila ketiga hasil itu digabungkan tanpa pemeriksaan, sebarannya akan "
+        "dilaporkan sebagai ragam antar inisialisasi acak padahal sebagian "
+        "besarnya ragam antar konfigurasi. Kekeliruan tersebut identik dengan "
+        "yang dikritik di seluruh bagian lain naskah ini, dilakukan oleh "
+        "penulisnya sendiri, satu jam setelah kritik itu dituliskan. Nama "
+        "direktori yang tidak memuat batch dan epoch adalah peninggalan dari "
+        "tahap ketika penanda tersebut belum diperlukan, dan sekali lagi yang "
+        "menyesatkan bukan kesalahan melainkan asumsi yang benar pada saat "
+        "dibuat.", "p"))
+    E.append(P(
+        "Yang menyatukan keenamnya bukan kecerobohan pada satu titik, melainkan "
         "ketiadaan mekanisme yang memberi tahu bahwa ada yang berubah. Tidak ada "
         "galat yang dilempar, tidak ada peringatan yang dicetak, dan hasilnya "
         "tetap berupa angka yang tampak masuk akal. Sebagai tanggapan, seluruh "
