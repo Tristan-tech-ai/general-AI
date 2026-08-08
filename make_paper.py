@@ -311,9 +311,10 @@ def bangun():
         "sintesis. Dengan arsitektur, data, dan hyperparameter yang identik, "
         "pembagian data secara acak menghasilkan akurasi 99,94 persen sementara "
         "partisi resmi menghasilkan 50,00 persen pada ambang keputusan 0,5. "
-        "Pemecahan lebih lanjut menunjukkan bahwa 27,87 poin dari selisih itu "
-        "berasal dari protokol pembagian data dan sisanya dari ambang keputusan "
-        "yang tidak lagi cocok. Temuan lanjutan menunjukkan bahwa "
+        "Pemecahan lebih lanjut menunjukkan bahwa hanya 6,92 poin dari selisih "
+        "itu berasal dari protokol pembagian data, sedangkan 42,52 poin berasal "
+        "dari ambang keputusan yang tidak lagi cocok dan sisanya dari model yang "
+        "kurang terlatih. Temuan lanjutan menunjukkan bahwa "
         "akurasi pada dataset ini tidak memprediksi kemampuan mendeteksi "
         "sistem text-to-speech generasi 2025 sampai 2026, bahwa kegagalan di bawah "
         "gangguan noise sebagian besar merupakan kegagalan kalibrasi ambang dan "
@@ -407,15 +408,39 @@ def bangun():
         "Eksperimen pertama menggunakan model, data, dan hyperparameter yang sama "
         "persis, dan hanya mengubah cara data dibagi. Hasilnya sangat berbeda.", "p"))
     E.append(P(
-        "Angka pada tabel berikut diukur pada ambang prior-matched. Pada ambang "
-        "tetap 0,5, yaitu ambang yang lazim dipakai tanpa dipikirkan, kedua nilai "
-        "tersebut menjadi 99,94 dan 50,00 persen sehingga selisihnya tampak "
-        "49,94 poin persentase. Selisih itu menggabungkan dua sebab yang berbeda. "
-        "Sebesar 27,87 poin berasal dari protokol pembagian data, dan sisanya "
-        "sebesar 22,07 poin berasal dari ambang keputusan yang tidak lagi cocok "
-        "ketika distribusi skor bergeser. Keduanya dipisahkan di sini karena "
-        "hanya yang pertama merupakan sifat protokolnya, sedangkan yang kedua "
-        "dapat diperbaiki tanpa menyentuh protokol maupun model.", "p"))
+        "Pada ambang tetap 0,5, kedua nilai tersebut adalah 99,94 dan 50,00 "
+        "persen, sehingga selisihnya tampak 49,94 poin persentase. Selisih "
+        "itulah yang semula dilaporkan sebagai bukti bahwa protokol pembagian "
+        "data menentukan hasil. Pemeriksaan ulang dengan tiga inisialisasi acak "
+        "pada konfigurasi yang seragam menunjukkan bahwa selisih tersebut "
+        "menggabungkan tiga sebab yang berbeda, dan protokol merupakan yang "
+        "terkecil di antara ketiganya.", "p"))
+    E.append(tabel(
+        ["Sebab", "Besaran", "Dapat diperbaiki tanpa mengubah protokol"],
+        [["Ambang keputusan tidak lagi cocok", "42,52 poin",
+          "ya, cukup dengan menyesuaikan ambang"],
+         ["Model kurang terlatih pada run asli", "20,68 poin",
+          "ya, cukup dengan menambah epoch"],
+         ["Protokol pembagian data itu sendiri", "6,92 poin", "tidak"]],
+        [5.6 * cm, 2.8 * cm, 7.6 * cm]))
+    E.append(Spacer(1, 6))
+    E.append(P(
+        "Run yang menghasilkan angka aslinya memakai enam epoch, sedangkan "
+        "seluruh eksperimen lain dalam penelitian ini memakai sepuluh. Ketika "
+        "dijalankan pada konfigurasi yang seragam, model pada partisi resmi "
+        "mencapai area under curve 0,9756 dan akurasi 92,56 persen pada ambang "
+        "prior-matched, tetapi hanya 50,03 persen pada ambang tetap 0,5. Model "
+        "tersebut memisahkan kedua kelas hampir sempurna, dan yang gagal "
+        "hanyalah letak ambangnya.", "p"))
+    E.append(P(
+        "Sisa selisih yang benar-benar merupakan sifat protokol adalah 6,92 poin "
+        "persentase, dan bahkan besaran itu belum terbukti berbeda dari nol pada "
+        "pengujian Welch dengan nilai p sebesar 0,0822. Kesimpulan yang dapat "
+        "dipertahankan karena itu berbeda dari yang semula ditulis. Angka "
+        "akurasi tunggal memang menyesatkan pada dataset ini, tetapi sebab "
+        "utamanya adalah kalibrasi ambang dan bukan pembagian data. Kedua "
+        "pernyataan sama-sama merupakan peringatan, namun menunjuk sebab yang "
+        "berbeda dan menuntut perbaikan yang berbeda pula.", "p"))
     b = []
     for k in [("cnn_asp", "random", "none"), ("cnn_asp", "official", "none")]:
         if k in FOR:
@@ -1744,10 +1769,11 @@ def bangun():
           "lalu 0,072, sehingga daya ujinya tidak cukup untuk memutuskan."],
          ["Selisih 49,94 poin persentase antara kedua protokol sepenuhnya "
           "berasal dari skema pembagian data",
-          "Kedua angka diukur pada ambang tetap 0,5. Pada ambang prior-matched "
-          "selisihnya 27,87 poin, sehingga 22,07 poin sisanya berasal dari "
-          "ambang keputusan yang tidak lagi cocok. Efek protokolnya tetap besar "
-          "namun angkanya menggabungkan dua sebab."],
+          "Selisih itu memiliki tiga sebab. Sebesar 42,52 poin berasal dari "
+          "ambang keputusan, 20,68 poin dari model yang kurang terlatih pada "
+          "run aslinya yang memakai enam epoch, dan hanya 6,92 poin dari "
+          "protokol. Sisa itu pun belum terbukti berbeda dari nol dengan p "
+          "sebesar 0,0822."],
          ["Sistem text-to-speech terbaru terdeteksi pada 97 sampai 99 persen",
           "Keempat angka yang dikutip merupakan nilai dari inisialisasi acak "
           "yang sama, yaitu yang terbaik untuk keempat sistem. Rerata atas tiga "

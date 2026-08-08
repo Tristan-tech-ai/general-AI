@@ -11,23 +11,29 @@ Wav2Vec2, AST, HuBERT, dan CNN-LSTM dalam Klasifikasi Suara Deepfake dan Suara A
 
 ## Temuan utama
 
-**1. Protokol pembagian data menentukan hasil, bukan model.**
-Dengan arsitektur, data, dan hyperparameter yang identik (CNN+ASP, tanpa
-augmentasi, seed 42), split acak 60/20/20 menghasilkan akurasi **99,94%**
-sementara partisi resmi FoR menghasilkan **50,00%**. Selisihnya **49,94 poin**,
-dan tidak satu pun berasal dari perbedaan model.
+**1. Ambang keputusan menentukan hasil, bukan protokol pembagian data.**
 
-> **Selisih itu perlu dipecah.** Kedua angka di atas diukur pada ambang tetap
-> 0,5, yaitu ambang yang lazim dipakai tanpa dipikirkan. Pada ambang
-> prior-matched, angkanya menjadi **99,75%** dan **71,88%**, sehingga selisihnya
-> **27,87 poin**. Artinya **22,07 poin** dari selisih 49,94 itu berasal dari
-> ambang keputusan yang tidak lagi cocok, bukan dari protokol pembagian data.
->
-> Efek protokolnya tetap besar dan nyata (27,87 poin, AUC turun 1,0000 ke
-> 0,7946), tetapi angka "sekitar 50 poin" menggabungkan dua sebab yang berbeda.
-> Pemecahan yang sama pada matriks 2x2 dilaporkan di
-> [HASIL_DEKOMPOSISI.md](HASIL_DEKOMPOSISI.md). Kedua sel ini masing-masing
-> baru satu inisialisasi acak.
+Versi awal temuan ini menyatakan sebaliknya: split acak memberi **99,94%** dan
+partisi resmi **50,00%**, selisih **49,94 poin**, disimpulkan sepenuhnya berasal
+dari skema pembagian data. Pemecahan dengan 3 seed pada konfigurasi seragam
+menunjukkan selisih itu punya **tiga sebab**, dan protokol adalah yang terkecil:
+
+| Sebab | Besaran | Dapat diperbaiki tanpa mengubah protokol |
+|---|---|---|
+| Ambang keputusan tidak lagi cocok | **42,52 poin** | ya, cukup sesuaikan ambang |
+| Model kurang terlatih (run asli 6 epoch) | **20,68 poin** | ya, cukup tambah epoch |
+| **Protokol pembagian data** | **6,92 poin** | tidak |
+
+Pada konfigurasi seragam (10 epoch, batch 32, n=3), partisi resmi mencapai
+**AUC 0,9756** dan **92,56%** pada ambang prior-matched, tetapi hanya **50,03%**
+pada ambang 0,5. Model memisahkan kedua kelas hampir sempurna; yang gagal
+hanyalah letak ambangnya.
+
+> Efek protokolnya sendiri **belum terbukti** (uji Welch, p = 0,0822). Yang
+> tersisa dari temuan ini adalah peringatan yang berbeda dari yang semula
+> ditulis: angka akurasi tunggal menyesatkan, tetapi sebab utamanya adalah
+> kalibrasi ambang, bukan pembagian data. Rinciannya di
+> [HASIL_TEMUAN1.md](HASIL_TEMUAN1.md).
 
 **2. Penyebabnya artefak provenance codec, dan terukur.**
 Pada FoR-2sec, **90,7%** sampel `fake` di data latih berasal dari MP3, tetapi
@@ -156,7 +162,7 @@ dirangkum di sini supaya pembaca tidak perlu mempercayai ringkasan.
 
 | # | Temuan | Dasar | Status |
 |---|---|---|---|
-| 1 | Protokol split menentukan hasil | n=1 per sel, sedang ditambah | **dikoreksi**, 27,87 dari 49,94 poin berasal dari protokol, sisanya dari ambang |
+| 1 | Protokol split menentukan hasil | n=3 konfigurasi seragam | **ditarik sebagian**, hanya 6,92 dari 49,94 poin berasal dari protokol dan itu pun p = 0,0822; sebab utamanya ambang (42,52 poin) |
 | 2 | Kebocoran provenance codec MP3 | hitungan berkas langsung | **lolos**, 6326/6978 latih = 90,7% dan 0/544 uji = 0,0%, tanpa ragam |
 | 3 | Akurasi in-domain vs TTS modern | n=10 konfigurasi | **ditarik**, r = −0,048, p = 0,895 |
 | 4 | Kegagalan noise adalah kegagalan kalibrasi | n=3, uji berpasangan | **lolos**, p mentah 0,0232 dan 0,0084; p Holm 0,325 dan 0,134 |
