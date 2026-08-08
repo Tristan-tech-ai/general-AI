@@ -148,6 +148,34 @@ dan [HASIL_SIGNIFIKANSI.md](HASIL_SIGNIFIKANSI.md).
 
 ---
 
+## Status verifikasi tiap temuan
+
+Setiap temuan di atas diperiksa ulang: dari mana angkanya, berapa inisialisasi
+acak yang menopangnya, dan apakah selisihnya bertahan setelah diuji. Hasilnya
+dirangkum di sini supaya pembaca tidak perlu mempercayai ringkasan.
+
+| # | Temuan | Dasar | Status |
+|---|---|---|---|
+| 1 | Protokol split menentukan hasil | n=1 per sel, sedang ditambah | **dikoreksi**, 27,87 dari 49,94 poin berasal dari protokol, sisanya dari ambang |
+| 2 | Kebocoran provenance codec MP3 | hitungan berkas langsung | **lolos**, 6326/6978 latih = 90,7% dan 0/544 uji = 0,0%, tanpa ragam |
+| 3 | Akurasi in-domain vs TTS modern | n=10 konfigurasi | **ditarik**, r = −0,048, p = 0,895 |
+| 4 | Kegagalan noise adalah kegagalan kalibrasi | n=3, uji berpasangan | **lolos**, p mentah 0,0232 dan 0,0084; p Holm 0,325 dan 0,134 |
+| 5 | SOTA publik runtuh di luar domain | evaluasi zero-shot | **lolos**, tanpa pelatihan dan tanpa augmentasi acak sehingga deterministik |
+| 6 | Suara AI 2026 masih terdeteksi | n=3 | **dikoreksi**, 91 sampai 99 persen, bukan 97 sampai 99 |
+| 7 | Band-gain memperbaiki generalisasi | n=3, 12 perbandingan | **ditarik**, seluruhnya p Holm 1,0000 |
+| 8 | Split acak buta terhadap kerusakan | dua kejadian nyata | **lolos**, selisih puluhan poin di partisi resmi lawan di bawah 0,5 poin di split acak |
+| 9 | Learning rate harus sesuai encoder | n=5 | **lolos**, +35,07 dan +44,56 poin, p Holm 0,0002 |
+| 10 | Selisih lain larut dalam ragam | n=3 sampai 5 | **lolos**, tidak satu pun perbandingan beku lawan dilatih terbukti |
+
+Dua pola muncul dari tabel ini. Temuan yang **tidak bergantung pada pengujian
+statistik sama sekali** (nomor 2, 5, 8) bertahan tanpa syarat, karena berupa
+hitungan berkas atau evaluasi deterministik. Temuan yang selisihnya **berpuluh
+poin** (nomor 9) juga bertahan. Yang gugur atau perlu dikoreksi seluruhnya
+berada di antara keduanya, yaitu selisih berbilang poin yang bersandar pada
+sedikit inisialisasi acak.
+
+---
+
 ## Grafik
 
 | | |
