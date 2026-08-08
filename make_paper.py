@@ -528,6 +528,29 @@ def bangun():
         "penurunan yang semula tampak seperti batas fisik sebenarnya adalah celah "
         "pelatihan. Model yang dilatih dengan augmentasi noise mempertahankan 95,5 "
         "persen akurasi pada 0 dB, yaitu ketika daya noise sama dengan daya sinyal.", "p"))
+    E.append(P(
+        "Keempat angka yang dikutip di atas merupakan rerata atas tiga "
+        "inisialisasi acak, bukan nilai dari satu inisialisasi. Selisih antara "
+        "akurasi pada ambang beku dan ambang prior-matched diuji dengan uji t "
+        "berpasangan, karena kedua nilai berasal dari model yang sama sehingga "
+        "pengujian berpasangan berdaya lebih tinggi daripada pengujian dua "
+        "sampel bebas. Pemulihan pada WavLM menghasilkan nilai p mentah 0,0232 "
+        "pada 10 dB dan 0,0084 pada 0 dB. Setelah koreksi Holm-Bonferroni atas "
+        "enam belas perbandingan yang mencakup lima arsitektur pada dua tingkat "
+        "noise, keduanya menjadi 0,325 dan 0,134 sehingga tidak lagi berada di "
+        "bawah ambang.", "p"))
+    E.append(P(
+        "Temuan ini karena itu menempati posisi di antara temuan yang mapan dan "
+        "temuan yang gugur, dan posisinya perlu dinyatakan tanpa dibela maupun "
+        "diremehkan. Tiga hal membedakannya dari klaim lain yang tidak bertahan. "
+        "Arah efeknya konsisten pada dua tingkat noise yang terpisah untuk "
+        "arsitektur yang sama. Besarannya berpuluh poin persentase, bukan "
+        "berbilang poin. Dan yang paling menentukan, mekanismenya dapat "
+        "diperiksa tanpa pengujian statistik sama sekali, karena area under "
+        "curve tidak bergantung pada ambang. WavLM mempertahankan area under "
+        "curve sekitar 0,96 pada 10 dB, sehingga pernyataan bahwa daya pisahnya "
+        "masih ada dan yang bergeser hanyalah ambangnya dapat diverifikasi "
+        "langsung dari angka tersebut.", "p"))
 
     E.append(PageBreak())
     E.append(P("3.4 Deteksi lintas generasi text-to-speech", "h2"))
@@ -1699,6 +1722,12 @@ def bangun():
          ["Early stopping menyumbang perbaikan yang terbukti",
           "Vonisnya berayun menurut jumlah inisialisasi, yaitu 0,048 lalu 0,239 "
           "lalu 0,072, sehingga daya ujinya tidak cukup untuk memutuskan."],
+         ["Selisih 49,94 poin persentase antara kedua protokol sepenuhnya "
+          "berasal dari skema pembagian data",
+          "Kedua angka diukur pada ambang tetap 0,5. Pada ambang prior-matched "
+          "selisihnya 27,87 poin, sehingga 22,07 poin sisanya berasal dari "
+          "ambang keputusan yang tidak lagi cocok. Efek protokolnya tetap besar "
+          "namun angkanya menggabungkan dua sebab."],
          ["Sistem text-to-speech terbaru terdeteksi pada 97 sampai 99 persen",
           "Keempat angka yang dikutip merupakan nilai dari inisialisasi acak "
           "yang sama, yaitu yang terbaik untuk keempat sistem. Rerata atas tiga "
