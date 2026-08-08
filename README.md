@@ -12,9 +12,22 @@ Wav2Vec2, AST, HuBERT, dan CNN-LSTM dalam Klasifikasi Suara Deepfake dan Suara A
 ## Temuan utama
 
 **1. Protokol pembagian data menentukan hasil, bukan model.**
-Dengan arsitektur, data, dan hyperparameter yang identik, split acak 60/20/20
-menghasilkan akurasi **99,94%** sementara partisi resmi FoR menghasilkan **50,00%**.
-Selisih ~50 poin sepenuhnya berasal dari skema pembagian data.
+Dengan arsitektur, data, dan hyperparameter yang identik (CNN+ASP, tanpa
+augmentasi, seed 42), split acak 60/20/20 menghasilkan akurasi **99,94%**
+sementara partisi resmi FoR menghasilkan **50,00%**. Selisihnya **49,94 poin**,
+dan tidak satu pun berasal dari perbedaan model.
+
+> **Selisih itu perlu dipecah.** Kedua angka di atas diukur pada ambang tetap
+> 0,5, yaitu ambang yang lazim dipakai tanpa dipikirkan. Pada ambang
+> prior-matched, angkanya menjadi **99,75%** dan **71,88%**, sehingga selisihnya
+> **27,87 poin**. Artinya **22,07 poin** dari selisih 49,94 itu berasal dari
+> ambang keputusan yang tidak lagi cocok, bukan dari protokol pembagian data.
+>
+> Efek protokolnya tetap besar dan nyata (27,87 poin, AUC turun 1,0000 ke
+> 0,7946), tetapi angka "sekitar 50 poin" menggabungkan dua sebab yang berbeda.
+> Pemecahan yang sama pada matriks 2x2 dilaporkan di
+> [HASIL_DEKOMPOSISI.md](HASIL_DEKOMPOSISI.md). Kedua sel ini masing-masing
+> baru satu inisialisasi acak.
 
 **2. Penyebabnya artefak provenance codec, dan terukur.**
 Pada FoR-2sec, **90,7%** sampel `fake` di data latih berasal dari MP3, tetapi

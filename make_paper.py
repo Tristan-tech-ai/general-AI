@@ -310,8 +310,10 @@ def bangun():
         "satu pun. Akibatnya model belajar mengenali jejak kompresi, bukan jejak "
         "sintesis. Dengan arsitektur, data, dan hyperparameter yang identik, "
         "pembagian data secara acak menghasilkan akurasi 99,94 persen sementara "
-        "partisi resmi menghasilkan 50,00 persen. Selisih tersebut sepenuhnya "
-        "berasal dari protokol pembagian data. Temuan lanjutan menunjukkan bahwa "
+        "partisi resmi menghasilkan 50,00 persen pada ambang keputusan 0,5. "
+        "Pemecahan lebih lanjut menunjukkan bahwa 27,87 poin dari selisih itu "
+        "berasal dari protokol pembagian data dan sisanya dari ambang keputusan "
+        "yang tidak lagi cocok. Temuan lanjutan menunjukkan bahwa "
         "akurasi pada dataset ini tidak memprediksi kemampuan mendeteksi "
         "sistem text-to-speech generasi 2025 sampai 2026, bahwa kegagalan di bawah "
         "gangguan noise sebagian besar merupakan kegagalan kalibrasi ambang dan "
@@ -404,6 +406,16 @@ def bangun():
     E.append(P(
         "Eksperimen pertama menggunakan model, data, dan hyperparameter yang sama "
         "persis, dan hanya mengubah cara data dibagi. Hasilnya sangat berbeda.", "p"))
+    E.append(P(
+        "Angka pada tabel berikut diukur pada ambang prior-matched. Pada ambang "
+        "tetap 0,5, yaitu ambang yang lazim dipakai tanpa dipikirkan, kedua nilai "
+        "tersebut menjadi 99,94 dan 50,00 persen sehingga selisihnya tampak "
+        "49,94 poin persentase. Selisih itu menggabungkan dua sebab yang berbeda. "
+        "Sebesar 27,87 poin berasal dari protokol pembagian data, dan sisanya "
+        "sebesar 22,07 poin berasal dari ambang keputusan yang tidak lagi cocok "
+        "ketika distribusi skor bergeser. Keduanya dipisahkan di sini karena "
+        "hanya yang pertama merupakan sifat protokolnya, sedangkan yang kedua "
+        "dapat diperbaiki tanpa menyentuh protokol maupun model.", "p"))
     b = []
     for k in [("cnn_asp", "random", "none"), ("cnn_asp", "official", "none")]:
         if k in FOR:
@@ -416,7 +428,9 @@ def bangun():
                        [5.4 * cm, 3.6 * cm, 3.4 * cm, 3.6 * cm]))
         E.append(Spacer(1, 6))
     E.extend(gambar("02_efek_split.png", 12 * cm,
-                    "Gambar 1. Akurasi pada dua protokol pembagian data. "
+                    "Gambar 1. Akurasi pada dua protokol pembagian data, diukur "
+                    "pada ambang prior-matched sehingga tidak memuat sumbangan "
+                    "kesalahan kalibrasi. "
                     "Arsitektur, data, dan hyperparameter identik."))
 
     BUTA = []
