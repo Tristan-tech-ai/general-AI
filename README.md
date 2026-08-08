@@ -171,7 +171,7 @@ dirangkum di sini supaya pembaca tidak perlu mempercayai ringkasan.
 
 | # | Temuan | Dasar | Status |
 |---|---|---|---|
-| 1 | Protokol split menentukan hasil | n=3 konfigurasi seragam | **ditarik sebagian**, hanya 6,92 dari 49,94 poin berasal dari protokol dan itu pun p = 0,0822; sebab utamanya ambang (42,52 poin) |
+| 1 | Protokol split menentukan hasil | n=3 konfigurasi seragam | **ditarik sebagian**, hanya 6,92 dari 49,94 poin berasal dari protokol dan itu pun p = 0,0822; sebab utamanya ambang (42,52 poin), sehingga temuan ini menyatu dengan nomor 4 |
 | 2 | Kebocoran provenance codec MP3 | hitungan berkas langsung | **lolos**, 6326/6978 latih = 90,7% dan 0/544 uji = 0,0%, tanpa ragam |
 | 3 | Akurasi in-domain vs TTS modern | n=10 konfigurasi | **ditarik**, r = −0,048, p = 0,895 |
 | 4 | Kegagalan noise adalah kegagalan kalibrasi | n=3, uji berpasangan | **lolos**, p mentah 0,0232 dan 0,0084; p Holm 0,325 dan 0,134 |
@@ -188,6 +188,19 @@ hitungan berkas atau evaluasi deterministik. Temuan yang selisihnya **berpuluh
 poin** (nomor 9) juga bertahan. Yang gugur atau perlu dikoreksi seluruhnya
 berada di antara keduanya, yaitu selisih berbilang poin yang bersandar pada
 sedikit inisialisasi acak.
+
+Satu hal tidak terduga muncul dari proses ini. Temuan 1 dan temuan 4 semula
+dilaporkan terpisah, yang pertama tentang protokol pembagian data dan yang kedua
+tentang ketahanan terhadap noise. Setelah selisih pada temuan 1 dipecah menjadi
+sebab-sebabnya, keduanya ternyata menunjuk mekanisme yang sama: model masih
+dapat memisahkan kedua kelas (AUC 0,9756 dan 0,9615), tetapi ambang keputusannya
+tidak lagi cocok. Dua eksperimen dengan arsitektur dan kondisi berbeda sampai
+pada sebab yang sama, dan penyatuan itu justru muncul dari upaya menarik kembali
+klaim yang terlalu kuat, bukan dari upaya memperkuatnya.
+
+**Dua temuan utama yang bertahan** karena itu adalah kalibrasi ambang keputusan
+(temuan 1 dan 4 yang menyatu) dan besaran learning rate relatif terhadap encoder
+(temuan 9). Keduanya tidak menyangkut pilihan arsitektur sama sekali.
 
 ---
 
