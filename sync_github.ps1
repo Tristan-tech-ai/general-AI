@@ -17,10 +17,16 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# regenerasi grafik & laporan agar yang dikirim selalu mutakhir
-py make_charts.py 2>&1 | Out-Null
+# Regenerasi gambar, laporan, dan naskah agar yang dikirim selalu mutakhir.
+# Urutannya penting: gambar dibuat lebih dahulu, sebab naskah menyisipkannya.
+py gambar_paper.py 2>&1 | Out-Null
 if (Test-Path generations_results.json) { py gen_report.py 2>&1 | Out-Null }
 if (Test-Path generations_results.json) { py tradeoff_report.py 2>&1 | Out-Null }
+py naskah.py 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "DIHENTIKAN: naskah gagal dibangun, jadi angka pada PDF akan usang."
+    exit 1
+}
 
 git add -A 2>&1 | Out-Null
 $berubah = (git status --porcelain | Measure-Object).Count
