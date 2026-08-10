@@ -7,6 +7,22 @@ Wav2Vec2, AST, HuBERT, dan CNN-LSTM dalam Klasifikasi Suara Deepfake dan Suara A
 > Dataset, bobot model, dan arsip tidak disertakan (89 GB). Lihat
 > [Reproduksi](#reproduksi) untuk cara mengunduhnya.
 
+**Mulai dari sini: [NASKAH.pdf](NASKAH.pdf).** Berkas itu adalah naskah lengkap
+berbentuk makalah ilmiah, sembilan belas halaman, memuat seluruh perbandingan,
+sembilan gambar, empat puluh enam rujukan, serta daftar klaim yang ditarik
+beserta alasannya. Seluruh angka di dalamnya dihitung ulang dari berkas hasil
+setiap kali dokumen dibangun, sehingga tidak mungkin ada angka usang.
+
+Dibangun dengan dua perintah, gambar lebih dahulu karena naskah menyisipkannya:
+
+```
+py gambar_paper.py
+py naskah.py
+```
+
+`PAPER.pdf` adalah dokumen lama yang tumbuh mengikuti eksperimen dan tetap
+disimpan sebagai catatan sejarah.
+
 ---
 
 ## Temuan utama
