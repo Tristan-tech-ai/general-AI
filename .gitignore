@@ -45,3 +45,6 @@ audit_features.csv
 
 # ---- Bundle untuk Google Colab (dibuat ulang oleh colab/buat_bundle.py) ----
 colab_bundle.zip
+
+# ---- Gambar presentasi (dibuat ulang oleh presentasi.py) ----
+gambar_presentasi/
