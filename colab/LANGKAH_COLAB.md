@@ -16,17 +16,34 @@ memuat penjelasan mengapa ia perlu dijalankan.
 
 ## Langkah
 
+Repositori <https://github.com/Tristan-tech-ai/general-AI> sudah publik, jadi
+tidak perlu token dan tidak perlu mengunggah apa pun.
+
 1. Buka <https://colab.research.google.com>, pilih **File → Upload notebook**,
    lalu ambil `colab/Colab_Deteksi_Deepfake.ipynb`.
 2. Untuk Jalur B, atur **Runtime → Change runtime type → T4 GPU**. Jalur A
    tidak memerlukannya.
-3. Jalankan bagian 0 sampai 3 secara berurutan. Pada bagian 1 pilih **Cara 1**,
-   lalu unggah `colab_bundle.zip` ketika tombol unggah muncul.
+3. Jalankan bagian 0 sampai 3 secara berurutan. Pada bagian 1 jalankan
+   **Cara 1** saja, yaitu klon dari GitHub. **Lewati sel Cara 2 dan Cara 3**,
+   keduanya cuma cadangan.
 4. Setelah itu pilih jalurnya:
-   - **Jalur A** (bagian 4 sampai 6), sekitar lima menit, tanpa GPU dan tanpa
+   - **Jalur A** (bagian 4 sampai 6), sekitar dua menit, tanpa GPU dan tanpa
      dataset.
    - **Jalur B** (bagian 7 sampai 11), perlu GPU dan mengunduh dataset 1 GB.
 5. Simpan hasilnya lewat bagian 12 sebelum sesi berakhir.
+
+Nomor sel untuk Jalur A: **2, 4, 10, 12, 14, 16, 19, 20**. Sel 6 dan 8
+dilewati.
+
+Diuji dari klon anonim: 29 dari 29 skrip berhasil dalam 61 detik,
+perbandingan sha256 memberi 40 identik dan 7 berubah, dan `NASKAH.pdf`
+terbangun utuh 19 halaman.
+
+### Kalau kode di GitHub berubah
+
+Di sesi Colab berikutnya, klon barunya otomatis membawa versi terbaru. Kalau
+runtime lama masih hidup dan ingin memperbarui tanpa mengulang dari awal,
+jalankan `!git pull` dari dalam folder proyek.
 
 ## Mengapa Jalur A tidak memerlukan dataset
 
