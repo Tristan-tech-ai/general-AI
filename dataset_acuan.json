@@ -1,0 +1,22 @@
+{
+ "arsip": {
+  "nama": "for-2sec.tar.gz",
+  "bytes": 1048591372,
+  "sha256": "acd09881757832b5e9435d93d05e88ed366b41139ba63d47bbfa61344d706a16"
+ },
+ "pohon": {
+  "akar": "data/for-2seconds",
+  "berkas": 17870,
+  "bytes": 1144466280,
+  "sidik": "baf65aaf01f07540145f77d735e0686611f75c1d008f46ad60cff61a15a27a38"
+ },
+ "partisi": {
+  "training/real": 6978,
+  "training/fake": 6978,
+  "validation/real": 1413,
+  "validation/fake": 1413,
+  "testing/real": 544,
+  "testing/fake": 544
+ },
+ "sumber": "https://bil.eecs.yorku.ca/share/for-2sec.tar.gz"
+}

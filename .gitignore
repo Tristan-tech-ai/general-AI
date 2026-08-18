@@ -32,6 +32,16 @@ proposal_text.txt
 PROPOSAL_TESIS.pdf
 
 # ---- Berkas fitur besar ----
+# audit_features.csv 6,8 MB, hanya dipakai probe dan dapat dibangun ulang
+# dengan audit.py, jadi tidak perlu ikut.
 audit_features.csv
-manifest.csv
 
+# manifest.csv sengaja TIDAK diabaikan meskipun 3,1 MB. naskah.py,
+# gambar_paper.py, dan audit_codec.py membacanya, sehingga tanpa berkas ini
+# hasil klon tidak dapat membangun NASKAH.pdf maupun gambarnya. Kolom yang
+# dipakai hanya split, label, dan is_mp3; kolom path boleh berbeda antar mesin
+# dan dibangun ulang otomatis oleh train.py bila datasetnya ada.
+
+
+# ---- Bundle untuk Google Colab (dibuat ulang oleh colab/buat_bundle.py) ----
+colab_bundle.zip
