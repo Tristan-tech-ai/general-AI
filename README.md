@@ -253,7 +253,16 @@ train.py         pelatihan
 eval_*.py        evaluasi: SNR · for-rerec · In-the-Wild · lintas-generasi TTS
 probe_*.py       audit dataset & probe novelty
 make_charts.py   grafik
+
+colab/           dua belas notebook Colab per model, satu model per berkas
+                 lihat colab/NOTEBOOK_PER_MODEL.md
 ```
+
+Menjalankan tanpa memasang apa pun: `colab/` memuat dua belas notebook Google
+Colab yang menjelaskan proses pelatihan tiap arsitektur langkah demi langkah,
+serta membandingkan AdamW lawan NAdam dan dropout tetap lawan dropout adaptif.
+Daftar tautannya ada di
+[colab/NOTEBOOK_PER_MODEL.md](colab/NOTEBOOK_PER_MODEL.md).
 
 Dokumentasi lengkap ada di berkas `*.md`:
 [TEMUAN_GROUND_TRUTH.md](TEMUAN_GROUND_TRUTH.md) (audit dataset) ·

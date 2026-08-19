@@ -16,36 +16,15 @@ memuat penjelasan mengapa ia perlu dijalankan.
 
 ## Dua belas notebook per model
 
-Selain notebook gabungan di atas, ada dua belas notebook yang membahas
-**satu model saja per berkas**, dibangkitkan oleh `colab/buat_notebook_proses.py`.
-Notebook gabungan dirancang untuk cepat sampai ke hasil; dua belas ini
-dirancang untuk **dijelaskan sambil berjalan**, satu langkah per sel.
+Selain notebook gabungan di atas, tersedia dua belas notebook yang membahas
+**satu model saja per berkas**: empat model pada judul penelitian, dikali tiga
+jenis notebook. Notebook gabungan dirancang untuk cepat sampai ke hasil,
+sedangkan kedua belas ini dirancang untuk menjelaskan prosesnya langkah demi
+langkah.
 
-| model | proses | optimizer | dropout |
-|---|---|---|---|
-| Wav2Vec2 | `Proses_Wav2Vec2.ipynb` | `Optimizer_Wav2Vec2.ipynb` | `Dropout_Wav2Vec2.ipynb` |
-| AST | `Proses_AST.ipynb` | `Optimizer_AST.ipynb` | `Dropout_AST.ipynb` |
-| HuBERT | `Proses_HuBERT.ipynb` | `Optimizer_HuBERT.ipynb` | `Dropout_HuBERT.ipynb` |
-| CNN-LSTM | `Proses_CNN_LSTM.ipynb` | `Optimizer_CNN_LSTM.ipynb` | `Dropout_CNN_LSTM.ipynb` |
-
-* **Proses** delapan langkah, dari mendengarkan datanya, melihat apa yang
-  sebenarnya masuk ke model itu, sampai memutar berkas yang salah ditebak.
-* **Optimizer** melatih model yang sama dua kali, AdamW lawan NAdam, dengan
-  seluruh setelan lain identik termasuk seed.
-* **Dropout** melatih model yang sama dua kali, laju tetap 0,2 lawan Concrete
-  Dropout yang mempelajari lajunya sendiri, dan melaporkan laju yang akhirnya
-  dipilih model.
-
-Kedua notebook perbandingan menutup dengan membandingkan selisih yang terukur
-terhadap ragam antar inisialisasi model itu, lalu menyatakan terus terang
-apakah selisihnya sudah layak disebut nyata. Dengan satu inisialisasi,
-biasanya belum.
-
-Membangun ulang seluruhnya setelah menyunting generatornya:
-
-```
-py colab/buat_notebook_proses.py
-```
+Rinciannya, termasuk seluruh tautan Colab, perkiraan waktu, dan batas yang
+perlu diketahui sebelum membaca angkanya, ada pada dokumen tersendiri:
+**[NOTEBOOK_PER_MODEL.md](NOTEBOOK_PER_MODEL.md)**.
 
 ## Langkah
 

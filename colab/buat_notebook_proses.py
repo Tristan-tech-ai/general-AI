@@ -24,6 +24,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_URL = "https://github.com/Tristan-tech-ai/general-AI.git"
 GH = "Tristan-tech-ai/general-AI"
 
+PEMBUKA = f"""> **Tentang berkas ini.** Notebook ini bagian dari repositori penelitian
+> deteksi deepfake audio di <https://github.com/{GH}>. Seluruh kode yang
+> dijalankan di sini diambil langsung dari repositori itu, tidak ada yang
+> ditempel ke dalam notebook, sehingga hasilnya sebanding dengan hasil yang
+> dilaporkan di sana. Laporan lengkapnya ada pada `NASKAH.pdf`."""
+
 
 # ==========================================================================
 # Spesifikasi per model
@@ -156,7 +162,7 @@ Yang terjadi di sel ini, berurutan:
    dipakai di komputer lokal. Itu syarat supaya angkanya bisa dibandingkan.
 3. **Memasang pustaka** yang belum dibawa Colab.
 4. **Menjalankan pengaman konfigurasi**, yaitu skrip yang menolak melanjutkan
-   kalau ada pengaturan yang menyimpang dari acuan penelitian."""
+   bila ada pengaturan yang menyimpang dari acuan penelitian."""
 
 MD_DATASET = """## Langkah 2 · Mengambil dan memverifikasi dataset
 
@@ -186,8 +192,9 @@ baris = verifikasi_dan_manifest()"""
 
 
 def kode_setup(m, s):
-    return f"""# Notebook ini khusus satu model. Nilainya sengaja ditulis tetap, bukan
-# dropdown, supaya tidak ada yang tergeser tanpa sengaja saat presentasi.
+    return f"""# Notebook ini khusus satu model. Ketiga nilai berikut sengaja ditulis tetap,
+# bukan sebagai pilihan, supaya tidak ada yang tergeser tanpa sengaja dan
+# angkanya tetap sebanding dengan hasil rujukan di mesin lokal.
 MODEL      = "{m}"
 BATCH      = {s['batch']}          # batch yang dipakai di mesin lokal untuk model ini
 AUGMENTASI = "codec"    # perbaikan kebocoran codec, lihat notebook Proses
@@ -422,9 +429,9 @@ Alasannya bisa dihitung. Data latihnya 13.956 klip, sekitar 7,8 jam suara.
 Melatih ulang ratusan juta parameter dengan data sesedikit itu hampir pasti
 menghafal, bukan belajar.
 
-Analogi yang bisa dipakai saat menjelaskan: **telinganya tidak diajari ulang.**
-Telinganya sudah terlatih bertahun tahun sebelum bertemu data ini. Yang
-diajarkan cuma satu hal baru, yaitu menjawab pertanyaan asli atau palsu."""
+Cara membaca angka itu: **telinga model tidak diajari ulang.** Telinganya
+sudah terlatih bertahun tahun sebelum bertemu data ini, dan yang ditambahkan
+hanya satu kemampuan baru, yaitu menjawab pertanyaan asli atau palsu."""
 
     if m == "ast":
         return """## Langkah 5 · Bentuk modelnya dan berapa yang benar benar dilatih
@@ -537,9 +544,9 @@ Sebelum membicarakan model, ada baiknya mendengar dulu apa yang harus
 dibedakan. Sel ini mengambil satu suara asli dan satu suara palsu dari **data
 uji**, memutarnya, lalu menggambarnya dengan dua cara.
 
-Yang biasanya terjadi saat dipresentasikan: pendengar tidak bisa membedakan
-keduanya, dan gambarnya pun terlihat mirip. Itu justru poinnya. Kalau
-perbedaannya kentara, tidak perlu penelitian ini.
+Keduanya umumnya terdengar sangat mirip, dan gambarnya pun terlihat mirip.
+Itu memang inti persoalannya. Bila perbedaannya kentara bagi telinga manusia,
+tugas ini tidak memerlukan model sama sekali.
 
 Dua gambar yang ditampilkan:
 
@@ -668,6 +675,8 @@ def bangun_proses(m):
 
 **{s['satu_kalimat']}**
 
+{PEMBUKA}
+
 Notebook ini sengaja dipecah menjadi delapan langkah terpisah, satu sel per
 langkah, supaya prosesnya bisa dijelaskan sambil berjalan. Notebook ini bukan
 untuk mengejar hasil secepat mungkin.
@@ -780,9 +789,9 @@ membedakan, hanya salah menaruh garis potongnya. Itu masalah yang jauh lebih
 ringan, dan membedakan keduanya adalah salah satu temuan penelitian ini.
 
 **Kesalahan yang paling percaya diri.** Sel ini memutar berkas yang salah
-ditebak model dengan keyakinan paling tinggi. Ini bagian yang biasanya paling
-menarik saat presentasi, karena orang bisa mendengar sendiri di mana modelnya
-tertipu.{lw_md}"""))
+ditebak model dengan keyakinan paling tinggi. Bagian ini memperlihatkan secara
+langsung jenis berkas seperti apa yang menipu model, sesuatu yang tidak
+terbaca dari angka ringkasan mana pun.{lw_md}"""))
 
     c.append(sel("code", """import json
 import numpy as np
@@ -823,7 +832,7 @@ if "layer_weights" in res:
     ax.set_xlabel("lapisan (0 = embedding, terakhir = paling atas)")
     ax.set_ylabel("bobot")
     ax.axhline(1 / len(w), color="#868E96", ls="--", lw=1)
-    ax.text(0.2, 1 / len(w) * 1.06, "garis putus putus = kalau semua sama rata",
+    ax.text(0.2, 1 / len(w) * 1.06, "garis putus putus = bila semua sama rata",
             fontsize=8, color="#495057")
     plt.show()
     print(f"Lapisan paling berguna menurut model: lapis {int(w.argmax())} "
@@ -856,7 +865,7 @@ Angka yang keluar dari notebook ini berasal dari **satu inisialisasi acak**.
 Itu belum cukup untuk menyimpulkan apa pun.
 
 Di komputer lokal, {s['nama']} pada konfigurasi yang sama menghasilkan
-**{s['hasil_lokal']}**. Simpangan itu bukan hiasan. Ia berarti kalau notebook
+**{s['hasil_lokal']}**. Simpangan itu bukan hiasan. Ia berarti bila notebook
 ini dijalankan ulang dengan `SEED` yang berbeda, hasilnya akan bergeser
 beberapa poin, padahal tidak ada satu pun hal lain yang berubah.
 
@@ -899,7 +908,7 @@ MD_KONSEP_OPT = """## Langkah 3 · Apa itu optimizer, dan apa bedanya kedua ini
 
 **Optimizer adalah aturan yang menentukan seberapa jauh dan ke arah mana bobot
 model digeser setiap kali ia salah.** Modelnya sendiri tidak berubah. Yang
-berubah cuma cara menuruni bukitnya.
+berubah hanya cara menuruni bukitnya.
 
 Analogi yang biasanya langsung dimengerti: bayangkan menuruni lembah berkabut,
 hanya bisa merasakan kemiringan tanah di bawah kaki.
@@ -911,7 +920,7 @@ hanya bisa merasakan kemiringan tanah di bawah kaki.
   mengukur kemiringan **di titik itu**, bukan di tempat ia berdiri sekarang.
   Ini yang disebut momentum Nesterov.
 
-Efeknya: kalau lembahnya menikung, NAdam sadar lebih cepat dan tidak terlanjur
+Efeknya: bila lembahnya menikung, NAdam sadar lebih cepat dan tidak terlanjur
 melewati tikungannya.
 
 Sel di bawah memperlihatkannya pada permukaan mainan dua dimensi yang bentuknya
@@ -985,7 +994,7 @@ mencegah model bergantung pada segelintir unit saja.
 Analogi yang biasanya langsung dimengerti: sebuah tim yang setiap latihan
 mengistirahatkan beberapa pemain secara acak. Karena tidak ada yang tahu siapa
 yang absen besok, semua orang terpaksa bisa mengerjakan bagian orang lain. Tim
-seperti itu tidak runtuh kalau satu bintangnya cedera.
+seperti itu tidak runtuh bila satu bintangnya cedera.
 
 Nilai `p = 0.2` berarti dua dari sepuluh unit dijatuhkan tiap langkah. Yang
 tersisa dikalikan `1/(1-p)` supaya jumlah totalnya tidak ikut mengecil.
@@ -1069,6 +1078,8 @@ def bangun_banding(m, jenis):
 
     c = [sel("markdown", f"""# {b['judul']} pada {s['nama']}
 
+{PEMBUKA}
+
 Notebook ini menjalankan **model yang sama persis dua kali**. Data sama, split
 sama, augmentasi sama, jumlah putaran sama, batch sama, inisialisasi acak sama.
 Satu satunya yang berbeda adalah **{b['pokok']}**-nya.
@@ -1107,7 +1118,7 @@ Untuk penjelasan model dan datanya sendiri, lihat `{berkas(m, 'proses')}`.""")]
 
 Ini sisi pembanding, yaitu pengaturan yang dipakai di seluruh hasil penelitian
 ini sejak awal. Angka yang keluar dari sini harus dekat dengan angka lokal
-untuk model yang sama, dan kalau jauh melenceng itu pertanda ada yang salah
+untuk model yang sama, dan bila jauh melenceng itu pertanda ada yang salah
 sebelum kita membandingkan apa pun.
 
 Setelan di sel ini berlaku untuk **kedua** sisi. Langkah 5 mengambil angka yang
@@ -1151,10 +1162,10 @@ latih({arg_a!r}, TAG_A, f"SISI A: {{NAMA_A}}")"""))
 Sekarang sisi yang diuji. Perintahnya **sama persis** dengan langkah 4 kecuali
 satu bendera tambahan: `{' '.join(arg_b)}`.
 
-Seed-nya juga sama, yaitu {'`SEED`'} yang kamu pilih di langkah 4. Ini penting
-dan sering dilupakan orang: kalau seed-nya berbeda, selisih yang muncul bisa
-saja datang dari inisialisasi acaknya, bukan dari {b['pokok']}-nya. Dengan seed
-yang sama, kedua model berangkat dari titik awal yang identik."""))
+Seed-nya juga sama, yaitu nilai yang diisi pada langkah 4. Ini penting dan
+sering terlewat: bila seed-nya berbeda, selisih yang muncul dapat berasal dari
+inisialisasi acaknya, bukan dari {b['pokok']}-nya. Dengan seed yang sama, kedua
+model berangkat dari titik awal yang identik."""))
 
     c.append(sel("code", f"""latih({arg_b!r}, TAG_B, f"SISI B: {{NAMA_B}}")
 
@@ -1175,7 +1186,7 @@ di bawah, sebaliknya. Angka itu dicetak di bawah.""")
 Tiga hal yang dibaca, dan urutannya penting.
 
 **Kurva belajar.** Grafik pertama menunjukkan EER validasi di tiap putaran.
-Ini memperlihatkan **bagaimana** keduanya belajar, bukan cuma di mana mereka
+Ini memperlihatkan **bagaimana** keduanya belajar, bukan hanya di mana mereka
 berakhir. Dua model bisa berakhir di angka yang sama lewat jalan yang sangat
 berbeda, dan yang lebih cepat stabil punya nilainya sendiri.
 
@@ -1287,14 +1298,14 @@ Cara menutup perbandingan ini dengan benar:
 
 1. Jalankan langkah 4 sampai 6 dengan `SEED = 42`, lalu `1337`, lalu `2024`.
 2. Ambil rata rata tiap sisi beserta simpangannya.
-3. Baru bandingkan rata ratanya, dan hanya sebut berbeda kalau selisihnya
+3. Baru bandingkan rata ratanya, dan hanya sebut berbeda bila selisihnya
    melampaui simpangan itu.
 
-Kalimat yang aman dipakai kalau ditanya sebelum ketiganya selesai:
-
-> "Dari satu inisialisasi, {nama_b} unggul sekian poin. Tapi ragam antar
-> inisialisasi pada model ini sendiri sekitar sekian poin, jadi saya belum
-> berhak menyebutnya lebih baik. Saya perlu dua inisialisasi lagi."
+Sebelum ketiganya selesai, yang didukung data dari notebook ini hanyalah
+selisih yang teramati pada satu inisialisasi. Pernyataan bahwa salah satu
+{b['pokok']} lebih baik adalah klaim yang berbeda dan belum berdasar. Batas itu
+disengaja, karena penelitian ini justru menemukan bahwa sebagian kesimpulan
+yang ditarik terlalu dini akhirnya tidak bertahan.
 
 Dua belas notebook di rangkaian ini:
 
