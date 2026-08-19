@@ -11,6 +11,8 @@ Perbaikan yang tertanam di sini (lihat ARSITEKTUR.md §6):
 """
 from __future__ import annotations
 
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -22,6 +24,82 @@ SR = 16000
 # ==========================================================================
 # Blok bersama
 # ==========================================================================
+class ConcreteDropout(nn.Module):
+    """
+    Dropout dengan laju yang DIPELAJARI, bukan ditetapkan manusia.
+
+    Dropout biasa memakai satu angka tetap, misalnya 0,2, yang dipilih dengan
+    menebak lalu mencoba. Angka itu tidak pernah berubah selama pelatihan dan
+    tidak pernah tahu apa-apa tentang datanya.
+
+    Di sini lajunya menjadi parameter yang ikut dilatih bersama bobot lainnya.
+    Persoalannya, menjatuhkan unit adalah keputusan biner, dan keputusan biner
+    tidak bisa diturunkan sehingga gradiennya tidak mengalir ke laju itu.
+    Concrete Dropout (Gal, Hron, Kendall, NeurIPS 2017) menyelesaikannya dengan
+    mengganti undian Bernoulli oleh relaksasi kontinu yang dapat diturunkan,
+    sehingga laju dropout ikut menerima gradien seperti bobot biasa.
+
+    Tanpa penahan, gradien itu akan selalu mendorong laju ke nol, karena model
+    yang tidak pernah menjatuhkan apa pun selalu mendapat loss latih lebih
+    kecil. Penahannya adalah suku entropi pada `regularisasi()`, yang menarik
+    laju kembali ke arah 0,5. Laju akhirnya adalah titik seimbang antara
+    keduanya, dan titik itu ditentukan data, bukan oleh yang menyetel.
+    """
+
+    def __init__(self, p_awal: float = 0.2, suhu: float = 0.1,
+                 reg: float = 1e-4):
+        super().__init__()
+        p_awal = min(max(float(p_awal), 1e-3), 1.0 - 1e-3)
+        self.logit_p = nn.Parameter(
+            torch.tensor(math.log(p_awal / (1.0 - p_awal)), dtype=torch.float32))
+        self.suhu = suhu
+        # Nilai bawaan mendekati 2/N dengan N = 13.956 klip latih, yaitu
+        # skala yang disarankan makalah aslinya.
+        self.reg = reg
+        self.n_unit = 0
+
+    @property
+    def p(self) -> torch.Tensor:
+        return torch.sigmoid(self.logit_p)
+
+    def forward(self, x):
+        self.n_unit = x.shape[-1]
+        if not self.training:
+            return x
+        p = self.p
+        eps = 1e-7
+        u = torch.rand_like(x, dtype=torch.float32)
+        # relaksasi kontinu Concrete: mendekati undian Bernoulli(p) ketika
+        # suhunya kecil, tetapi tetap dapat diturunkan terhadap p
+        z = torch.sigmoid(
+            (torch.log(p + eps) - torch.log(1 - p + eps)
+             + torch.log(u + eps) - torch.log(1 - u + eps)) / self.suhu)
+        return x * (1 - z).to(x.dtype) / (1 - p + eps).to(x.dtype)
+
+    def regularisasi(self) -> torch.Tensor:
+        """Suku entropi yang ditambahkan ke loss. Menahan laju agar tidak ke nol."""
+        p = self.p
+        eps = 1e-7
+        entropi_negatif = (p * torch.log(p + eps)
+                           + (1 - p) * torch.log(1 - p + eps))
+        return self.reg * max(self.n_unit, 1) * entropi_negatif
+
+
+def dropout_adaptif_pada(model: nn.Module) -> list[ConcreteDropout]:
+    return [m for m in model.modules() if isinstance(m, ConcreteDropout)]
+
+
+def regularisasi_dropout(model: nn.Module):
+    """Jumlah suku entropi seluruh ConcreteDropout, atau None bila tidak ada."""
+    modul = dropout_adaptif_pada(model)
+    if not modul:
+        return None
+    total = modul[0].regularisasi()
+    for m in modul[1:]:
+        total = total + m.regularisasi()
+    return total
+
+
 class AttentiveStatsPool(nn.Module):
     """
     Agregator bukti: rata-rata & simpangan baku berbobot atensi.
@@ -68,13 +146,18 @@ class LayerWeighting(nn.Module):
 
 
 class Head(nn.Module):
-    def __init__(self, in_dim: int, hidden: int = 256, n_cls: int = 2, p: float = 0.2):
+    def __init__(self, in_dim: int, hidden: int = 256, n_cls: int = 2,
+                 p: float = 0.2, dropout_adaptif: bool = False):
         super().__init__()
+        # Titik tukar dropout sengaja hanya satu dan sama untuk keempat
+        # arsitektur, supaya perbandingan tetap vs adaptif tidak tercampur
+        # perbedaan letak.
+        do = ConcreteDropout(p_awal=p) if dropout_adaptif else nn.Dropout(p)
         self.net = nn.Sequential(
             nn.BatchNorm1d(in_dim),
             nn.Linear(in_dim, hidden),
             nn.GELU(),
-            nn.Dropout(p),
+            do,
             nn.Linear(hidden, n_cls),
         )
 
@@ -103,7 +186,7 @@ class SSLClassifier(nn.Module):
 
     def __init__(self, kind: str = "wav2vec2", freeze: bool = True,
                  layer_weighting: bool = True, bottleneck: int = 256,
-                 dropout: float = 0.2):
+                 dropout: float = 0.2, dropout_adaptif: bool = False):
         super().__init__()
         from transformers import AutoModel, AutoFeatureExtractor
 
@@ -131,7 +214,7 @@ class SSLClassifier(nn.Module):
             nn.GELU(),
         )
         self.pool = AttentiveStatsPool(bottleneck)
-        self.head = Head(bottleneck * 2, 256, 2, dropout)
+        self.head = Head(bottleneck * 2, 256, 2, dropout, dropout_adaptif)
 
         # statistik normalisasi bawaan checkpoint (hindari normalisasi ganda)
         self.do_norm = bool(getattr(self.fe, "do_normalize", False))
@@ -184,7 +267,8 @@ class ASTClassifier(nn.Module):
     CKPT = "MIT/ast-finetuned-audioset-10-10-0.4593"
 
     def __init__(self, max_length: int = 200, freeze: bool = False,
-                 layer_weighting: bool = True, dropout: float = 0.2):
+                 layer_weighting: bool = True, dropout: float = 0.2,
+                 dropout_adaptif: bool = False):
         super().__init__()
         from transformers import ASTConfig, ASTModel, ASTFeatureExtractor
 
@@ -222,7 +306,7 @@ class ASTClassifier(nn.Module):
             nn.BatchNorm1d(256), nn.GELU(),
         )
         self.pool = AttentiveStatsPool(256)
-        self.head = Head(512, 256, 2, dropout)
+        self.head = Head(512, 256, 2, dropout, dropout_adaptif)
 
         self.register_buffer("fe_mean", torch.tensor(float(self.fe.mean)))
         self.register_buffer("fe_std", torch.tensor(float(self.fe.std)))
@@ -307,7 +391,8 @@ class CNNLSTMClassifier(nn.Module):
 
     def __init__(self, n_mels: int = 128, use_lstm: bool = True,
                  lstm_hidden: int = 256, lstm_layers: int = 2,
-                 dropout: float = 0.2, use_asp: bool = True):
+                 dropout: float = 0.2, use_asp: bool = True,
+                 dropout_adaptif: bool = False):
         super().__init__()
         self.mel = torchaudio.transforms.MelSpectrogram(
             sample_rate=SR, n_fft=1024, hop_length=160, win_length=400,
@@ -339,7 +424,8 @@ class CNNLSTMClassifier(nn.Module):
 
         self.use_asp = use_asp
         self.pool = AttentiveStatsPool(seq_dim) if use_asp else None
-        self.head = Head(seq_dim * 2 if use_asp else seq_dim, 256, 2, dropout)
+        self.head = Head(seq_dim * 2 if use_asp else seq_dim, 256, 2, dropout,
+                         dropout_adaptif)
 
         # SpecAugment (hanya aktif saat training)
         self.fmask = torchaudio.transforms.FrequencyMasking(15)

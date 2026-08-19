@@ -31,7 +31,8 @@ from torch.utils.data import DataLoader
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from forlib.data import (build_manifest, load_manifest, make_splits,
                          FoRDataset, AugmentConfig, collate)
-from forlib.models import build_model, DEFAULT_LR
+from forlib.models import (build_model, DEFAULT_LR,
+                           dropout_adaptif_pada, regularisasi_dropout)
 from forlib.metrics import (full_metrics, compute_eer, threshold_from_validation,
                             prior_matched_threshold, TemperatureScaler)
 
@@ -144,6 +145,15 @@ def main():
                     help="timpa learning rate encoder saja, head tetap memakai "
                          "nilai bawaan per model; berguna untuk memisahkan "
                          "pengaruh fine-tuning dari pengaruh laju yang dipakai")
+    ap.add_argument("--optimizer", default="adamw", choices=["adamw", "nadam"],
+                    help="adamw adalah bawaan seluruh hasil terdahulu; nadam "
+                         "menambahkan momentum Nesterov di atas Adam, dengan "
+                         "peluruhan bobot terpisah supaya satu-satunya yang "
+                         "berbeda memang suku Nesterov-nya")
+    ap.add_argument("--dropout", default="tetap", choices=["tetap", "adaptif"],
+                    help="tetap memakai laju dropout 0,2 yang ditetapkan "
+                         "manusia; adaptif memakai Concrete Dropout, yang "
+                         "mempelajari lajunya sendiri dari data")
     ap.add_argument("--no-layer-weighting", action="store_true")
     ap.add_argument("--label-smoothing", type=float, default=0.05)
     ap.add_argument("--augment-val", action="store_true",
@@ -171,6 +181,10 @@ def main():
            f"{('F' + str(int(args.bg_f_lo))) if args.bg_f_lo is not None else ''}"
            f"{('N' + str(args.bg_bands)) if args.bg_bands is not None else ''}"
            f"{('D' + str(int(args.bg_db))) if args.bg_db is not None else ''}"
+           # tanpa penanda ini, run Adam dan run NAdam memakai tag yang sama
+           # dan yang belakangan menimpa yang duluan tanpa peringatan
+           f"{'NAD' if args.optimizer == 'nadam' else ''}"
+           f"{'DA' if args.dropout == 'adaptif' else ''}"
            f"_b{args.batch}e{args.epochs}_s{args.seed}")
     outdir = os.path.join(HERE, args.out, tag)
     os.makedirs(outdir, exist_ok=True)
@@ -218,6 +232,9 @@ def main():
     if args.model in ("wav2vec2", "hubert", "wavlm", "ast"):
         kw["freeze"] = not args.unfreeze
         kw["layer_weighting"] = not args.no_layer_weighting
+    if args.model in ("wav2vec2", "hubert", "wavlm", "ast",
+                      "cnnlstm", "cnn_asp", "cnnlstm_proposal"):
+        kw["dropout_adaptif"] = args.dropout == "adaptif"
     model = build_model(args.model, **kw).to(device)
     n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
     n_all = sum(p.numel() for p in model.parameters())
@@ -248,7 +265,23 @@ def main():
         n_tr = sum(p.numel() for p in model.parameters() if p.requires_grad)
         print(f"mode LR seragam {args.uniform_lr}: encoder DILATIH, "
               f"{n_tr/1e6:.2f} M parameter")
-    opt = torch.optim.AdamW(model.trainable_groups(head_lr, enc_lr), weight_decay=0.01)
+    grup = model.trainable_groups(head_lr, enc_lr)
+    if args.optimizer == "nadam":
+        # decoupled_weight_decay menyamakan perlakuan peluruhan bobot dengan
+        # AdamW. Tanpa itu NAdam memakai peluruhan gaya L2 yang menyatu ke
+        # dalam gradien, sehingga perbandingannya akan mengandung dua
+        # perbedaan sekaligus, bukan satu.
+        try:
+            opt = torch.optim.NAdam(grup, weight_decay=0.01,
+                                    decoupled_weight_decay=True)
+        except TypeError:
+            print("PERINGATAN: versi torch ini belum punya "
+                  "decoupled_weight_decay pada NAdam. Peluruhan bobot "
+                  "dimatikan agar perbandingannya tetap satu perbedaan.")
+            opt = torch.optim.NAdam(grup, weight_decay=0.0)
+    else:
+        opt = torch.optim.AdamW(grup, weight_decay=0.01)
+    print(f"optimizer: {args.optimizer}   dropout: {args.dropout}")
     steps = max(1, len(dl_tr)) * args.epochs
     warm = int(0.1 * steps)
 
@@ -276,6 +309,13 @@ def main():
             y = b["label"].to(device, non_blocking=True)
             with torch.autocast("cuda", dtype=amp_dtype, enabled=device.type == "cuda"):
                 loss = crit(model(wav), y)
+            # Suku entropi Concrete Dropout dihitung DI LUAR autocast, dalam
+            # float32. Di dalam bf16 ia berupa selisih logaritma bernilai
+            # kecil yang mudah hilang ke pembulatan, dan bila hilang lajunya
+            # akan meluncur ke nol tanpa penahan.
+            reg = regularisasi_dropout(model)
+            if reg is not None:
+                loss = loss.float() + reg
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(
@@ -335,6 +375,12 @@ def main():
     }
     if hasattr(model, "lw") and getattr(model, "lw", None) is not None:
         res["layer_weights"] = [float(x) for x in model.lw.weights()]
+    adaptif = dropout_adaptif_pada(model)
+    if adaptif:
+        res["dropout_dipelajari"] = [float(m.p.detach()) for m in adaptif]
+        res["dropout_awal"] = 0.2
+        print(f"laju dropout yang dipelajari: "
+              f"{[round(float(m.p.detach()), 4) for m in adaptif]}  (mulai dari 0,2)")
 
     np.save(os.path.join(outdir, "test_scores.npy"),
             np.stack([yt.astype(float), pt, pt_cal]))
